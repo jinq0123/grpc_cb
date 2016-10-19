@@ -1,2 +1,2 @@
-# grpc_cb
-C++ gRPC library with callback interface.
+# gRPC_cb
+C++ [gRPC](http://www.grpc.io/) library with callback interface.
