@@ -65,6 +65,9 @@ all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
 endif
 
 OBJECTS := \
+	$(OBJDIR)/greeter_cb_client.o \
+	$(OBJDIR)/helloworld.grpc_cb.pb.o \
+	$(OBJDIR)/helloworld.pb.o \
 
 RESOURCES := \
 
@@ -122,6 +125,15 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) -x c++-header $(ALL_CXXFLAGS) -o "$@" -MF "$(@:%.gch=%.d)" -c "$<"
 endif
 
+$(OBJDIR)/greeter_cb_client.o: ../examples/cpp_cb/helloworld/greeter_cb_client.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/helloworld.grpc_cb.pb.o: ../examples/cpp_cb/helloworld/helloworld.grpc_cb.pb.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/helloworld.pb.o: ../examples/cpp_cb/helloworld/helloworld.pb.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)
 ifneq (,$(PCH))

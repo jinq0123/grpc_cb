@@ -1,13 +1,13 @@
 -- premake5.lua
 --[[
-Usage example: 
+Usage examples: 
 	for windows: premake5.exe --os=windows vs2015
 	fot linux:   premake5.exe --os=linux gmake
 ]]
 
 grpc_root = "../third_party/grpc"
 
-workspace "gRPC_cb"
+workspace "grpc_cb"
 	configurations { "Debug", "Release" }
 	language "C++"
 	flags {
@@ -29,16 +29,16 @@ project "grpc_cb"
 	kind "StaticLib"
 	files {
 		"../include/grpc_cb/**.h",
-		"../src/grpc_cb/**.*",
+		"../src/cpp_cb/**",
 	}
 
 project "greeter_cb_client"
 	kind "ConsoleApp"
 	files {
-		"../example/helloworld/**.*",
+		"../examples/cpp_cb/helloworld/**",
 	}
 	removefiles {
-		"../example/helloworld/greeter_cb_server.cc",
+		"../examples/cpp_cb/helloworld/greeter_cb_server.cc",
 	}
 	links {
 		"grpc_cb",
@@ -46,10 +46,10 @@ project "greeter_cb_client"
 project "greeter_cb_server"
 	kind "ConsoleApp"
 	files {
-		"../example/helloworld/**.*",
+		"../examples/cpp_cb/helloworld/**",
 	}
 	removefiles {
-		"../example/helloworld/greeter_cb_client.cc",
+		"../examples/cpp_cb/helloworld/greeter_cb_client.cc",
 	}
 	links {
 		"grpc_cb",
@@ -57,10 +57,10 @@ project "greeter_cb_server"
 project "route_guide_cb_client"
 	kind "ConsoleApp"
 	files {
-		"../example/route_guide/**.*",
+		"../examples/cpp_cb/route_guide/**",
 	}
 	removefiles {
-		"../example/route_guide/route_guide_cb_server.cc",
+		"../examples/cpp_cb/route_guide/route_guide_cb_server.cc",
 	}
 	links {
 		"grpc_cb",
@@ -68,10 +68,10 @@ project "route_guide_cb_client"
 project "route_guide_cb_server"
 	kind "ConsoleApp"
 	files {
-		"../example/route_guide/**.*",
+		"../examples/cpp_cb/route_guide/**",
 	}
 	removefiles {
-		"../example/route_guide/route_guide_cb_client.cc",
+		"../examples/cpp_cb/route_guide/route_guide_cb_client.cc",
 	}
 	links {
 		"grpc_cb",
@@ -80,5 +80,5 @@ project "route_guide_cb_server"
 project "grpc_cpp_cb_plugin"
 	kind "ConsoleApp"
 	files {
-		"../src/compiler/**.*",
+		"../src/compiler/**",
 	}

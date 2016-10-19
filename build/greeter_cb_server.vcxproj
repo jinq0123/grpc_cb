@@ -88,6 +88,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\examples\cpp_cb\helloworld\helloworld.grpc_cb.pb.h" />
+    <ClInclude Include="..\examples\cpp_cb\helloworld\helloworld.pb.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\examples\cpp_cb\helloworld\greeter_cb_server.cc" />
+    <ClCompile Include="..\examples\cpp_cb\helloworld\helloworld.grpc_cb.pb.cc" />
+    <ClCompile Include="..\examples\cpp_cb\helloworld\helloworld.pb.cc" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="grpc_cb.vcxproj">
       <Project>{F5C97C0E-61A9-FBA9-6AC1-8680D61F620B}</Project>
     </ProjectReference>

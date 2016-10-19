@@ -65,6 +65,10 @@ all: $(TARGETDIR) $(OBJDIR) prebuild prelink $(TARGET)
 endif
 
 OBJECTS := \
+	$(OBJDIR)/helper.o \
+	$(OBJDIR)/route_guide.grpc_cb.pb.o \
+	$(OBJDIR)/route_guide.pb.o \
+	$(OBJDIR)/route_guide_cb_server.o \
 
 RESOURCES := \
 
@@ -122,6 +126,18 @@ $(GCH): $(PCH)
 	$(SILENT) $(CXX) -x c++-header $(ALL_CXXFLAGS) -o "$@" -MF "$(@:%.gch=%.d)" -c "$<"
 endif
 
+$(OBJDIR)/helper.o: ../examples/cpp_cb/route_guide/helper.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/route_guide.grpc_cb.pb.o: ../examples/cpp_cb/route_guide/route_guide.grpc_cb.pb.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/route_guide.pb.o: ../examples/cpp_cb/route_guide/route_guide.pb.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/route_guide_cb_server.o: ../examples/cpp_cb/route_guide/route_guide_cb_server.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)
 ifneq (,$(PCH))

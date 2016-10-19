@@ -88,6 +88,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\examples\cpp_cb\route_guide\helper.h" />
+    <ClInclude Include="..\examples\cpp_cb\route_guide\route_guide.grpc_cb.pb.h" />
+    <ClInclude Include="..\examples\cpp_cb\route_guide\route_guide.pb.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\examples\cpp_cb\route_guide\helper.cc" />
+    <ClCompile Include="..\examples\cpp_cb\route_guide\route_guide.grpc_cb.pb.cc" />
+    <ClCompile Include="..\examples\cpp_cb\route_guide\route_guide.pb.cc" />
+    <ClCompile Include="..\examples\cpp_cb\route_guide\route_guide_cb_server.cc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\examples\cpp_cb\route_guide\route_guide_db.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="grpc_cb.vcxproj">
       <Project>{F5C97C0E-61A9-FBA9-6AC1-8680D61F620B}</Project>
     </ProjectReference>

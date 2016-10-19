@@ -135,6 +135,28 @@
     <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h" />
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
     <ClInclude Include="..\include\grpc_cb\support\time.h" />
+    <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
+    <ClInclude Include="..\src\cpp_cb\server\server_writer_send_status_cqtag.h" />
+    <ClInclude Include="..\src\cpp_cb\server\server_writer_write_cqtag.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\cpp_cb\client\channel.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\service_stub.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\call.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\call_op_data.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc" />
+    <ClCompile Include="..\src\cpp_cb\proto\proto_utils.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_credentials.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_method_call_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_replier_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_writer_impl.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\service.cc" />
+    <ClCompile Include="..\src\cpp_cb\util\status.cc" />
+    <ClCompile Include="..\src\cpp_cb\util\string_ref.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
