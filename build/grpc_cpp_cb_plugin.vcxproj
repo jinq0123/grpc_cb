@@ -66,8 +66,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>libprotobufd.lib;grpc_plugin_support.lib;libprotocd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\third_party\grpc\vsprojects\Debug;..\third_party\grpc\third_party\protobuf\cmake\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobufd.lib;ws2_32.lib;grpc_plugin_support.lib;libprotocd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\third_party\grpc\vsprojects\packages\grpc.dependencies.zlib.1.2.8.10\build\native\lib\v140\Win32\Debug\static\cdecl;..\third_party\grpc\vsprojects\packages\grpc.dependencies.openssl.1.0.204.1\build\native\lib\v140\Win32\Debug\static;..\third_party\grpc\vsprojects\Debug;..\third_party\grpc\third_party\protobuf\cmake\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
@@ -89,8 +89,8 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>libprotobuf.lib;grpc_plugin_support.lib;libprotoc.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\third_party\grpc\vsprojects\Release;..\third_party\grpc\third_party\protobuf\cmake\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libprotobuf.lib;ws2_32.lib;grpc_plugin_support.lib;libprotoc.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\third_party\grpc\vsprojects\packages\grpc.dependencies.zlib.1.2.8.10\build\native\lib\v140\Win32\Release\static\cdecl;..\third_party\grpc\vsprojects\packages\grpc.dependencies.openssl.1.0.204.1\build\native\lib\v140\Win32\Release\static;..\third_party\grpc\vsprojects\Release;..\third_party\grpc\third_party\protobuf\cmake\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
