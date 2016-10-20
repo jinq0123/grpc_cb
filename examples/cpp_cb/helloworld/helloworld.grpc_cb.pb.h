@@ -17,7 +17,7 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor();
 
 class Stub : public ::grpc_cb::ServiceStub {
  public:
-  Stub(const ::grpc_cb::ChannelSptr& channel);
+  explicit Stub(const ::grpc_cb::ChannelSptr& channel);
 
   inline ::grpc_cb::Status BlockingSayHello(
        const ::helloworld::HelloRequest& request) {
@@ -44,9 +44,7 @@ class Stub : public ::grpc_cb::ServiceStub {
       const SayHelloCallback& cb,
       const ::grpc_cb::ErrorCallback& ecb);
 
- private:
-  // const ::grpc_cb::RpcMethod rpcmethod_SayHello_;
-};
+};  // class Stub
 
 std::unique_ptr<Stub> NewStub(const ::grpc_cb::ChannelSptr& channel);
 
@@ -60,13 +58,16 @@ class Service : public ::grpc_cb::Service {
       size_t method_index, grpc_byte_buffer& request_buffer,
       const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;
 
- private:
+ protected:
+  using SayHello_Replier = ::grpc_cb::ServerReplier<
+      ::helloworld::HelloReply>;
   void SayHello(
       grpc_byte_buffer& request_buffer,
-      const ::grpc_cb::ServerReplier<::helloworld::HelloReply>& replier);
+      const SayHello_Replier& replier);
+  // Todo: virtual void SayHello(const std::string& request_buffer, replier);
   virtual void SayHello(
       const ::helloworld::HelloRequest& request,
-      ::grpc_cb::ServerReplier<::helloworld::HelloReply> replier);
+      SayHello_Replier replier);
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
