@@ -40,6 +40,7 @@ const ::google::protobuf::internal::GeneratedMessageReflection*
 }  // namespace
 
 
+void protobuf_AssignDesc_route_5fguide_2eproto() GOOGLE_ATTRIBUTE_COLD;
 void protobuf_AssignDesc_route_5fguide_2eproto() {
   protobuf_AddDesc_route_5fguide_2eproto();
   const ::google::protobuf::FileDescriptor* file =
@@ -54,14 +55,13 @@ void protobuf_AssignDesc_route_5fguide_2eproto() {
   Point_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       Point_descriptor_,
-      Point::default_instance_,
+      Point::internal_default_instance(),
       Point_offsets_,
       -1,
       -1,
       -1,
       sizeof(Point),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Point, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Point, _is_default_instance_));
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Point, _internal_metadata_));
   Rectangle_descriptor_ = file->message_type(1);
   static const int Rectangle_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Rectangle, lo_),
@@ -70,14 +70,13 @@ void protobuf_AssignDesc_route_5fguide_2eproto() {
   Rectangle_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       Rectangle_descriptor_,
-      Rectangle::default_instance_,
+      Rectangle::internal_default_instance(),
       Rectangle_offsets_,
       -1,
       -1,
       -1,
       sizeof(Rectangle),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Rectangle, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Rectangle, _is_default_instance_));
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Rectangle, _internal_metadata_));
   Feature_descriptor_ = file->message_type(2);
   static const int Feature_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Feature, name_),
@@ -86,14 +85,13 @@ void protobuf_AssignDesc_route_5fguide_2eproto() {
   Feature_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       Feature_descriptor_,
-      Feature::default_instance_,
+      Feature::internal_default_instance(),
       Feature_offsets_,
       -1,
       -1,
       -1,
       sizeof(Feature),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Feature, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Feature, _is_default_instance_));
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(Feature, _internal_metadata_));
   RouteNote_descriptor_ = file->message_type(3);
   static const int RouteNote_offsets_[2] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteNote, location_),
@@ -102,14 +100,13 @@ void protobuf_AssignDesc_route_5fguide_2eproto() {
   RouteNote_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       RouteNote_descriptor_,
-      RouteNote::default_instance_,
+      RouteNote::internal_default_instance(),
       RouteNote_offsets_,
       -1,
       -1,
       -1,
       sizeof(RouteNote),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteNote, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteNote, _is_default_instance_));
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteNote, _internal_metadata_));
   RouteSummary_descriptor_ = file->message_type(4);
   static const int RouteSummary_offsets_[4] = {
     GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteSummary, point_count_),
@@ -120,59 +117,79 @@ void protobuf_AssignDesc_route_5fguide_2eproto() {
   RouteSummary_reflection_ =
     ::google::protobuf::internal::GeneratedMessageReflection::NewGeneratedMessageReflection(
       RouteSummary_descriptor_,
-      RouteSummary::default_instance_,
+      RouteSummary::internal_default_instance(),
       RouteSummary_offsets_,
       -1,
       -1,
       -1,
       sizeof(RouteSummary),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteSummary, _internal_metadata_),
-      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteSummary, _is_default_instance_));
+      GOOGLE_PROTOBUF_GENERATED_MESSAGE_FIELD_OFFSET(RouteSummary, _internal_metadata_));
 }
 
 namespace {
 
 GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AssignDescriptors_once_);
-inline void protobuf_AssignDescriptorsOnce() {
+void protobuf_AssignDescriptorsOnce() {
   ::google::protobuf::GoogleOnceInit(&protobuf_AssignDescriptors_once_,
                  &protobuf_AssignDesc_route_5fguide_2eproto);
 }
 
+void protobuf_RegisterTypes(const ::std::string&) GOOGLE_ATTRIBUTE_COLD;
 void protobuf_RegisterTypes(const ::std::string&) {
   protobuf_AssignDescriptorsOnce();
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      Point_descriptor_, &Point::default_instance());
+      Point_descriptor_, Point::internal_default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      Rectangle_descriptor_, &Rectangle::default_instance());
+      Rectangle_descriptor_, Rectangle::internal_default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      Feature_descriptor_, &Feature::default_instance());
+      Feature_descriptor_, Feature::internal_default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      RouteNote_descriptor_, &RouteNote::default_instance());
+      RouteNote_descriptor_, RouteNote::internal_default_instance());
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedMessage(
-      RouteSummary_descriptor_, &RouteSummary::default_instance());
+      RouteSummary_descriptor_, RouteSummary::internal_default_instance());
 }
 
 }  // namespace
 
 void protobuf_ShutdownFile_route_5fguide_2eproto() {
-  delete Point::default_instance_;
+  Point_default_instance_.Shutdown();
   delete Point_reflection_;
-  delete Rectangle::default_instance_;
+  Rectangle_default_instance_.Shutdown();
   delete Rectangle_reflection_;
-  delete Feature::default_instance_;
+  Feature_default_instance_.Shutdown();
   delete Feature_reflection_;
-  delete RouteNote::default_instance_;
+  RouteNote_default_instance_.Shutdown();
   delete RouteNote_reflection_;
-  delete RouteSummary::default_instance_;
+  RouteSummary_default_instance_.Shutdown();
   delete RouteSummary_reflection_;
 }
 
-void protobuf_AddDesc_route_5fguide_2eproto() {
-  static bool already_here = false;
-  if (already_here) return;
-  already_here = true;
+void protobuf_InitDefaults_route_5fguide_2eproto_impl() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+  Point_default_instance_.DefaultConstruct();
+  Rectangle_default_instance_.DefaultConstruct();
+  ::google::protobuf::internal::GetEmptyString();
+  Feature_default_instance_.DefaultConstruct();
+  ::google::protobuf::internal::GetEmptyString();
+  RouteNote_default_instance_.DefaultConstruct();
+  RouteSummary_default_instance_.DefaultConstruct();
+  Point_default_instance_.get_mutable()->InitAsDefaultInstance();
+  Rectangle_default_instance_.get_mutable()->InitAsDefaultInstance();
+  Feature_default_instance_.get_mutable()->InitAsDefaultInstance();
+  RouteNote_default_instance_.get_mutable()->InitAsDefaultInstance();
+  RouteSummary_default_instance_.get_mutable()->InitAsDefaultInstance();
+}
+
+GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_InitDefaults_route_5fguide_2eproto_once_);
+void protobuf_InitDefaults_route_5fguide_2eproto() {
+  ::google::protobuf::GoogleOnceInit(&protobuf_InitDefaults_route_5fguide_2eproto_once_,
+                 &protobuf_InitDefaults_route_5fguide_2eproto_impl);
+}
+void protobuf_AddDesc_route_5fguide_2eproto_impl() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  protobuf_InitDefaults_route_5fguide_2eproto();
   ::google::protobuf::DescriptorPool::InternalAddGeneratedFile(
     "\n\021route_guide.proto\022\nrouteguide\",\n\005Point"
     "\022\020\n\010latitude\030\001 \001(\005\022\021\n\tlongitude\030\002 \001(\005\"I\n"
@@ -193,19 +210,14 @@ void protobuf_AddDesc_route_5fguide_2eproto() {
     "\000(\0010\001B\017\n\007ex.grpc\242\002\003RTGb\006proto3", 670);
   ::google::protobuf::MessageFactory::InternalRegisterGeneratedFile(
     "route_guide.proto", &protobuf_RegisterTypes);
-  Point::default_instance_ = new Point();
-  Rectangle::default_instance_ = new Rectangle();
-  Feature::default_instance_ = new Feature();
-  RouteNote::default_instance_ = new RouteNote();
-  RouteSummary::default_instance_ = new RouteSummary();
-  Point::default_instance_->InitAsDefaultInstance();
-  Rectangle::default_instance_->InitAsDefaultInstance();
-  Feature::default_instance_->InitAsDefaultInstance();
-  RouteNote::default_instance_->InitAsDefaultInstance();
-  RouteSummary::default_instance_->InitAsDefaultInstance();
   ::google::protobuf::internal::OnShutdown(&protobuf_ShutdownFile_route_5fguide_2eproto);
 }
 
+GOOGLE_PROTOBUF_DECLARE_ONCE(protobuf_AddDesc_route_5fguide_2eproto_once_);
+void protobuf_AddDesc_route_5fguide_2eproto() {
+  ::google::protobuf::GoogleOnceInit(&protobuf_AddDesc_route_5fguide_2eproto_once_,
+                 &protobuf_AddDesc_route_5fguide_2eproto_impl);
+}
 // Force AddDescriptors() to be called at static initialization time.
 struct StaticDescriptorInitializer_route_5fguide_2eproto {
   StaticDescriptorInitializer_route_5fguide_2eproto() {
@@ -215,9 +227,9 @@ struct StaticDescriptorInitializer_route_5fguide_2eproto {
 
 namespace {
 
-static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD;
+static void MergeFromFail(int line) GOOGLE_ATTRIBUTE_COLD GOOGLE_ATTRIBUTE_NORETURN;
 static void MergeFromFail(int line) {
-  GOOGLE_CHECK(false) << __FILE__ << ":" << line;
+  ::google::protobuf::internal::MergeFromFail(__FILE__, line);
 }
 
 }  // namespace
@@ -232,27 +244,26 @@ const int Point::kLongitudeFieldNumber;
 
 Point::Point()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (this != internal_default_instance()) protobuf_InitDefaults_route_5fguide_2eproto();
   SharedCtor();
   // @@protoc_insertion_point(constructor:routeguide.Point)
 }
 
 void Point::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
 }
 
 Point::Point(const Point& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
   // @@protoc_insertion_point(copy_constructor:routeguide.Point)
 }
 
 void Point::SharedCtor() {
-    _is_default_instance_ = false;
+  ::memset(&latitude_, 0, reinterpret_cast<char*>(&longitude_) -
+    reinterpret_cast<char*>(&latitude_) + sizeof(longitude_));
   _cached_size_ = 0;
-  latitude_ = 0;
-  longitude_ = 0;
 }
 
 Point::~Point() {
@@ -261,8 +272,6 @@ Point::~Point() {
 }
 
 void Point::SharedDtor() {
-  if (this != default_instance_) {
-  }
 }
 
 void Point::SetCachedSize(int size) const {
@@ -276,11 +285,11 @@ const ::google::protobuf::Descriptor* Point::descriptor() {
 }
 
 const Point& Point::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_route_5fguide_2eproto();
-  return *default_instance_;
+  protobuf_InitDefaults_route_5fguide_2eproto();
+  return *internal_default_instance();
 }
 
-Point* Point::default_instance_ = NULL;
+::google::protobuf::internal::ExplicitlyConstructed<Point> Point_default_instance_;
 
 Point* Point::New(::google::protobuf::Arena* arena) const {
   Point* n = new Point;
@@ -291,11 +300,20 @@ Point* Point::New(::google::protobuf::Arena* arena) const {
 }
 
 void Point::Clear() {
+// @@protoc_insertion_point(message_clear_start:routeguide.Point)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(Point, f) \
+  _Pragma("clang diagnostic pop")
+#else
 #define ZR_HELPER_(f) reinterpret_cast<char*>(\
   &reinterpret_cast<Point*>(16)->f)
+#endif
 
 #define ZR_(first, last) do {\
-  ::memset(&first, 0,\
+  ::memset(&(first), 0,\
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
@@ -308,7 +326,7 @@ void Point::Clear() {
 
 bool Point::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:routeguide.Point)
   for (;;) {
@@ -319,10 +337,10 @@ bool Point::MergePartialFromCodedStream(
       // optional int32 latitude = 1;
       case 1: {
         if (tag == 8) {
+
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &latitude_)));
-
         } else {
           goto handle_unusual;
         }
@@ -334,10 +352,10 @@ bool Point::MergePartialFromCodedStream(
       case 2: {
         if (tag == 16) {
          parse_longitude:
+
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &longitude_)));
-
         } else {
           goto handle_unusual;
         }
@@ -382,8 +400,9 @@ void Point::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:routeguide.Point)
 }
 
-::google::protobuf::uint8* Point::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* Point::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:routeguide.Point)
   // optional int32 latitude = 1;
   if (this->latitude() != 0) {
@@ -399,8 +418,9 @@ void Point::SerializeWithCachedSizes(
   return target;
 }
 
-int Point::ByteSize() const {
-  int total_size = 0;
+size_t Point::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:routeguide.Point)
+  size_t total_size = 0;
 
   // optional int32 latitude = 1;
   if (this->latitude() != 0) {
@@ -416,26 +436,39 @@ int Point::ByteSize() const {
         this->longitude());
   }
 
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void Point::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:routeguide.Point)
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const Point* source = 
+  const Point* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const Point>(
           &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:routeguide.Point)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-    MergeFrom(*source);
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:routeguide.Point)
+    UnsafeMergeFrom(*source);
   }
 }
 
 void Point::MergeFrom(const Point& from) {
-  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+// @@protoc_insertion_point(class_specific_merge_from_start:routeguide.Point)
+  if (GOOGLE_PREDICT_TRUE(&from != this)) {
+    UnsafeMergeFrom(from);
+  } else {
+    MergeFromFail(__LINE__);
+  }
+}
+
+void Point::UnsafeMergeFrom(const Point& from) {
+  GOOGLE_DCHECK(&from != this);
   if (from.latitude() != 0) {
     set_latitude(from.latitude());
   }
@@ -445,15 +478,17 @@ void Point::MergeFrom(const Point& from) {
 }
 
 void Point::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:routeguide.Point)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Point::CopyFrom(const Point& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:routeguide.Point)
   if (&from == this) return;
   Clear();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
 }
 
 bool Point::IsInitialized() const {
@@ -487,11 +522,11 @@ void Point::InternalSwap(Point* other) {
 void Point::clear_latitude() {
   latitude_ = 0;
 }
- ::google::protobuf::int32 Point::latitude() const {
+::google::protobuf::int32 Point::latitude() const {
   // @@protoc_insertion_point(field_get:routeguide.Point.latitude)
   return latitude_;
 }
- void Point::set_latitude(::google::protobuf::int32 value) {
+void Point::set_latitude(::google::protobuf::int32 value) {
   
   latitude_ = value;
   // @@protoc_insertion_point(field_set:routeguide.Point.latitude)
@@ -501,16 +536,19 @@ void Point::clear_latitude() {
 void Point::clear_longitude() {
   longitude_ = 0;
 }
- ::google::protobuf::int32 Point::longitude() const {
+::google::protobuf::int32 Point::longitude() const {
   // @@protoc_insertion_point(field_get:routeguide.Point.longitude)
   return longitude_;
 }
- void Point::set_longitude(::google::protobuf::int32 value) {
+void Point::set_longitude(::google::protobuf::int32 value) {
   
   longitude_ = value;
   // @@protoc_insertion_point(field_set:routeguide.Point.longitude)
 }
 
+inline const Point* Point::internal_default_instance() {
+  return &Point_default_instance_.get();
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -522,29 +560,30 @@ const int Rectangle::kHiFieldNumber;
 
 Rectangle::Rectangle()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (this != internal_default_instance()) protobuf_InitDefaults_route_5fguide_2eproto();
   SharedCtor();
   // @@protoc_insertion_point(constructor:routeguide.Rectangle)
 }
 
 void Rectangle::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-  lo_ = const_cast< ::routeguide::Point*>(&::routeguide::Point::default_instance());
-  hi_ = const_cast< ::routeguide::Point*>(&::routeguide::Point::default_instance());
+  lo_ = const_cast< ::routeguide::Point*>(
+      ::routeguide::Point::internal_default_instance());
+  hi_ = const_cast< ::routeguide::Point*>(
+      ::routeguide::Point::internal_default_instance());
 }
 
 Rectangle::Rectangle(const Rectangle& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
   // @@protoc_insertion_point(copy_constructor:routeguide.Rectangle)
 }
 
 void Rectangle::SharedCtor() {
-    _is_default_instance_ = false;
-  _cached_size_ = 0;
   lo_ = NULL;
   hi_ = NULL;
+  _cached_size_ = 0;
 }
 
 Rectangle::~Rectangle() {
@@ -553,7 +592,7 @@ Rectangle::~Rectangle() {
 }
 
 void Rectangle::SharedDtor() {
-  if (this != default_instance_) {
+  if (this != &Rectangle_default_instance_.get()) {
     delete lo_;
     delete hi_;
   }
@@ -570,11 +609,11 @@ const ::google::protobuf::Descriptor* Rectangle::descriptor() {
 }
 
 const Rectangle& Rectangle::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_route_5fguide_2eproto();
-  return *default_instance_;
+  protobuf_InitDefaults_route_5fguide_2eproto();
+  return *internal_default_instance();
 }
 
-Rectangle* Rectangle::default_instance_ = NULL;
+::google::protobuf::internal::ExplicitlyConstructed<Rectangle> Rectangle_default_instance_;
 
 Rectangle* Rectangle::New(::google::protobuf::Arena* arena) const {
   Rectangle* n = new Rectangle;
@@ -585,6 +624,7 @@ Rectangle* Rectangle::New(::google::protobuf::Arena* arena) const {
 }
 
 void Rectangle::Clear() {
+// @@protoc_insertion_point(message_clear_start:routeguide.Rectangle)
   if (GetArenaNoVirtual() == NULL && lo_ != NULL) delete lo_;
   lo_ = NULL;
   if (GetArenaNoVirtual() == NULL && hi_ != NULL) delete hi_;
@@ -593,7 +633,7 @@ void Rectangle::Clear() {
 
 bool Rectangle::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:routeguide.Rectangle)
   for (;;) {
@@ -665,29 +705,31 @@ void Rectangle::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:routeguide.Rectangle)
 }
 
-::google::protobuf::uint8* Rectangle::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* Rectangle::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:routeguide.Rectangle)
   // optional .routeguide.Point lo = 1;
   if (this->has_lo()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        1, *this->lo_, target);
+      InternalWriteMessageNoVirtualToArray(
+        1, *this->lo_, false, target);
   }
 
   // optional .routeguide.Point hi = 2;
   if (this->has_hi()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        2, *this->hi_, target);
+      InternalWriteMessageNoVirtualToArray(
+        2, *this->hi_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:routeguide.Rectangle)
   return target;
 }
 
-int Rectangle::ByteSize() const {
-  int total_size = 0;
+size_t Rectangle::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:routeguide.Rectangle)
+  size_t total_size = 0;
 
   // optional .routeguide.Point lo = 1;
   if (this->has_lo()) {
@@ -703,26 +745,39 @@ int Rectangle::ByteSize() const {
         *this->hi_);
   }
 
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void Rectangle::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:routeguide.Rectangle)
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const Rectangle* source = 
+  const Rectangle* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const Rectangle>(
           &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:routeguide.Rectangle)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-    MergeFrom(*source);
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:routeguide.Rectangle)
+    UnsafeMergeFrom(*source);
   }
 }
 
 void Rectangle::MergeFrom(const Rectangle& from) {
-  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+// @@protoc_insertion_point(class_specific_merge_from_start:routeguide.Rectangle)
+  if (GOOGLE_PREDICT_TRUE(&from != this)) {
+    UnsafeMergeFrom(from);
+  } else {
+    MergeFromFail(__LINE__);
+  }
+}
+
+void Rectangle::UnsafeMergeFrom(const Rectangle& from) {
+  GOOGLE_DCHECK(&from != this);
   if (from.has_lo()) {
     mutable_lo()->::routeguide::Point::MergeFrom(from.lo());
   }
@@ -732,15 +787,17 @@ void Rectangle::MergeFrom(const Rectangle& from) {
 }
 
 void Rectangle::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:routeguide.Rectangle)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Rectangle::CopyFrom(const Rectangle& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:routeguide.Rectangle)
   if (&from == this) return;
   Clear();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
 }
 
 bool Rectangle::IsInitialized() const {
@@ -772,7 +829,7 @@ void Rectangle::InternalSwap(Rectangle* other) {
 
 // optional .routeguide.Point lo = 1;
 bool Rectangle::has_lo() const {
-  return !_is_default_instance_ && lo_ != NULL;
+  return this != internal_default_instance() && lo_ != NULL;
 }
 void Rectangle::clear_lo() {
   if (GetArenaNoVirtual() == NULL && lo_ != NULL) delete lo_;
@@ -780,7 +837,8 @@ void Rectangle::clear_lo() {
 }
 const ::routeguide::Point& Rectangle::lo() const {
   // @@protoc_insertion_point(field_get:routeguide.Rectangle.lo)
-  return lo_ != NULL ? *lo_ : *default_instance_->lo_;
+  return lo_ != NULL ? *lo_
+                         : *::routeguide::Point::internal_default_instance();
 }
 ::routeguide::Point* Rectangle::mutable_lo() {
   
@@ -791,6 +849,7 @@ const ::routeguide::Point& Rectangle::lo() const {
   return lo_;
 }
 ::routeguide::Point* Rectangle::release_lo() {
+  // @@protoc_insertion_point(field_release:routeguide.Rectangle.lo)
   
   ::routeguide::Point* temp = lo_;
   lo_ = NULL;
@@ -809,7 +868,7 @@ void Rectangle::set_allocated_lo(::routeguide::Point* lo) {
 
 // optional .routeguide.Point hi = 2;
 bool Rectangle::has_hi() const {
-  return !_is_default_instance_ && hi_ != NULL;
+  return this != internal_default_instance() && hi_ != NULL;
 }
 void Rectangle::clear_hi() {
   if (GetArenaNoVirtual() == NULL && hi_ != NULL) delete hi_;
@@ -817,7 +876,8 @@ void Rectangle::clear_hi() {
 }
 const ::routeguide::Point& Rectangle::hi() const {
   // @@protoc_insertion_point(field_get:routeguide.Rectangle.hi)
-  return hi_ != NULL ? *hi_ : *default_instance_->hi_;
+  return hi_ != NULL ? *hi_
+                         : *::routeguide::Point::internal_default_instance();
 }
 ::routeguide::Point* Rectangle::mutable_hi() {
   
@@ -828,6 +888,7 @@ const ::routeguide::Point& Rectangle::hi() const {
   return hi_;
 }
 ::routeguide::Point* Rectangle::release_hi() {
+  // @@protoc_insertion_point(field_release:routeguide.Rectangle.hi)
   
   ::routeguide::Point* temp = hi_;
   hi_ = NULL;
@@ -844,6 +905,9 @@ void Rectangle::set_allocated_hi(::routeguide::Point* hi) {
   // @@protoc_insertion_point(field_set_allocated:routeguide.Rectangle.hi)
 }
 
+inline const Rectangle* Rectangle::internal_default_instance() {
+  return &Rectangle_default_instance_.get();
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -855,29 +919,28 @@ const int Feature::kLocationFieldNumber;
 
 Feature::Feature()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (this != internal_default_instance()) protobuf_InitDefaults_route_5fguide_2eproto();
   SharedCtor();
   // @@protoc_insertion_point(constructor:routeguide.Feature)
 }
 
 void Feature::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-  location_ = const_cast< ::routeguide::Point*>(&::routeguide::Point::default_instance());
+  location_ = const_cast< ::routeguide::Point*>(
+      ::routeguide::Point::internal_default_instance());
 }
 
 Feature::Feature(const Feature& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
   // @@protoc_insertion_point(copy_constructor:routeguide.Feature)
 }
 
 void Feature::SharedCtor() {
-    _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
   name_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   location_ = NULL;
+  _cached_size_ = 0;
 }
 
 Feature::~Feature() {
@@ -887,7 +950,7 @@ Feature::~Feature() {
 
 void Feature::SharedDtor() {
   name_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != default_instance_) {
+  if (this != &Feature_default_instance_.get()) {
     delete location_;
   }
 }
@@ -903,11 +966,11 @@ const ::google::protobuf::Descriptor* Feature::descriptor() {
 }
 
 const Feature& Feature::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_route_5fguide_2eproto();
-  return *default_instance_;
+  protobuf_InitDefaults_route_5fguide_2eproto();
+  return *internal_default_instance();
 }
 
-Feature* Feature::default_instance_ = NULL;
+::google::protobuf::internal::ExplicitlyConstructed<Feature> Feature_default_instance_;
 
 Feature* Feature::New(::google::protobuf::Arena* arena) const {
   Feature* n = new Feature;
@@ -918,6 +981,7 @@ Feature* Feature::New(::google::protobuf::Arena* arena) const {
 }
 
 void Feature::Clear() {
+// @@protoc_insertion_point(message_clear_start:routeguide.Feature)
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == NULL && location_ != NULL) delete location_;
   location_ = NULL;
@@ -925,7 +989,7 @@ void Feature::Clear() {
 
 bool Feature::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:routeguide.Feature)
   for (;;) {
@@ -1005,8 +1069,9 @@ void Feature::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:routeguide.Feature)
 }
 
-::google::protobuf::uint8* Feature::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* Feature::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:routeguide.Feature)
   // optional string name = 1;
   if (this->name().size() > 0) {
@@ -1022,16 +1087,17 @@ void Feature::SerializeWithCachedSizes(
   // optional .routeguide.Point location = 2;
   if (this->has_location()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        2, *this->location_, target);
+      InternalWriteMessageNoVirtualToArray(
+        2, *this->location_, false, target);
   }
 
   // @@protoc_insertion_point(serialize_to_array_end:routeguide.Feature)
   return target;
 }
 
-int Feature::ByteSize() const {
-  int total_size = 0;
+size_t Feature::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:routeguide.Feature)
+  size_t total_size = 0;
 
   // optional string name = 1;
   if (this->name().size() > 0) {
@@ -1047,26 +1113,39 @@ int Feature::ByteSize() const {
         *this->location_);
   }
 
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void Feature::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:routeguide.Feature)
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const Feature* source = 
+  const Feature* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const Feature>(
           &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:routeguide.Feature)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-    MergeFrom(*source);
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:routeguide.Feature)
+    UnsafeMergeFrom(*source);
   }
 }
 
 void Feature::MergeFrom(const Feature& from) {
-  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+// @@protoc_insertion_point(class_specific_merge_from_start:routeguide.Feature)
+  if (GOOGLE_PREDICT_TRUE(&from != this)) {
+    UnsafeMergeFrom(from);
+  } else {
+    MergeFromFail(__LINE__);
+  }
+}
+
+void Feature::UnsafeMergeFrom(const Feature& from) {
+  GOOGLE_DCHECK(&from != this);
   if (from.name().size() > 0) {
 
     name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
@@ -1077,15 +1156,17 @@ void Feature::MergeFrom(const Feature& from) {
 }
 
 void Feature::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:routeguide.Feature)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Feature::CopyFrom(const Feature& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:routeguide.Feature)
   if (&from == this) return;
   Clear();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
 }
 
 bool Feature::IsInitialized() const {
@@ -1119,36 +1200,37 @@ void Feature::InternalSwap(Feature* other) {
 void Feature::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& Feature::name() const {
+const ::std::string& Feature::name() const {
   // @@protoc_insertion_point(field_get:routeguide.Feature.name)
   return name_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Feature::set_name(const ::std::string& value) {
+void Feature::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:routeguide.Feature.name)
 }
- void Feature::set_name(const char* value) {
+void Feature::set_name(const char* value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:routeguide.Feature.name)
 }
- void Feature::set_name(const char* value, size_t size) {
+void Feature::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:routeguide.Feature.name)
 }
- ::std::string* Feature::mutable_name() {
+::std::string* Feature::mutable_name() {
   
   // @@protoc_insertion_point(field_mutable:routeguide.Feature.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* Feature::release_name() {
+::std::string* Feature::release_name() {
+  // @@protoc_insertion_point(field_release:routeguide.Feature.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void Feature::set_allocated_name(::std::string* name) {
+void Feature::set_allocated_name(::std::string* name) {
   if (name != NULL) {
     
   } else {
@@ -1160,7 +1242,7 @@ void Feature::clear_name() {
 
 // optional .routeguide.Point location = 2;
 bool Feature::has_location() const {
-  return !_is_default_instance_ && location_ != NULL;
+  return this != internal_default_instance() && location_ != NULL;
 }
 void Feature::clear_location() {
   if (GetArenaNoVirtual() == NULL && location_ != NULL) delete location_;
@@ -1168,7 +1250,8 @@ void Feature::clear_location() {
 }
 const ::routeguide::Point& Feature::location() const {
   // @@protoc_insertion_point(field_get:routeguide.Feature.location)
-  return location_ != NULL ? *location_ : *default_instance_->location_;
+  return location_ != NULL ? *location_
+                         : *::routeguide::Point::internal_default_instance();
 }
 ::routeguide::Point* Feature::mutable_location() {
   
@@ -1179,6 +1262,7 @@ const ::routeguide::Point& Feature::location() const {
   return location_;
 }
 ::routeguide::Point* Feature::release_location() {
+  // @@protoc_insertion_point(field_release:routeguide.Feature.location)
   
   ::routeguide::Point* temp = location_;
   location_ = NULL;
@@ -1195,6 +1279,9 @@ void Feature::set_allocated_location(::routeguide::Point* location) {
   // @@protoc_insertion_point(field_set_allocated:routeguide.Feature.location)
 }
 
+inline const Feature* Feature::internal_default_instance() {
+  return &Feature_default_instance_.get();
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1206,29 +1293,28 @@ const int RouteNote::kMessageFieldNumber;
 
 RouteNote::RouteNote()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (this != internal_default_instance()) protobuf_InitDefaults_route_5fguide_2eproto();
   SharedCtor();
   // @@protoc_insertion_point(constructor:routeguide.RouteNote)
 }
 
 void RouteNote::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
-  location_ = const_cast< ::routeguide::Point*>(&::routeguide::Point::default_instance());
+  location_ = const_cast< ::routeguide::Point*>(
+      ::routeguide::Point::internal_default_instance());
 }
 
 RouteNote::RouteNote(const RouteNote& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
   // @@protoc_insertion_point(copy_constructor:routeguide.RouteNote)
 }
 
 void RouteNote::SharedCtor() {
-    _is_default_instance_ = false;
-  ::google::protobuf::internal::GetEmptyString();
-  _cached_size_ = 0;
-  location_ = NULL;
   message_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  location_ = NULL;
+  _cached_size_ = 0;
 }
 
 RouteNote::~RouteNote() {
@@ -1238,7 +1324,7 @@ RouteNote::~RouteNote() {
 
 void RouteNote::SharedDtor() {
   message_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (this != default_instance_) {
+  if (this != &RouteNote_default_instance_.get()) {
     delete location_;
   }
 }
@@ -1254,11 +1340,11 @@ const ::google::protobuf::Descriptor* RouteNote::descriptor() {
 }
 
 const RouteNote& RouteNote::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_route_5fguide_2eproto();
-  return *default_instance_;
+  protobuf_InitDefaults_route_5fguide_2eproto();
+  return *internal_default_instance();
 }
 
-RouteNote* RouteNote::default_instance_ = NULL;
+::google::protobuf::internal::ExplicitlyConstructed<RouteNote> RouteNote_default_instance_;
 
 RouteNote* RouteNote::New(::google::protobuf::Arena* arena) const {
   RouteNote* n = new RouteNote;
@@ -1269,6 +1355,7 @@ RouteNote* RouteNote::New(::google::protobuf::Arena* arena) const {
 }
 
 void RouteNote::Clear() {
+// @@protoc_insertion_point(message_clear_start:routeguide.RouteNote)
   if (GetArenaNoVirtual() == NULL && location_ != NULL) delete location_;
   location_ = NULL;
   message_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
@@ -1276,7 +1363,7 @@ void RouteNote::Clear() {
 
 bool RouteNote::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:routeguide.RouteNote)
   for (;;) {
@@ -1356,14 +1443,15 @@ void RouteNote::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:routeguide.RouteNote)
 }
 
-::google::protobuf::uint8* RouteNote::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* RouteNote::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:routeguide.RouteNote)
   // optional .routeguide.Point location = 1;
   if (this->has_location()) {
     target = ::google::protobuf::internal::WireFormatLite::
-      WriteMessageNoVirtualToArray(
-        1, *this->location_, target);
+      InternalWriteMessageNoVirtualToArray(
+        1, *this->location_, false, target);
   }
 
   // optional string message = 2;
@@ -1381,8 +1469,9 @@ void RouteNote::SerializeWithCachedSizes(
   return target;
 }
 
-int RouteNote::ByteSize() const {
-  int total_size = 0;
+size_t RouteNote::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:routeguide.RouteNote)
+  size_t total_size = 0;
 
   // optional .routeguide.Point location = 1;
   if (this->has_location()) {
@@ -1398,26 +1487,39 @@ int RouteNote::ByteSize() const {
         this->message());
   }
 
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void RouteNote::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:routeguide.RouteNote)
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const RouteNote* source = 
+  const RouteNote* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const RouteNote>(
           &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:routeguide.RouteNote)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-    MergeFrom(*source);
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:routeguide.RouteNote)
+    UnsafeMergeFrom(*source);
   }
 }
 
 void RouteNote::MergeFrom(const RouteNote& from) {
-  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+// @@protoc_insertion_point(class_specific_merge_from_start:routeguide.RouteNote)
+  if (GOOGLE_PREDICT_TRUE(&from != this)) {
+    UnsafeMergeFrom(from);
+  } else {
+    MergeFromFail(__LINE__);
+  }
+}
+
+void RouteNote::UnsafeMergeFrom(const RouteNote& from) {
+  GOOGLE_DCHECK(&from != this);
   if (from.has_location()) {
     mutable_location()->::routeguide::Point::MergeFrom(from.location());
   }
@@ -1428,15 +1530,17 @@ void RouteNote::MergeFrom(const RouteNote& from) {
 }
 
 void RouteNote::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:routeguide.RouteNote)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void RouteNote::CopyFrom(const RouteNote& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:routeguide.RouteNote)
   if (&from == this) return;
   Clear();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
 }
 
 bool RouteNote::IsInitialized() const {
@@ -1468,7 +1572,7 @@ void RouteNote::InternalSwap(RouteNote* other) {
 
 // optional .routeguide.Point location = 1;
 bool RouteNote::has_location() const {
-  return !_is_default_instance_ && location_ != NULL;
+  return this != internal_default_instance() && location_ != NULL;
 }
 void RouteNote::clear_location() {
   if (GetArenaNoVirtual() == NULL && location_ != NULL) delete location_;
@@ -1476,7 +1580,8 @@ void RouteNote::clear_location() {
 }
 const ::routeguide::Point& RouteNote::location() const {
   // @@protoc_insertion_point(field_get:routeguide.RouteNote.location)
-  return location_ != NULL ? *location_ : *default_instance_->location_;
+  return location_ != NULL ? *location_
+                         : *::routeguide::Point::internal_default_instance();
 }
 ::routeguide::Point* RouteNote::mutable_location() {
   
@@ -1487,6 +1592,7 @@ const ::routeguide::Point& RouteNote::location() const {
   return location_;
 }
 ::routeguide::Point* RouteNote::release_location() {
+  // @@protoc_insertion_point(field_release:routeguide.RouteNote.location)
   
   ::routeguide::Point* temp = location_;
   location_ = NULL;
@@ -1507,36 +1613,37 @@ void RouteNote::set_allocated_location(::routeguide::Point* location) {
 void RouteNote::clear_message() {
   message_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- const ::std::string& RouteNote::message() const {
+const ::std::string& RouteNote::message() const {
   // @@protoc_insertion_point(field_get:routeguide.RouteNote.message)
   return message_.GetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void RouteNote::set_message(const ::std::string& value) {
+void RouteNote::set_message(const ::std::string& value) {
   
   message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:routeguide.RouteNote.message)
 }
- void RouteNote::set_message(const char* value) {
+void RouteNote::set_message(const char* value) {
   
   message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:routeguide.RouteNote.message)
 }
- void RouteNote::set_message(const char* value, size_t size) {
+void RouteNote::set_message(const char* value, size_t size) {
   
   message_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:routeguide.RouteNote.message)
 }
- ::std::string* RouteNote::mutable_message() {
+::std::string* RouteNote::mutable_message() {
   
   // @@protoc_insertion_point(field_mutable:routeguide.RouteNote.message)
   return message_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- ::std::string* RouteNote::release_message() {
+::std::string* RouteNote::release_message() {
+  // @@protoc_insertion_point(field_release:routeguide.RouteNote.message)
   
   return message_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
- void RouteNote::set_allocated_message(::std::string* message) {
+void RouteNote::set_allocated_message(::std::string* message) {
   if (message != NULL) {
     
   } else {
@@ -1546,6 +1653,9 @@ void RouteNote::clear_message() {
   // @@protoc_insertion_point(field_set_allocated:routeguide.RouteNote.message)
 }
 
+inline const RouteNote* RouteNote::internal_default_instance() {
+  return &RouteNote_default_instance_.get();
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // ===================================================================
@@ -1559,29 +1669,26 @@ const int RouteSummary::kElapsedTimeFieldNumber;
 
 RouteSummary::RouteSummary()
   : ::google::protobuf::Message(), _internal_metadata_(NULL) {
+  if (this != internal_default_instance()) protobuf_InitDefaults_route_5fguide_2eproto();
   SharedCtor();
   // @@protoc_insertion_point(constructor:routeguide.RouteSummary)
 }
 
 void RouteSummary::InitAsDefaultInstance() {
-  _is_default_instance_ = true;
 }
 
 RouteSummary::RouteSummary(const RouteSummary& from)
   : ::google::protobuf::Message(),
     _internal_metadata_(NULL) {
   SharedCtor();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
   // @@protoc_insertion_point(copy_constructor:routeguide.RouteSummary)
 }
 
 void RouteSummary::SharedCtor() {
-    _is_default_instance_ = false;
+  ::memset(&point_count_, 0, reinterpret_cast<char*>(&elapsed_time_) -
+    reinterpret_cast<char*>(&point_count_) + sizeof(elapsed_time_));
   _cached_size_ = 0;
-  point_count_ = 0;
-  feature_count_ = 0;
-  distance_ = 0;
-  elapsed_time_ = 0;
 }
 
 RouteSummary::~RouteSummary() {
@@ -1590,8 +1697,6 @@ RouteSummary::~RouteSummary() {
 }
 
 void RouteSummary::SharedDtor() {
-  if (this != default_instance_) {
-  }
 }
 
 void RouteSummary::SetCachedSize(int size) const {
@@ -1605,11 +1710,11 @@ const ::google::protobuf::Descriptor* RouteSummary::descriptor() {
 }
 
 const RouteSummary& RouteSummary::default_instance() {
-  if (default_instance_ == NULL) protobuf_AddDesc_route_5fguide_2eproto();
-  return *default_instance_;
+  protobuf_InitDefaults_route_5fguide_2eproto();
+  return *internal_default_instance();
 }
 
-RouteSummary* RouteSummary::default_instance_ = NULL;
+::google::protobuf::internal::ExplicitlyConstructed<RouteSummary> RouteSummary_default_instance_;
 
 RouteSummary* RouteSummary::New(::google::protobuf::Arena* arena) const {
   RouteSummary* n = new RouteSummary;
@@ -1620,11 +1725,20 @@ RouteSummary* RouteSummary::New(::google::protobuf::Arena* arena) const {
 }
 
 void RouteSummary::Clear() {
+// @@protoc_insertion_point(message_clear_start:routeguide.RouteSummary)
+#if defined(__clang__)
+#define ZR_HELPER_(f) \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Winvalid-offsetof\"") \
+  __builtin_offsetof(RouteSummary, f) \
+  _Pragma("clang diagnostic pop")
+#else
 #define ZR_HELPER_(f) reinterpret_cast<char*>(\
   &reinterpret_cast<RouteSummary*>(16)->f)
+#endif
 
 #define ZR_(first, last) do {\
-  ::memset(&first, 0,\
+  ::memset(&(first), 0,\
            ZR_HELPER_(last) - ZR_HELPER_(first) + sizeof(last));\
 } while (0)
 
@@ -1637,7 +1751,7 @@ void RouteSummary::Clear() {
 
 bool RouteSummary::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:routeguide.RouteSummary)
   for (;;) {
@@ -1648,10 +1762,10 @@ bool RouteSummary::MergePartialFromCodedStream(
       // optional int32 point_count = 1;
       case 1: {
         if (tag == 8) {
+
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &point_count_)));
-
         } else {
           goto handle_unusual;
         }
@@ -1663,10 +1777,10 @@ bool RouteSummary::MergePartialFromCodedStream(
       case 2: {
         if (tag == 16) {
          parse_feature_count:
+
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &feature_count_)));
-
         } else {
           goto handle_unusual;
         }
@@ -1678,10 +1792,10 @@ bool RouteSummary::MergePartialFromCodedStream(
       case 3: {
         if (tag == 24) {
          parse_distance:
+
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &distance_)));
-
         } else {
           goto handle_unusual;
         }
@@ -1693,10 +1807,10 @@ bool RouteSummary::MergePartialFromCodedStream(
       case 4: {
         if (tag == 32) {
          parse_elapsed_time:
+
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &elapsed_time_)));
-
         } else {
           goto handle_unusual;
         }
@@ -1751,8 +1865,9 @@ void RouteSummary::SerializeWithCachedSizes(
   // @@protoc_insertion_point(serialize_end:routeguide.RouteSummary)
 }
 
-::google::protobuf::uint8* RouteSummary::SerializeWithCachedSizesToArray(
-    ::google::protobuf::uint8* target) const {
+::google::protobuf::uint8* RouteSummary::InternalSerializeWithCachedSizesToArray(
+    bool deterministic, ::google::protobuf::uint8* target) const {
+  (void)deterministic; // Unused
   // @@protoc_insertion_point(serialize_to_array_start:routeguide.RouteSummary)
   // optional int32 point_count = 1;
   if (this->point_count() != 0) {
@@ -1778,8 +1893,9 @@ void RouteSummary::SerializeWithCachedSizes(
   return target;
 }
 
-int RouteSummary::ByteSize() const {
-  int total_size = 0;
+size_t RouteSummary::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:routeguide.RouteSummary)
+  size_t total_size = 0;
 
   // optional int32 point_count = 1;
   if (this->point_count() != 0) {
@@ -1809,26 +1925,39 @@ int RouteSummary::ByteSize() const {
         this->elapsed_time());
   }
 
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
-  _cached_size_ = total_size;
+  _cached_size_ = cached_size;
   GOOGLE_SAFE_CONCURRENT_WRITES_END();
   return total_size;
 }
 
 void RouteSummary::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:routeguide.RouteSummary)
   if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
-  const RouteSummary* source = 
+  const RouteSummary* source =
       ::google::protobuf::internal::DynamicCastToGenerated<const RouteSummary>(
           &from);
   if (source == NULL) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:routeguide.RouteSummary)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-    MergeFrom(*source);
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:routeguide.RouteSummary)
+    UnsafeMergeFrom(*source);
   }
 }
 
 void RouteSummary::MergeFrom(const RouteSummary& from) {
-  if (GOOGLE_PREDICT_FALSE(&from == this)) MergeFromFail(__LINE__);
+// @@protoc_insertion_point(class_specific_merge_from_start:routeguide.RouteSummary)
+  if (GOOGLE_PREDICT_TRUE(&from != this)) {
+    UnsafeMergeFrom(from);
+  } else {
+    MergeFromFail(__LINE__);
+  }
+}
+
+void RouteSummary::UnsafeMergeFrom(const RouteSummary& from) {
+  GOOGLE_DCHECK(&from != this);
   if (from.point_count() != 0) {
     set_point_count(from.point_count());
   }
@@ -1844,15 +1973,17 @@ void RouteSummary::MergeFrom(const RouteSummary& from) {
 }
 
 void RouteSummary::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:routeguide.RouteSummary)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void RouteSummary::CopyFrom(const RouteSummary& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:routeguide.RouteSummary)
   if (&from == this) return;
   Clear();
-  MergeFrom(from);
+  UnsafeMergeFrom(from);
 }
 
 bool RouteSummary::IsInitialized() const {
@@ -1888,11 +2019,11 @@ void RouteSummary::InternalSwap(RouteSummary* other) {
 void RouteSummary::clear_point_count() {
   point_count_ = 0;
 }
- ::google::protobuf::int32 RouteSummary::point_count() const {
+::google::protobuf::int32 RouteSummary::point_count() const {
   // @@protoc_insertion_point(field_get:routeguide.RouteSummary.point_count)
   return point_count_;
 }
- void RouteSummary::set_point_count(::google::protobuf::int32 value) {
+void RouteSummary::set_point_count(::google::protobuf::int32 value) {
   
   point_count_ = value;
   // @@protoc_insertion_point(field_set:routeguide.RouteSummary.point_count)
@@ -1902,11 +2033,11 @@ void RouteSummary::clear_point_count() {
 void RouteSummary::clear_feature_count() {
   feature_count_ = 0;
 }
- ::google::protobuf::int32 RouteSummary::feature_count() const {
+::google::protobuf::int32 RouteSummary::feature_count() const {
   // @@protoc_insertion_point(field_get:routeguide.RouteSummary.feature_count)
   return feature_count_;
 }
- void RouteSummary::set_feature_count(::google::protobuf::int32 value) {
+void RouteSummary::set_feature_count(::google::protobuf::int32 value) {
   
   feature_count_ = value;
   // @@protoc_insertion_point(field_set:routeguide.RouteSummary.feature_count)
@@ -1916,11 +2047,11 @@ void RouteSummary::clear_feature_count() {
 void RouteSummary::clear_distance() {
   distance_ = 0;
 }
- ::google::protobuf::int32 RouteSummary::distance() const {
+::google::protobuf::int32 RouteSummary::distance() const {
   // @@protoc_insertion_point(field_get:routeguide.RouteSummary.distance)
   return distance_;
 }
- void RouteSummary::set_distance(::google::protobuf::int32 value) {
+void RouteSummary::set_distance(::google::protobuf::int32 value) {
   
   distance_ = value;
   // @@protoc_insertion_point(field_set:routeguide.RouteSummary.distance)
@@ -1930,16 +2061,19 @@ void RouteSummary::clear_distance() {
 void RouteSummary::clear_elapsed_time() {
   elapsed_time_ = 0;
 }
- ::google::protobuf::int32 RouteSummary::elapsed_time() const {
+::google::protobuf::int32 RouteSummary::elapsed_time() const {
   // @@protoc_insertion_point(field_get:routeguide.RouteSummary.elapsed_time)
   return elapsed_time_;
 }
- void RouteSummary::set_elapsed_time(::google::protobuf::int32 value) {
+void RouteSummary::set_elapsed_time(::google::protobuf::int32 value) {
   
   elapsed_time_ = value;
   // @@protoc_insertion_point(field_set:routeguide.RouteSummary.elapsed_time)
 }
 
+inline const RouteSummary* RouteSummary::internal_default_instance() {
+  return &RouteSummary_default_instance_.get();
+}
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 
 // @@protoc_insertion_point(namespace_scope)
