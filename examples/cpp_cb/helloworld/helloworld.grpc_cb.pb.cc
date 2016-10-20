@@ -8,17 +8,22 @@
 #include <google/protobuf/stubs/once.h>
 
 #include <grpc_cb/impl/call.h>                            // for Call
+#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/call_operations.h>                 // for CallOperations
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
 #include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue
-#include <grpc_cb/impl/proto_utils.h>  // for DeserializeProto()
+#include <grpc_cb/impl/proto_utils.h>                     // for DeserializeProto()
+#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
+#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
 
+// package helloworld
 namespace helloworld {
 
 namespace {
 
-const ::google::protobuf::ServiceDescriptor* service_descriptor_Greeter = nullptr;
+const ::google::protobuf::ServiceDescriptor*
+service_descriptor_Greeter = nullptr;
 
 void AssignDesc_helloworld_2eproto() {
   // Get the file's descriptor from the pool.
@@ -38,7 +43,7 @@ inline void AssignDescriptorsOnce() {
 
 }  // namespace
 
-namespace Greeter {
+namespace Greeter {  // service Greeter
 
 static const std::string method_names[] = {
   "/helloworld.Greeter/SayHello",
@@ -50,15 +55,13 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor() {
   return *service_descriptor_Greeter;
 }
 
-std::unique_ptr< Stub> NewStub(const ::grpc_cb::ChannelSptr& channel) {
-  std::unique_ptr< Stub> stub(new Stub(channel));
+std::unique_ptr<Stub> NewStub(const ::grpc_cb::ChannelSptr& channel) {
+  std::unique_ptr<Stub> stub(new Stub(channel));
   return stub;
 }
 
 Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
-  : ::grpc_cb::ServiceStub(channel)
-    // , rpcmethod_SayHello_(method_names[0], ::grpc_cb::RpcMethod::NORMAL_RPC, channel)
-  {}
+    : ::grpc_cb::ServiceStub(channel) {}
 
 ::grpc_cb::Status Stub::BlockingSayHello(
     const ::helloworld::HelloRequest& request,
@@ -67,9 +70,9 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
   ::grpc_cb::CompletionQueue cq;
   ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(method_names[0], cq));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
-  bool ok = tag.Start(request);
-  if (!ok) return ::grpc_cb::Status::InternalError("Failed to request.");
-  cq.Pluck(&tag);  // Todo: Make sure tag was not queued if StartBatch() failed.
+  if (!tag.Start(request))
+    return ::grpc_cb::Status::InternalError("Failed to request.");
+  cq.Pluck(&tag);
   return tag.GetResponse(*response);
 }
 
@@ -82,19 +85,15 @@ void Stub::AsyncSayHello(
       GetChannel().MakeSharedCall(method_names[0], GetCq()));
   using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
   CqTag* tag = new CqTag(call_sptr, cb, ecb);
-  if (!tag->Start(request)) {
-    delete tag;
-    ecb(::grpc_cb::Status::InternalError("Failed to async request."));
-  }
+  if (tag->Start(request)) return;
+  delete tag;
+  // Todo: Extract CallInternalErrorCb("Error to do...");
+  ecb(::grpc_cb::Status::InternalError("Failed to async request."));
 }
 
-// AsyncService::AsyncService() : ::grpc_cb::AsynchronousService(method_names, 1) {}
+Service::Service() {}
 
-Service::Service() {
-}
-
-Service::~Service() {
-}
+Service::~Service() {}
 
 const std::string& Service::GetMethodName(size_t method_index) const {
   assert(method_index < GetMethodCount());
@@ -108,7 +107,7 @@ void Service::CallMethod(
   switch (method_index) {
     case 0:
       SayHello(request_buffer,
-          ::grpc_cb::ServerReplier<::helloworld::HelloReply>(call_sptr));
+          SayHello_Replier(call_sptr));
       return;
   }  // switch
   assert(false);
@@ -116,7 +115,7 @@ void Service::CallMethod(
 
 void Service::SayHello(
     grpc_byte_buffer& request_buffer,
-    const ::grpc_cb::ServerReplier<::helloworld::HelloReply>& replier) {
+    const SayHello_Replier& replier) {
   using Request = ::helloworld::HelloRequest;
   Request request;
   ::grpc_cb::Status status =
@@ -126,13 +125,13 @@ void Service::SayHello(
     SayHello(request, replier);
     return;
   }
-  ::grpc_cb::ServerReplier<::helloworld::HelloReply>(
+  SayHello_Replier(
       replier).ReplyError(status);
 }
 void Service::SayHello(
     const ::helloworld::HelloRequest& request,
-    ::grpc_cb::ServerReplier<::helloworld::HelloReply> replier) {
-  (void) request;
+    SayHello_Replier replier) {
+  (void)request;
   replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
 }
 

@@ -8,11 +8,13 @@
 #include <google/protobuf/stubs/once.h>
 
 #include <grpc_cb/impl/call.h>                            // for Call
-#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag<>
-#include <grpc_cb/impl/client/client_call_cqtag.h>  // for ClientCallCqTag
-#include <grpc_cb/impl/completion_queue.h>          // for CompletionQueue
-#include <grpc_cb/impl/proto_utils.h>               // for DeserializeProto()
-#include <grpc_cb/impl/server/server_reader_cqtag.h>  // for ServerReaderCqTag
+#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
+#include <grpc_cb/impl/call_operations.h>                 // for CallOperations
+#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
+#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
+#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue
+#include <grpc_cb/impl/proto_utils.h>                     // for DeserializeProto()
+#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 #include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
 
 // package routeguide
@@ -26,8 +28,8 @@ service_descriptor_RouteGuide = nullptr;
 void AssignDesc_route_5fguide_2eproto() {
   // Get the file's descriptor from the pool.
   const ::google::protobuf::FileDescriptor* file =
-      ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
-          "route_guide.proto");
+    ::google::protobuf::DescriptorPool::generated_pool()->FindFileByName(
+      "route_guide.proto");
   GOOGLE_CHECK(file != NULL);
   service_descriptor_RouteGuide = file->service(0);
 }  // AssignDesc_route_5fguide_2eproto()
@@ -35,8 +37,8 @@ void AssignDesc_route_5fguide_2eproto() {
 GOOGLE_PROTOBUF_DECLARE_ONCE(grpc_cb_AssignDescriptors_once_);
 inline void AssignDescriptorsOnce() {
   ::google::protobuf::GoogleOnceInit(
-      &grpc_cb_AssignDescriptors_once_,
-      &AssignDesc_route_5fguide_2eproto);
+    &grpc_cb_AssignDescriptors_once_,
+    &AssignDesc_route_5fguide_2eproto);
 }
 
 }  // namespace
@@ -44,10 +46,10 @@ inline void AssignDescriptorsOnce() {
 namespace RouteGuide {  // service RouteGuide
 
 static const std::string method_names[] = {
-    "/routeguide.RouteGuide/GetFeature",
-    "/routeguide.RouteGuide/ListFeatures",
-    "/routeguide.RouteGuide/RecordRoute",
-    "/routeguide.RouteGuide/RouteChat",
+  "/routeguide.RouteGuide/GetFeature",
+  "/routeguide.RouteGuide/ListFeatures",
+  "/routeguide.RouteGuide/RecordRoute",
+  "/routeguide.RouteGuide/RouteChat",
 };
 
 const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor() {
@@ -133,7 +135,8 @@ void Service::CallMethod(
           GetFeature_Replier(call_sptr));
       return;
     case 1:
-      ListFeatures(request_buffer, ListFeatures_Writer(call_sptr));
+      ListFeatures(request_buffer,
+          ListFeatures_Writer(call_sptr));
       return;
     case 2:
       RecordRoute(call_sptr);
@@ -232,14 +235,15 @@ void Service::RecordRoute_OnEnd(
 void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
   using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<
-      ::routeguide::RouteNote, ::routeguide::RouteNote>;
+      ::routeguide::RouteNote,
+      ::routeguide::RouteNote>;
   RouteChat_Writer writer(call_sptr);
   RwCqTag::MsgCallback on_msg =
     [this](const ::routeguide::RouteNote& msg,
            const RouteChat_Writer& writer) {
       RouteChat_OnMsg(msg, writer);
     };
-  RwCqTag::EndCallback on_end = 
+  RwCqTag::EndCallback on_end =
     [this](const RouteChat_Writer& writer) {
       RouteChat_OnEnd(writer);
     };
@@ -274,3 +278,4 @@ void Service::RouteChat_OnEnd(
 }  // namespace RouteGuide
 
 }  // namespace routeguide
+
