@@ -217,10 +217,16 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "    $Method$_Replier replier);\n\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
-        "virtual ::grpc_cb::Status $Method$(\n"
-        "    ::grpc_cb::ServerContext* context,\n"
-        "    ::grpc_cb::ServerReader< $Request$>* reader,\n"
-        "    $Response$* response);\n\n");
+        "void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
+        "using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
+        "    $Response$>;\n"
+        "virtual void $Method$_OnStart(\n"
+        "    const $Method$_Replier& replier);\n"
+        "virtual void $Method$_OnMsg(\n"
+        "    const $Request$& point,\n"
+        "    const $Method$_Replier& replier);\n"
+        "virtual void $Method$_OnEnd(\n"
+        "    const $Method$_Replier& replier);\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
         "using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
