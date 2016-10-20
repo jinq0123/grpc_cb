@@ -238,9 +238,16 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "    const $Method$_Writer& writer);\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
-        "virtual ::grpc_cb::Status $Method$(\n"
-        "    ::grpc_cb::ServerContext* context,\n"
-        "    ::grpc_cb::ServerReaderWriter< $Response$, $Request$>* reader_writer);\n\n");
+        "void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
+        "using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
+        "    $Response$>;\n"
+        "virtual void $Method$_OnStart(\n"
+        "    const $Method$_Writer& writer);\n"
+        "virtual void $Method$_OnMsg(\n"
+        "    const $Request$& msg,\n"
+        "    const $Method$_Writer& writer);\n"
+        "virtual void $Method$_OnEnd(\n"
+        "    const $Method$_Writer& writer);\n\n");
   }
 }
 
