@@ -223,10 +223,13 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "    $Response$* response);\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
-        "virtual ::grpc_cb::Status $Method$(\n"
-        "    ::grpc_cb::ServerContext* context,\n"
-        "    const $Request$* request,\n"
-        "    ::grpc_cb::ServerWriter< $Response$>* writer);\n\n");
+        "using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
+        "    $Response$>;\n"
+        "void $Method$(grpc_byte_buffer& request_buffer,\n"
+        "    const $Method$_Writer& writer);\n"
+        "virtual void $Method$(\n"
+        "    const $Request$& request,\n"
+        "    const $Method$_Writer& writer);\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
         "virtual ::grpc_cb::Status $Method$(\n"
