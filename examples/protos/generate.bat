@@ -4,4 +4,12 @@ set PROTOC=..\..\third_party\grpc\third_party\protobuf\cmake\Release\protoc.exe
 %PROTOC% -I. --cpp_out=..\cpp_cb\helloworld helloworld.proto
 %PROTOC% -I. --cpp_out=..\cpp_cb\route_guide route_guide.proto
 
+set PLUGIN_EXE=..\..\build\bin\Release\grpc_cpp_cb_plugin.exe
+%PROTOC% -I. --grpc_out=..\cpp_cb\helloworld ^
+  --plugin=protoc-gen-grpc=%PLUGIN_EXE% ^
+  helloworld.proto
+%PROTOC% -I. --grpc_out=..\cpp_cb\route_guide ^
+  --plugin=protoc-gen-grpc=%PLUGIN_EXE% ^
+  route_guide.proto
+
 pause
