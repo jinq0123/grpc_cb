@@ -38,7 +38,7 @@
 #include <algorithm>
 #include <iostream>
 
-namespace grpc {
+namespace grpc_cb {
 
 const size_t string_ref::npos = size_t(-1);
 
@@ -98,7 +98,7 @@ bool operator>(string_ref x, string_ref y) { return x.compare(y) > 0; }
 bool operator>=(string_ref x, string_ref y) { return x.compare(y) >= 0; }
 
 std::ostream& operator<<(std::ostream& out, const string_ref& string) {
-  return out << grpc::string(string.begin(), string.end());
+  return out << std::string(string.begin(), string.end());
 }
 
-}  // namespace grpc
+}  // namespace grpc_cb

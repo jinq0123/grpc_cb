@@ -82,3 +82,9 @@ project "grpc_cpp_cb_plugin"
 	files {
 		"../src/compiler/**",
 	}
+	includedirs {
+		"..",
+		grpc_root,
+		grpc_root .. "/third_party/protobuf/src",
+	}
+
