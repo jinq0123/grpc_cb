@@ -119,12 +119,7 @@ grpc::string GetHeaderIncludes(const grpc::protobuf::FileDescriptor *file,
     vars["filename_base"] = grpc_generator::StripProto(file->name());
 
     printer.Print(vars,
-      "#include <grpc_cb/channel_sptr.h>\n"
-      "#include <grpc_cb/status_callback.h>        // for ErrorCallback\n"
-      "#include <grpc_cb/server_async_replier.h>  // for ServerReplier<>\n"
-      "#include <grpc_cb/service.h>\n"
-      "#include <grpc_cb/service_stub.h>\n"
-      "#include <grpc_cb/status.h>\n"
+      "#include <grpc_cb/grpc_cb.h>  // Include all for user.\n"
       "\n"
       "#include \"$filename_base$.pb.h\"\n"
       "\n");
@@ -175,7 +170,7 @@ void PrintHeaderClientMethodPublic(
           "inline void Async$Method$(\n"
           "    const $Request$& request,\n"
           "    const $Method$Callback& cb) {\n"
-          "  return Async$Method$(request, cb, error_callback_);  // Use default error callback.\n"
+          "  return Async$Method$(request, cb, GetErrorCallback());  // Use default error callback.\n"
           "}\n"
           "void Async$Method$(\n"
           "    const $Request$& request,\n"
@@ -184,77 +179,20 @@ void PrintHeaderClientMethodPublic(
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
           *vars,
-          "std::unique_ptr< ::grpc_cb::ClientWriter< $Request$>>"
-          " $Method$("
-          "::grpc_cb::ClientContext* context, $Response$* response) {\n");
-      printer->Indent();
-      printer->Print(*vars,
-                     "return std::unique_ptr< ::grpc_cb::ClientWriter< $Request$>>"
-                     "($Method$Raw(context, response));\n");
-      printer->Outdent();
-      printer->Print("}\n");
-      printer->Print(*vars,
-                     "std::unique_ptr< ::grpc_cb::ClientAsyncWriter< $Request$>>"
-                     " Async$Method$(::grpc_cb::ClientContext* context, "
-                     "$Response$* response, "
-                     "::grpc_cb::CompletionQueue* cq, void* tag) {\n");
-      printer->Indent();
-      printer->Print(
-          *vars,
-          "return std::unique_ptr< ::grpc_cb::ClientAsyncWriter< $Request$>>("
-          "Async$Method$Raw(context, response, cq, tag));\n");
-      printer->Outdent();
-      printer->Print("}\n\n");
+          "::grpc_cb::ClientWriter<$Request$>\n"
+          "$Method$();\n\n");
   } else if (ServerOnlyStreaming(method)) {
       printer->Print(
           *vars,
-          "std::unique_ptr< ::grpc_cb::ClientReader< $Response$>>"
-          " $Method$(::grpc_cb::ClientContext* context, const $Request$& request)"
-          " {\n");
-      printer->Indent();
-      printer->Print(
-          *vars,
-          "return std::unique_ptr< ::grpc_cb::ClientReader< $Response$>>"
-          "($Method$Raw(context, request));\n");
-      printer->Outdent();
-      printer->Print("}\n");
-      printer->Print(
-          *vars,
-          "std::unique_ptr< ::grpc_cb::ClientAsyncReader< $Response$>> "
-          "Async$Method$("
-          "::grpc_cb::ClientContext* context, const $Request$& request, "
-          "::grpc_cb::CompletionQueue* cq, void* tag) {\n");
-      printer->Indent();
-      printer->Print(
-          *vars,
-          "return std::unique_ptr< ::grpc_cb::ClientAsyncReader< $Response$>>("
-          "Async$Method$Raw(context, request, cq, tag));\n");
-      printer->Outdent();
-      printer->Print("}\n\n");
+          "::grpc_cb::ClientReader<$Response$>\n"
+          "$Method$(const $Request$& request);\n\n");
   } else if (BidiStreaming(method)) {
       printer->Print(
           *vars,
-          "std::unique_ptr< ::grpc_cb::ClientReaderWriter< $Request$, $Response$>>"
-          " $Method$(::grpc_cb::ClientContext* context) {\n");
-      printer->Indent();
-      printer->Print(*vars,
-                     "return std::unique_ptr< "
-                     "::grpc_cb::ClientReaderWriter< $Request$, $Response$>>("
-                     "$Method$Raw(context));\n");
-      printer->Outdent();
-      printer->Print("}\n");
-      printer->Print(*vars,
-                     "std::unique_ptr<  ::grpc_cb::ClientAsyncReaderWriter< "
-                     "$Request$, $Response$>> "
-                     "Async$Method$(::grpc_cb::ClientContext* context, "
-                     "::grpc_cb::CompletionQueue* cq, void* tag) {\n");
-      printer->Indent();
-      printer->Print(*vars,
-                     "return std::unique_ptr< "
-                     "::grpc_cb::ClientAsyncReaderWriter< $Request$, $Response$>>("
-                     "Async$Method$Raw(context, cq, tag));\n");
-      printer->Outdent();
-      printer->Print("}\n\n");
+          "::grpc_cb::ClientReaderWriter<\n"
+          "  $Request$,\n"
+          "  $Response$>\n"
+          "$Method$();\n\n");
   }
 }
 
@@ -405,7 +343,7 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
       "class Stub : public ::grpc_cb::ServiceStub {\n"
       " public:\n");
   printer->Indent();
-  printer->Print("Stub(const ::grpc_cb::ChannelSptr& channel);\n");
+  printer->Print("explicit Stub(const ::grpc_cb::ChannelSptr& channel);\n");
   printer->Print("\n");
   for (int i = 0; i < service->method_count(); ++i) {
     PrintHeaderClientMethodPublic(printer, service->method(i), vars);
@@ -438,7 +376,7 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
   printer->Print("virtual const std::string& GetMethodName(size_t i) const GRPC_OVERRIDE;\n");
   printer->Print("virtual void CallMethod(\n"
                   "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
-                  "    const ::grpc_cb::ServerReplierImpl& msg_replier) GRPC_OVERRIDE;\n\n");
+                  "    const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;\n\n");
   printer->Outdent();
   printer->Print(" private:\n");
   printer->Indent();
