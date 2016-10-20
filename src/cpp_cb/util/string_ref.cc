@@ -37,6 +37,7 @@
 
 #include <algorithm>
 #include <iostream>
+#include <string>
 
 namespace grpc_cb {
 
