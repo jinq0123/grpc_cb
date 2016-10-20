@@ -702,6 +702,31 @@ void PrintSourceServerAsyncMethod(
   }
 }
 
+static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
+                            const grpc::protobuf::ServiceDescriptor *service,
+                            std::map<grpc::string, grpc::string> *vars) {
+  // CallMethod() print begin.
+  printer->Print("void Service::CallMethod(\n"
+                 "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
+                 "    const ::grpc_cb::CallSptr& call_sptr) {\n"
+                 "  assert(method_index < GetMethodCount());\n"
+                 "  switch (method_index) {\n");
+  for (int i = 0; i < service->method_count(); ++i) {
+    (*vars)["Idx"] = as_string(i);
+    (*vars)["Method"] = service->method(i)->name();
+    (*vars)["Response"] =
+        grpc_cpp_generator::ClassName(service->method(i)->output_type(), true);
+    printer->Print(*vars,
+                    "    case $Idx$:\n"
+                    "      $Method$(request_buffer,\n"
+                    "          XXX_$Method$_Replier(call_sptr));\n"
+                    "      return;\n");
+  }  // for
+  printer->Print("  }  // switch\n"
+                 "  assert(false);\n"
+                 "}\n\n");
+}
+
 void PrintSourceService(grpc::protobuf::io::Printer *printer,
                         const grpc::protobuf::ServiceDescriptor *service,
                         std::map<grpc::string, grpc::string> *vars) {
@@ -750,27 +775,7 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
                   "  return method_names[method_index];\n"
                   "}\n\n");
 
-  // CallMethod() print begin.
-  printer->Print("void Service::CallMethod(\n"
-                 "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
-                 "    const ::grpc_cb::CallSptr& call_sptr) {\n"
-                 "  assert(method_index < GetMethodCount());\n"
-                 "  switch (method_index) {\n");
-  for (int i = 0; i < service->method_count(); ++i) {
-    (*vars)["Idx"] = as_string(i);
-    (*vars)["Method"] = service->method(i)->name();
-    (*vars)["Response"] =
-        grpc_cpp_generator::ClassName(service->method(i)->output_type(), true);
-    printer->Print(*vars,
-                    "    case $Idx$:\n"
-                    "      $Method$(request_buffer,\n"
-                    "          XXX_$Method$_Replier(call_sptr));\n"
-                    "      return;\n");
-  }  // for
-  printer->Print("  }  // switch\n"
-                 "  assert(false);\n"
-                 "}\n\n");
-  // CallMethod() print end.
+  PrintCallMethod(printer, service, vars);
 
   for (int i = 0; i < service->method_count(); ++i) {
     (*vars)["Idx"] = as_string(i);
