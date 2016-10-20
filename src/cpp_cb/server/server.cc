@@ -38,7 +38,8 @@ void Server::RegisterService(Service& service) {
   for (size_t i = 0; i < service.GetMethodCount(); ++i) {
     const std::string& name = service.GetMethodName(i);
     void* registered_method = grpc_server_register_method(
-        c_server_uptr_.get(), name.c_str(), nullptr);  // TODO: host
+        c_server_uptr_.get(), name.c_str(), nullptr/* TODO: host*/,
+        service.GetMethodPayloadHandling(i), 0);
     registered_methods.push_back(registered_method);  // maybe null
   }
 }

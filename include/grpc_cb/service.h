@@ -6,6 +6,8 @@
 
 #include <string>
 
+#include <grpc/grpc.h>  // for grpc_server_register_method_payload_handling
+
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/support/protobuf_fwd.h>  // for ServiceDescriptor
 
@@ -18,6 +20,8 @@ class Service {
  public:
   const std::string& GetFullName() const;
   size_t GetMethodCount() const;
+  grpc_server_register_method_payload_handling GetMethodPayloadHandling(
+    size_t method_index) const;
 
  public:
   virtual const std::string& GetMethodName(size_t method_index) const = 0;
