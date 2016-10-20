@@ -54,6 +54,7 @@ class Stub : public ::grpc_cb::ServiceStub {
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>
   RouteChat();
+
 };  // class Stub
 
 std::unique_ptr<Stub> NewStub(const ::grpc_cb::ChannelSptr& channel);
