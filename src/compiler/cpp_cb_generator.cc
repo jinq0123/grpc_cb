@@ -400,10 +400,12 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("#include <google/protobuf/descriptor.h>\n");
     printer.Print("#include <google/protobuf/stubs/once.h>\n");
     printer.Print("\n");
-    printer.Print("#include <grpc_cb/channel.h>\n");
-    printer.Print("#include <grpc_cb/completion_queue.h>\n");
-    printer.Print("#include <grpc_cb/impl/call.h>\n");
-    printer.Print("#include <grpc_cb/server_async_replier.h>  // for ServerReplier<>\n");
+    printer.Print("#include <grpc_cb/impl/call.h>                            // for Call\n");
+    printer.Print("#include <grpc_cb/impl/call_operations.h>                 // for CallOperations\n");
+    printer.Print("#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag\n");
+    printer.Print("#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag\n");
+    printer.Print("#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue\n");
+    printer.Print("#include <grpc_cb/impl/proto_utils.h>  // for DeserializeProto()\n");
     printer.Print("\n");
 
     if (!file->package().empty()) {
