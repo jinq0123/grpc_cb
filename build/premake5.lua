@@ -20,12 +20,28 @@ workspace "grpc_cb"
 		grpc_root .. "/include",
 		protobuf_root .. "/src",
 	}
-	
+	libdirs {
+		grpc_root .. "/vsprojects/%{cfg.buildcfg}",
+		protobuf_root .. "/cmake/%{cfg.buildcfg}",
+	}
+	links {
+		"grpc_cb",
+		"grpc",
+		"gpr",
+		"zlib",
+	}
+
 	filter "configurations:Debug"
 		flags { "Symbols" }
+		links {
+			"libprotobufd",
+		}
 	filter "configurations:Release"
 		defines { "NDEBUG" }
 		optimize "On"
+		links {
+			"libprotobuf",
+		}
 	filter {}
 
 	if os.is("windows") then
@@ -49,9 +65,6 @@ project "greeter_cb_client"
 	removefiles {
 		"../examples/cpp_cb/helloworld/greeter_cb_server.cc",
 	}
-	links {
-		"grpc_cb",
-	}
 project "greeter_cb_server"
 	kind "ConsoleApp"
 	files {
@@ -59,9 +72,6 @@ project "greeter_cb_server"
 	}
 	removefiles {
 		"../examples/cpp_cb/helloworld/greeter_cb_client.cc",
-	}
-	links {
-		"grpc_cb",
 	}
 project "route_guide_cb_client"
 	kind "ConsoleApp"
@@ -71,9 +81,6 @@ project "route_guide_cb_client"
 	removefiles {
 		"../examples/cpp_cb/route_guide/route_guide_cb_server.cc",
 	}
-	links {
-		"grpc_cb",
-	}
 project "route_guide_cb_server"
 	kind "ConsoleApp"
 	files {
@@ -81,9 +88,6 @@ project "route_guide_cb_server"
 	}
 	removefiles {
 		"../examples/cpp_cb/route_guide/route_guide_cb_client.cc",
-	}
-	links {
-		"grpc_cb",
 	}
 
 project "grpc_cpp_cb_plugin"
@@ -96,20 +100,25 @@ project "grpc_cpp_cb_plugin"
 		grpc_root,
 	}
 	libdirs {
-		grpc_root .. "/vsprojects/%{cfg.buildcfg}",
-		protobuf_root .. "/cmake/%{cfg.buildcfg}",
+		grpc_root .. "/vsprojects/%{cfg.buildcfg}",  -- DEL
+		protobuf_root .. "/cmake/%{cfg.buildcfg}",  -- DEL
 	}
 	links {
 		"grpc_plugin_support",
 	}
+	removelinks {
+		"grpc_cb",
+		"grpc",
+		"gpr",
+		"zlib",
+	}
+
 	filter "configurations:Debug"
 		links {
 			"libprotocd",
-			"libprotobufd",
 		}
 	filter "configurations:Release"
 		links {
 			"libprotoc",
-			"libprotobuf",
 		}
 	filter {}
