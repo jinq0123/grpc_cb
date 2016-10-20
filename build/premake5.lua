@@ -12,6 +12,7 @@ workspace "grpc_cb"
 	language "C++"
 	flags {
 		"C++11",
+		"StaticRuntime",
 	}
 	includedirs {
 		"../include",
@@ -87,4 +88,21 @@ project "grpc_cpp_cb_plugin"
 		grpc_root,
 		grpc_root .. "/third_party/protobuf/src",
 	}
-
+	libdirs {
+		grpc_root .. "/vsprojects/%{cfg.buildcfg}",
+		grpc_root .. "/third_party/protobuf/cmake/%{cfg.buildcfg}",
+	}
+	links {
+		"grpc_plugin_support",
+	}
+	filter "configurations:Debug"
+		links {
+			"libprotocd",
+			"libprotobufd",
+		}
+	filter "configurations:Release"
+		links {
+			"libprotoc",
+			"libprotobuf",
+		}
+	filter {}
