@@ -547,25 +547,10 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
-                   "::grpc_cb::ClientWriter< $Request$>* "
-                   "Stub::$Method$Raw("
-                   "::grpc_cb::ClientContext* context, $Response$* response) {\n");
-    printer->Print(*vars,
-                   "  return new ::grpc_cb::ClientWriter< $Request$>("
-                   "channel_.get(), "
-                   "rpcmethod_$Method$_, "
-                   "context, response);\n"
-                   "}\n\n");
-    printer->Print(*vars,
-                   "::grpc_cb::ClientAsyncWriter< $Request$>* "
-                   "Stub::Async$Method$Raw("
-                   "::grpc_cb::ClientContext* context, $Response$* response, "
-                   "::grpc_cb::CompletionQueue* cq, void* tag) {\n");
-    printer->Print(*vars,
-                   "  return new ::grpc_cb::ClientAsyncWriter< $Request$>("
-                   "channel_.get(), cq, "
-                   "rpcmethod_$Method$_, "
-                   "context, response, tag);\n"
+                   "::grpc_cb::ClientWriter<$Request$>\n"
+                   "Stub::RecordRoute() {\n"
+                   "  return ::grpc_cb::ClientWriter<$Request$>(\n"
+                   "      GetChannelSptr(), method_names[$Idx$], GetCqSptr());\n"
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
@@ -575,30 +560,17 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCqSptr());\n"
                    "}\n\n");
   } else if (BidiStreaming(method)) {
-    printer->Print(
-        *vars,
-        "::grpc_cb::ClientReaderWriter< $Request$, $Response$>* "
-        "Stub::$Method$Raw(::grpc_cb::ClientContext* context) {\n");
     printer->Print(*vars,
-                   "  return new ::grpc_cb::ClientReaderWriter< "
-                   "$Request$, $Response$>("
-                   "channel_.get(), "
-                   "rpcmethod_$Method$_, "
-                   "context);\n"
+                   "::grpc_cb::ClientReaderWriter<\n"
+                   "  $Request$,\n"
+                   "  $Response$>\n"
+                   "Stub::$Method$() {\n"
+                   "  return ::grpc_cb::ClientReaderWriter<\n"
+                   "    $Request$,\n"
+                   "    $Response$>(\n"
+                   "        GetChannelSptr(), method_names[$Idx$], GetCqSptr());\n"
                    "}\n\n");
-    printer->Print(
-        *vars,
-        "::grpc_cb::ClientAsyncReaderWriter< $Request$, $Response$>* "
-        "Stub::Async$Method$Raw(::grpc_cb::ClientContext* context, "
-        "::grpc_cb::CompletionQueue* cq, void* tag) {\n");
-    printer->Print(*vars,
-                   "  return new "
-                   "::grpc_cb::ClientAsyncReaderWriter< $Request$, $Response$>("
-                   "channel_.get(), cq, "
-                   "rpcmethod_$Method$_, "
-                   "context, tag);\n"
-                   "}\n\n");
-  }
+  }  // if
 }
 
 void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
@@ -768,18 +740,11 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
   }
 
   (*vars)["MethodCount"] = as_string(service->method_count());
-  printer->Print(*vars,
-                 "// AsyncService::AsyncService() : "
-                 "::grpc_cb::AsynchronousService("
-                 "method_names, $MethodCount$) "
-                 "{}\n\n");
 
   printer->Print(*vars,
-                 "Service::Service() {\n"
-                 "}\n\n");
-  printer->Print(*vars,
-                 "Service::~Service() {\n"
-                 "}\n\n");
+                 "Service::Service() {}\n\n"
+                 "Service::~Service() {}\n\n");
+
   printer->Print("const std::string& Service::GetMethodName(size_t method_index) const {\n"
                   "  assert(method_index < GetMethodCount());\n"
                   "  return method_names[method_index];\n"
@@ -799,7 +764,7 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
     printer->Print(*vars,
                     "    case $Idx$:\n"
                     "      $Method$(request_buffer,\n"
-                    "          ::grpc_cb::ServerReplier<$Response$>(call_sptr));\n"
+                    "          XXX_$Method$_Replier(call_sptr));\n"
                     "      return;\n");
   }  // for
   printer->Print("  }  // switch\n"
