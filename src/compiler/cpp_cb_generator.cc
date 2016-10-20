@@ -417,6 +417,7 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
 
       for (auto part = parts.begin(); part != parts.end(); part++) {
         vars["part"] = *part;
+        printer.Print(vars, "// package $part$\n");
         printer.Print(vars, "namespace $part$ {\n");
       }
     }
@@ -455,7 +456,8 @@ grpc::string GetSourceDescriptors(const grpc::protobuf::FileDescriptor *file,
     for (int i = 0; i < file->service_count(); i++) {
       vars["Service"] = file->service(i)->name();
       printer.Print(vars,
-        "const ::google::protobuf::ServiceDescriptor* service_descriptor_$Service$ = nullptr;\n");
+        "const ::google::protobuf::ServiceDescriptor*\n"
+        "service_descriptor_$Service$ = nullptr;\n");
     }
     printer.Print("\n");
 
@@ -521,9 +523,9 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "  ::grpc_cb::CompletionQueue cq;\n"
         "  ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(method_names[$Idx$], cq));\n"
         "  ::grpc_cb::ClientCallCqTag tag(call_sptr);\n"
-        "  bool ok = tag.Start(request);\n"
-        "  if (!ok) return ::grpc_cb::Status::InternalError(\"Failed to request.\");\n"
-        "  cq.Pluck(&tag);  // Todo: Make sure tag was not queued if StartBatch() failed.\n"
+        "  if (!tag.Start(request))\n"
+        "    return ::grpc_cb::Status::InternalError(\"Failed to request.\");\n"
+        "  cq.Pluck(&tag);\n"
         "  return tag.GetResponse(*response);\n"
         "}\n"
         "\n");
@@ -537,10 +539,10 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "      GetChannel().MakeSharedCall(method_names[$Idx$], GetCq()));\n"
         "  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<$Response$>;\n"
         "  CqTag* tag = new CqTag(call_sptr, cb, ecb);\n"
-        "  if (!tag->Start(request)) {\n"
-        "    delete tag;\n"
-        "    ecb(::grpc_cb::Status::InternalError(\"Failed to async request.\"));\n"
-        "  }\n"
+        "  if (tag->Start(request)) return;\n"
+        "  delete tag;\n"
+        "  // Todo: Extract CallInternalErrorCb(\"Error to do...\");\n"
+        "  ecb(::grpc_cb::Status::InternalError(\"Failed to async request.\"));\n"
         "}\n"
         "\n");
   } else if (ClientOnlyStreaming(method)) {
@@ -566,27 +568,11 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "context, response, tag);\n"
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
-    printer->Print(
-        *vars,
-        "::grpc_cb::ClientReader< $Response$>* "
-        "Stub::$Method$Raw("
-        "::grpc_cb::ClientContext* context, const $Request$& request) {\n");
     printer->Print(*vars,
-                   "  return new ::grpc_cb::ClientReader< $Response$>("
-                   "channel_.get(), "
-                   "rpcmethod_$Method$_, "
-                   "context, request);\n"
-                   "}\n\n");
-    printer->Print(*vars,
-                   "::grpc_cb::ClientAsyncReader< $Response$>* "
-                   "Stub::Async$Method$Raw("
-                   "::grpc_cb::ClientContext* context, const $Request$& request, "
-                   "::grpc_cb::CompletionQueue* cq, void* tag) {\n");
-    printer->Print(*vars,
-                   "  return new ::grpc_cb::ClientAsyncReader< $Response$>("
-                   "channel_.get(), cq, "
-                   "rpcmethod_$Method$_, "
-                   "context, request, tag);\n"
+                   "::grpc_cb::ClientReader<$Response$>\n"
+                   "Stub::$Method$(const $Request$& request) {\n"
+                   "  return ::grpc_cb::ClientReader<$Response$>(\n"
+                   "      GetChannelSptr(), method_names[$Idx$], request, GetCqSptr());\n"
                    "}\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(
@@ -749,7 +735,7 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
                         std::map<grpc::string, grpc::string> *vars) {
   (*vars)["Service"] = service->name();
   printer->Print(*vars,
-                 "namespace $Service$ {\n"
+                 "namespace $Service$ {  // service $Service$\n"
                  "\n");
   printer->Print(*vars,
                  "static const std::string method_names[] = {\n");
@@ -767,37 +753,14 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
                  "}\n\n");
 
   printer->Print(*vars,
-                 "std::unique_ptr< Stub> NewStub("
+                 "std::unique_ptr<Stub> NewStub("
                  "const ::grpc_cb::ChannelSptr& channel) {\n"
-                 "  std::unique_ptr< Stub> stub(new Stub(channel));\n"
+                 "  std::unique_ptr<Stub> stub(new Stub(channel));\n"
                  "  return stub;\n"
                  "}\n\n");
   printer->Print(*vars,
-                 "Stub::Stub(const ::grpc_cb::ChannelSptr& channel)\n");
-  printer->Indent();
-  printer->Print(": ::grpc_cb::ServiceStub(channel)");
-  for (int i = 0; i < service->method_count(); ++i) {
-    const grpc::protobuf::MethodDescriptor *method = service->method(i);
-    (*vars)["Method"] = method->name();
-    (*vars)["Idx"] = as_string(i);
-    if (NoStreaming(method)) {
-      (*vars)["StreamingType"] = "NORMAL_RPC";
-    } else if (ClientOnlyStreaming(method)) {
-      (*vars)["StreamingType"] = "CLIENT_STREAMING";
-    } else if (ServerOnlyStreaming(method)) {
-      (*vars)["StreamingType"] = "SERVER_STREAMING";
-    } else {
-      (*vars)["StreamingType"] = "BIDI_STREAMING";
-    }
-    printer->Print(*vars,
-                   "\n  // , rpcmethod_$Method$_("
-                   "method_names[$Idx$], "
-                   "::grpc_cb::RpcMethod::$StreamingType$, "
-                   "channel"
-                   ")\n");
-  }
-  printer->Print("{}\n\n");
-  printer->Outdent();
+                 "Stub::Stub(const ::grpc_cb::ChannelSptr& channel)\n"
+                 "    : ::grpc_cb::ServiceStub(channel) {}\n\n");
 
   for (int i = 0; i < service->method_count(); ++i) {
     (*vars)["Idx"] = as_string(i);
