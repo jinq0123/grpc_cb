@@ -16,7 +16,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/route_guide_cb_client
   OBJDIR = obj/Debug/route_guide_cb_client
   DEFINES +=
-  INCLUDES += -I../include -I../third_party/grpc/include
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g
@@ -43,7 +43,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/route_guide_cb_client
   OBJDIR = obj/Release/route_guide_cb_client
   DEFINES += -DNDEBUG
-  INCLUDES += -I../include -I../third_party/grpc/include
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2

@@ -6,6 +6,7 @@ Usage examples:
 ]]
 
 grpc_root = "../third_party/grpc"
+protobuf_root = grpc_root .. "/third_party/protobuf"
 
 workspace "grpc_cb"
 	configurations { "Debug", "Release" }
@@ -16,7 +17,8 @@ workspace "grpc_cb"
 	}
 	includedirs {
 		"../include",
-		grpc_root .. "/include"
+		grpc_root .. "/include",
+		protobuf_root .. "/src",
 	}
 	
 	filter "configurations:Debug"
@@ -25,6 +27,12 @@ workspace "grpc_cb"
 		defines { "NDEBUG" }
 		optimize "On"
 	filter {}
+
+	if os.is("windows") then
+		defines {
+			"_WIN32_WINNT=0x0600"  -- i.e. Windows 7 target
+		}
+	end
 
 project "grpc_cb"
 	kind "StaticLib"
@@ -86,11 +94,10 @@ project "grpc_cpp_cb_plugin"
 	includedirs {
 		"..",
 		grpc_root,
-		grpc_root .. "/third_party/protobuf/src",
 	}
 	libdirs {
 		grpc_root .. "/vsprojects/%{cfg.buildcfg}",
-		grpc_root .. "/third_party/protobuf/cmake/%{cfg.buildcfg}",
+		protobuf_root .. "/cmake/%{cfg.buildcfg}",
 	}
 	links {
 		"grpc_plugin_support",
