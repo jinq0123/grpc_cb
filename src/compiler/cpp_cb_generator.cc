@@ -196,57 +196,6 @@ void PrintHeaderClientMethodPublic(
   }
 }
 
-void PrintHeaderClientMethodPrivate(
-    grpc::protobuf::io::Printer *printer,
-    const grpc::protobuf::MethodDescriptor *method,
-    std::map<grpc::string, grpc::string> *vars) {
-  (*vars)["Method"] = method->name();
-  (*vars)["Request"] =
-      grpc_cpp_generator::ClassName(method->input_type(), true);
-  (*vars)["Response"] =
-      grpc_cpp_generator::ClassName(method->output_type(), true);
-
-  if (NoStreaming(method)) {
-  } else if (ClientOnlyStreaming(method)) {
-      printer->Print(*vars,
-                     "::grpc_cb::ClientWriter< $Request$>* $Method$Raw("
-                     "::grpc_cb::ClientContext* context, $Response$* response) "
-                     "GRPC_OVERRIDE;\n");
-      printer->Print(
-          *vars,
-          "::grpc_cb::ClientAsyncWriter< $Request$>* Async$Method$Raw("
-          "::grpc_cb::ClientContext* context, $Response$* response, "
-          "::grpc_cb::CompletionQueue* cq, void* tag) GRPC_OVERRIDE;\n");
-  } else if (ServerOnlyStreaming(method)) {
-      printer->Print(*vars,
-                     "::grpc_cb::ClientReader< $Response$>* $Method$Raw("
-                     "::grpc_cb::ClientContext* context, const $Request$& request)"
-                     " GRPC_OVERRIDE;\n");
-      printer->Print(
-          *vars,
-          "::grpc_cb::ClientAsyncReader< $Response$>* Async$Method$Raw("
-          "::grpc_cb::ClientContext* context, const $Request$& request, "
-          "::grpc_cb::CompletionQueue* cq, void* tag) GRPC_OVERRIDE;\n");
-  } else if (BidiStreaming(method)) {
-      printer->Print(
-          *vars,
-          "::grpc_cb::ClientReaderWriter< $Request$, $Response$>* "
-          "$Method$Raw(::grpc_cb::ClientContext* context) GRPC_OVERRIDE;\n");
-      printer->Print(
-          *vars,
-          "::grpc_cb::ClientAsyncReaderWriter< $Request$, $Response$>* "
-          "Async$Method$Raw(::grpc_cb::ClientContext* context, "
-          "::grpc_cb::CompletionQueue* cq, void* tag) GRPC_OVERRIDE;\n");
-  }
-}
-
-void PrintHeaderClientMethodData(grpc::protobuf::io::Printer *printer,
-                                 const grpc::protobuf::MethodDescriptor *method,
-                                 std::map<grpc::string, grpc::string> *vars) {
-  (*vars)["Method"] = method->name();
-  printer->Print(*vars, "// const ::grpc_cb::RpcMethod rpcmethod_$Method$_;\n");
-}
-
 void PrintHeaderServerMethodSync(grpc::protobuf::io::Printer *printer,
                                  const grpc::protobuf::MethodDescriptor *method,
                                  std::map<grpc::string, grpc::string> *vars) {
@@ -349,16 +298,7 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
     PrintHeaderClientMethodPublic(printer, service->method(i), vars);
   }
   printer->Outdent();
-  printer->Print(" private:\n");
-  printer->Indent();
-  for (int i = 0; i < service->method_count(); ++i) {
-    PrintHeaderClientMethodPrivate(printer, service->method(i), vars);
-  }
-  for (int i = 0; i < service->method_count(); ++i) {
-    PrintHeaderClientMethodData(printer, service->method(i), vars);
-  }
-  printer->Outdent();
-  printer->Print("};\n");
+  printer->Print("};  // class Stub\n");
 
   printer->Print("\n");
   printer->Print(
