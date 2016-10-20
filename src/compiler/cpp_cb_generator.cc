@@ -705,7 +705,6 @@ void PrintSourceServerAsyncMethod(
 static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
                             const grpc::protobuf::ServiceDescriptor *service,
                             std::map<grpc::string, grpc::string> *vars) {
-  // CallMethod() print begin.
   printer->Print("void Service::CallMethod(\n"
                  "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
                  "    const ::grpc_cb::CallSptr& call_sptr) {\n"
@@ -713,14 +712,29 @@ static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
                  "  switch (method_index) {\n");
   for (int i = 0; i < service->method_count(); ++i) {
     (*vars)["Idx"] = as_string(i);
-    (*vars)["Method"] = service->method(i)->name();
+    const grpc::protobuf::MethodDescriptor *method = service->method(i);
+    (*vars)["Method"] = method->name();
     (*vars)["Response"] =
-        grpc_cpp_generator::ClassName(service->method(i)->output_type(), true);
+        grpc_cpp_generator::ClassName(method->output_type(), true);
+
     printer->Print(*vars,
-                    "    case $Idx$:\n"
-                    "      $Method$(request_buffer,\n"
-                    "          XXX_$Method$_Replier(call_sptr));\n"
-                    "      return;\n");
+                 "    case $Idx$:\n");
+
+    if (NoStreaming(method)) {
+      printer->Print(*vars,
+                 "      $Method$(request_buffer,\n"
+                 "          $Method$_Replier(call_sptr));\n");
+    } else if (ServerOnlyStreaming(method)) {
+      printer->Print(*vars,
+                 "      $Method$(request_buffer,\n"
+                 "          $Method$_Writer(call_sptr));\n");
+    } else {
+      printer->Print(*vars,
+                 "      $Method$(call_sptr);\n");
+    }  // if
+
+    printer->Print(
+                 "      return;\n");
   }  // for
   printer->Print("  }  // switch\n"
                  "  assert(false);\n"
