@@ -196,7 +196,7 @@ void PrintHeaderClientMethodPublic(
   }
 }
 
-void PrintHeaderServerMethodSync(grpc::protobuf::io::Printer *printer,
+void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
                                  const grpc::protobuf::MethodDescriptor *method,
                                  std::map<grpc::string, grpc::string> *vars) {
   (*vars)["Method"] = method->name();
@@ -206,12 +206,15 @@ void PrintHeaderServerMethodSync(grpc::protobuf::io::Printer *printer,
       grpc_cpp_generator::ClassName(method->output_type(), true);
   if (NoStreaming(method)) {
     printer->Print(*vars,
+        "using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
+        "    $Response$>;\n"
         "void $Method$(\n"
         "    grpc_byte_buffer& request_buffer,\n"
-        "    const ::grpc_cb::ServerReplier<$Response$>& replier);\n"
+        "    const $Method$_Replier& replier);\n"
+        "// Todo: virtual void $Method$(const std::string& request_buffer, replier);\n"
         "virtual void $Method$(\n"
         "    const $Request$& request,\n"
-        "    ::grpc_cb::ServerReplier<$Response$> replier);\n\n");
+        "    $Method$_Replier replier);\n\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
         "virtual ::grpc_cb::Status $Method$(\n"
@@ -229,50 +232,6 @@ void PrintHeaderServerMethodSync(grpc::protobuf::io::Printer *printer,
         "virtual ::grpc_cb::Status $Method$(\n"
         "    ::grpc_cb::ServerContext* context,\n"
         "    ::grpc_cb::ServerReaderWriter< $Response$, $Request$>* reader_writer);\n\n");
-  }
-}
-
-void PrintHeaderServerMethodAsync(
-    grpc::protobuf::io::Printer *printer,
-    const grpc::protobuf::MethodDescriptor *method,
-    std::map<grpc::string, grpc::string> *vars) {
-  (*vars)["Method"] = method->name();
-  (*vars)["Request"] =
-      grpc_cpp_generator::ClassName(method->input_type(), true);
-  (*vars)["Response"] =
-      grpc_cpp_generator::ClassName(method->output_type(), true);
-  if (NoStreaming(method)) {
-    printer->Print(
-        *vars,
-        "void Request$Method$("
-        "::grpc_cb::ServerContext* context, $Request$* request, "
-        "::grpc_cb::ServerAsyncResponseWriter< $Response$>* response, "
-        "::grpc_cb::CompletionQueue* new_call_cq, "
-        "::grpc_cb::ServerCompletionQueue* notification_cq, void *tag);\n");
-  } else if (ClientOnlyStreaming(method)) {
-    printer->Print(
-        *vars,
-        "void Request$Method$("
-        "::grpc_cb::ServerContext* context, "
-        "::grpc_cb::ServerAsyncReader< $Response$, $Request$>* reader, "
-        "::grpc_cb::CompletionQueue* new_call_cq, "
-        "::grpc_cb::ServerCompletionQueue* notification_cq, void *tag);\n");
-  } else if (ServerOnlyStreaming(method)) {
-    printer->Print(
-        *vars,
-        "void Request$Method$("
-        "::grpc_cb::ServerContext* context, $Request$* request, "
-        "::grpc_cb::ServerAsyncWriter< $Response$>* writer, "
-        "::grpc_cb::CompletionQueue* new_call_cq, "
-        "::grpc_cb::ServerCompletionQueue* notification_cq, void *tag);\n");
-  } else if (BidiStreaming(method)) {
-    printer->Print(
-        *vars,
-        "void Request$Method$("
-        "::grpc_cb::ServerContext* context, "
-        "::grpc_cb::ServerAsyncReaderWriter< $Response$, $Request$>* reader_writer, "
-        "::grpc_cb::CompletionQueue* new_call_cq, "
-        "::grpc_cb::ServerCompletionQueue* notification_cq, void *tag);\n");
   }
 }
 
@@ -318,10 +277,10 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
                   "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
                   "    const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;\n\n");
   printer->Outdent();
-  printer->Print(" private:\n");
+  printer->Print(" protected:\n");
   printer->Indent();
   for (int i = 0; i < service->method_count(); ++i) {
-    PrintHeaderServerMethodSync(printer, service->method(i), vars);
+    PrintHeaderServiceMethod(printer, service->method(i), vars);
   }
   printer->Outdent();
   printer->Print(" private:\n");
