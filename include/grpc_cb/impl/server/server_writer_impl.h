@@ -54,13 +54,14 @@ class ServerWriterImpl GRPC_FINAL {
   void TryToWriteNext();  // for ServerWriterWriteCqTag::DoComplete()
 
  private:
-  void SendStatus() const;  // to close
-  void WriteNextMessage();
+  void SendStatus();  // to close
+  void SendMsg(const ::google::protobuf::Message& msg);
 
  private:
   CallSptr call_sptr_;
   bool closed_ = false;
-  bool send_init_md = true;  // to send initial metadata once
+  bool send_init_md_ = true;  // to send initial metadata once
+  bool is_sending_ = false;  // grpc must send one by one
 
   size_t high_queue_size_ = std::numeric_limits<size_t>::max();
   MessageQueue queue_;
