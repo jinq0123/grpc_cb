@@ -42,6 +42,6 @@ bool ClientReaderReadCqTag::Start() {
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_CLIENT_READER_READ_CQTAG_H

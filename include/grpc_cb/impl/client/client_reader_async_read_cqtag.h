@@ -52,6 +52,6 @@ void ClientReaderAsyncReadCqTag<Response>::DoComplete(bool success) {
   CallOnEnd(status);
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_CLIENT_READER_ASYNC_READ_CQTAG_H

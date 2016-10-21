@@ -37,6 +37,6 @@ bool ClientReaderInitCqTag::Start(const ::google::protobuf::Message& request) {
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_CLIENT_READER_INIT_CQTAG_H

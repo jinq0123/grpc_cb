@@ -87,6 +87,6 @@ void ServerReaderCqTag<Request, Response>::DoComplete(bool success) {
     "Failed to read client stream."));
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_IMPL_SERVER_SERVER_READER_CQTAG_H

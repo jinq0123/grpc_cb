@@ -52,6 +52,6 @@ void ClientWriterFinishCqTag::DoComplete(bool success) {
   // Todo: Add async client writer example.
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_CLIENT_WRITER_FINISH_CQTAG_H

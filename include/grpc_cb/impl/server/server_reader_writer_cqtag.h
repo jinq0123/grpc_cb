@@ -87,6 +87,6 @@ void ServerReaderWriterCqTag<Request, Response>::DoComplete(bool success) {
   data_sptr_->writer.AsyncClose(Status::InternalError("Failed to read client stream."));
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_IMPL_SERVER_SERVER_READER_WRITER_CQTAG_H

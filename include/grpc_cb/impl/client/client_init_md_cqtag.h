@@ -34,6 +34,6 @@ bool ClientInitMdCqTag::Start() {
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_CLIENT_INIT_MD_CQTAG_H

@@ -25,6 +25,6 @@ bool ClientSendCloseCqTag::Start() {
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_CLIENT_SEND_CLOSE_CQTAG_H
