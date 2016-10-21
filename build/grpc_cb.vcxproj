@@ -118,6 +118,7 @@
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_tag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_uptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\grpc_library.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\message_queue.h" />
     <ClInclude Include="..\include\grpc_cb\impl\metadata_vector.h" />
     <ClInclude Include="..\include\grpc_cb\impl\proto_utils.h" />
     <ClInclude Include="..\include\grpc_cb\impl\server\server_reader_cqtag.h" />

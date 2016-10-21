@@ -12,29 +12,45 @@ namespace grpc_cb {
 template <class Response>
 class ServerWriter GRPC_FINAL {
  public:
-  inline ServerWriter(const CallSptr& call_sptr);
+  explicit ServerWriter(const CallSptr& call_sptr)
+      : impl_sptr_(new ServerWriterImpl(call_sptr)) {
+    assert(call_sptr);
+  }
 
  public:
-  inline bool Write(const Response& response) const;
-  // Close() is optional. Dtr() will auto Close().
-  // Redundent Close() will be ignored.
-  inline void Close(const Status& status) const { impl_sptr_->Close(status); }
-  inline bool IsClosed() const { return impl_sptr_->IsClosed(); }
+  bool Write(const Response& response) const {
+    return impl_sptr_->Write(response);
+  }
+  bool BlockingWrite(const Response& response) const {
+    return impl_sptr_->BlockingWrite(response);
+  }
+  void AsyncWrite(const Response& response) const {
+    impl_sptr_->AsyncWrite(response);
+  }
+
+  size_t GetQueueSize() const {
+    return impl_sptr_->GetQueueSize();
+  }
+  size_t GetHighQueueSize() const {
+    return impl_sptr_->GetHighQueueSize();
+  }
+  void SetHighQueueSize(size_t high_queue_size) {
+    impl_sptr_->SetHighQueueSize(high_queue_size);
+  }
+
+  // Close is optional. Dtr() will auto BlockingClose().
+  // Redundant close will be ignored.
+  void BlockingClose(const Status& status) const {
+    impl_sptr_->BlockingClose(status);
+  }
+  void AsyncClose(const Status& status) const {
+    impl_sptr_->AsyncClose(status);
+  }
+  bool IsClosed() const { return impl_sptr_->IsClosed(); }
 
  private:
   std::shared_ptr<ServerWriterImpl> impl_sptr_;
 };  // class ServerWriter<>
-
-template <class Response>
-ServerWriter<Response>::ServerWriter(const CallSptr& call_sptr)
-    : impl_sptr_(new ServerWriterImpl(call_sptr)) {
-  assert(call_sptr);
-}
-
-template <class Response>
-bool ServerWriter<Response>::Write(const Response& response) const {
-  return impl_sptr_->Write(response);
-}
 
 }  // namespace grpc_cb
 

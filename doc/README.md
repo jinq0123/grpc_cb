@@ -24,6 +24,17 @@ CallOperations keeps references to members of CompletionQueueTag, and is
 used in Call::StartBatch().
 Async rpc callback is got called in DoComplete().
 
+## Writer's internal queue.
+ClientWriter, ClientReaderWriter, ServerWriter will queue the messages for writing,
+because grpc can only send message one by one.
+AsyncWrite() will queue the message and return immediately.
+BlockingWrite() will block until all messages sent.
+Write() normaly will call AsnycWrite(), but will call BlockingWrite()
+ if the queue size reaches to a "high queue size".
+SetHighQueueSize() to change it from the default one. 
+
+Todo: set default high queue size
+
 #Other
  
 To generate grpc_cb files:

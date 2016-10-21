@@ -74,7 +74,7 @@ void ServerReaderWriterCqTag<Request, Response>::DoComplete(bool success) {
   Status status = cod_recv_msg_.GetResultMsg(
       request, call_sptr->GetMaxMsgSize());
   if (!status.ok()) {
-      data_sptr_->writer.Close(status);
+      data_sptr_->writer.AsyncClose(status);
       return;
   }
 
@@ -84,7 +84,7 @@ void ServerReaderWriterCqTag<Request, Response>::DoComplete(bool success) {
   if (tag->Start()) return;
 
   delete tag;
-  data_sptr_->writer.Close(Status::InternalError("Failed to read client stream."));
+  data_sptr_->writer.AsyncClose(Status::InternalError("Failed to read client stream."));
 }
 
 };  // namespace grpc_cb

@@ -4,7 +4,11 @@
 #ifndef GRPC_CB_SERVER_SERVER_WRITER_IMPL_H
 #define GRPC_CB_SERVER_SERVER_WRITER_IMPL_H
 
+#include <limits>  // for numeric_limits<>
+#include <mutex>
+
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
+#include <grpc_cb/impl/message_queue.h>  // for MessageQueue
 #include <grpc_cb/support/config.h>  // for GRPC_FINAL
 #include <grpc_cb/support/protobuf_fwd.h>  // for Message
 
@@ -12,22 +16,58 @@ namespace grpc_cb {
 
 class Status;
 
+// Thread-safe.
 class ServerWriterImpl GRPC_FINAL {
  public:
   explicit ServerWriterImpl(const CallSptr& call_sptr);
-  ~ServerWriterImpl();
+  ~ServerWriterImpl();  // blocking
 
  public:
+  // Write() will block if the high queue size reached.
   bool Write(const ::google::protobuf::Message& response);
-  // Close() is optional. Dtr() will auto Close().
-  // Redundent Close() will be ignored.
-  void Close(const Status& status);
-  bool IsClosed() const { return closed_; }
+  bool BlockingWrite(const ::google::protobuf::Message& response);
+  void AsyncWrite(const ::google::protobuf::Message& response);
+
+  size_t GetQueueSize() const {
+    Guard g(mtx_);
+    return queue_.size();
+  }
+  size_t GetHighQueueSize() const {
+    Guard g(mtx_);
+    return high_queue_size_;
+  }
+  void SetHighQueueSize(size_t high_queue_size) {
+    Guard g(mtx_);
+    high_queue_size_ = high_queue_size;
+  }
+
+  // Close() is optional. Dtr() will auto BlockingClose().
+  // Redundant Close() will be ignored.
+  void BlockingClose(const Status& status);
+  void AsyncClose(const Status& status);
+  bool IsClosed() const {
+    Guard g(mtx_);
+    return closed_;
+  }
+
+ public:
+  void TryToWriteNext();  // for ServerWriterWriteCqTag::DoComplete()
+
+ private:
+  void SendStatus() const;  // to close
+  void WriteNextMessage();
 
  private:
   CallSptr call_sptr_;
   bool closed_ = false;
   bool send_init_md = true;  // to send initial metadata once
+
+  size_t high_queue_size_ = std::numeric_limits<size_t>::max();
+  MessageQueue queue_;
+  std::unique_ptr<Status> close_status_sptr_;
+
+  mutable std::mutex mtx_;
+  using Guard = std::lock_guard<std::mutex>;
 };  // class ServerWriterImpl
 
 }  // namespace grpc_cb

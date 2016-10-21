@@ -181,14 +181,14 @@ void Service::ListFeatures(grpc_byte_buffer& request_buffer,
     ListFeatures(request, writer);
     return;
   }
-  writer.Close(status);
+  writer.AsyncClose(status);
 }
 
 void Service::ListFeatures(
     const ::routeguide::Rectangle& request,
     const ListFeatures_Writer& writer) {
   (void)request;
-  writer.Close(::grpc_cb::Status::UNIMPLEMENTED);
+  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
 }
 
 void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
@@ -255,7 +255,7 @@ void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
     return;
   }
   delete tag;
-  writer.Close(::grpc_cb::Status::InternalError(
+  writer.AsyncClose(::grpc_cb::Status::InternalError(
       "Failed to init server stream."));
 }
 
@@ -267,7 +267,7 @@ void Service::RouteChat_OnStart(
 void Service::RouteChat_OnMsg(
     const ::routeguide::RouteNote& msg,
     const RouteChat_Writer& writer) {
-  writer.Close(::grpc_cb::Status::UNIMPLEMENTED);
+  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
 }
 
 void Service::RouteChat_OnEnd(
