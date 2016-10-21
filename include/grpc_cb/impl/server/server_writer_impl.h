@@ -5,6 +5,7 @@
 #define GRPC_CB_SERVER_SERVER_WRITER_IMPL_H
 
 #include <limits>  // for numeric_limits<>
+#include <memory>  // for enable_shared_from_this<>
 #include <mutex>
 
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
@@ -17,7 +18,8 @@ namespace grpc_cb {
 class Status;
 
 // Thread-safe.
-class ServerWriterImpl GRPC_FINAL {
+class ServerWriterImpl GRPC_FINAL
+    : public std::enable_shared_from_this<ServerWriterImpl> {
  public:
   explicit ServerWriterImpl(const CallSptr& call_sptr);
   ~ServerWriterImpl();  // blocking

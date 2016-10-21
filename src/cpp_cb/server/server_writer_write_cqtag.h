@@ -14,29 +14,30 @@
 
 namespace grpc_cb {
 
+class ServerWriterImpl;
+using ServerWriterImplSptr = std::shared_ptr<ServerWriterImpl>;
+
 class ServerWriterWriteCqTag GRPC_FINAL : public CallCqTag {
  public:
-  inline explicit ServerWriterWriteCqTag(const CallSptr& call_sptr)
-      : CallCqTag(call_sptr) {}
-  inline bool Start(const ::google::protobuf::Message& message,
+  ServerWriterWriteCqTag(const CallSptr& call_sptr,
+      ServerWriterImplSptr writer_impl_sptr)
+      : CallCqTag(call_sptr), writer_impl_sptr_(writer_impl_sptr) {
+    assert(call_sptr);
+    assert(writer_impl_sptr);
+  }
+
+  bool Start(const ::google::protobuf::Message& message,
     bool send_init_md) GRPC_MUST_USE_RESULT;
+
+ public:
+  void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
   CodSendInitMd cod_send_init_md_;
   CodSendMsg cod_send_msg_;
+  ServerWriterImplSptr writer_impl_sptr_;
 };  // class ServerWriterWriteCqTag
 
-bool ServerWriterWriteCqTag::Start(
-    const ::google::protobuf::Message& message, bool send_init_md) {
-  CallOperations ops;
-  if (send_init_md) {
-    // Todo: set init_md
-    ops.SendInitMd(cod_send_init_md_);
-  }
-  ops.SendMsg(message, cod_send_msg_);
-  return GetCallSptr()->StartBatch(ops, this);
-}
-
-};  // namespace grpc_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_SERVER_SERVER_WRITER_WRITE_CQTAG_H

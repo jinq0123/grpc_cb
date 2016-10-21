@@ -254,6 +254,9 @@
     <ClCompile Include="..\src\cpp_cb\server\server_writer_impl.cc">
       <Filter>src\cpp_cb\server</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\server\server_writer_write_cqtag.cc">
+      <Filter>src\cpp_cb\server</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\cpp_cb\server\service.cc">
       <Filter>src\cpp_cb\server</Filter>
     </ClCompile>

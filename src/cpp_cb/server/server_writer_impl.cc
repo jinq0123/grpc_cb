@@ -17,7 +17,7 @@ ServerWriterImpl::ServerWriterImpl(const CallSptr& call_sptr)
 }
 
 ServerWriterImpl::~ServerWriterImpl() {
-  // Because ServerWriterWriteCqTag will share this.
+  // Because ServerWriterWriteCqTag has a ServerWriterImpl sptr.
   assert(queue_.empty());
   BlockingClose(Status::OK);
 }
@@ -128,9 +128,9 @@ void ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
   assert(!is_sending_);
   is_sending_ = true;
 
-  // XXX share this is CqTag... Try to WriteNext() on cq completion.
+  // CqTag shares this and will TryToWriteNext() on cq completion.
   using CqTag = ServerWriterWriteCqTag;
-  CqTag* tag = new CqTag(call_sptr_);
+  CqTag* tag = new CqTag(call_sptr_, shared_from_this());
   if (tag->Start(msg, send_init_md_)) {
     send_init_md_ = false;
     return;

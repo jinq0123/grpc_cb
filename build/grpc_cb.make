@@ -79,6 +79,7 @@ OBJECTS := \
 	$(OBJDIR)/server_method_call_cqtag.o \
 	$(OBJDIR)/server_replier_cqtag.o \
 	$(OBJDIR)/server_writer_impl.o \
+	$(OBJDIR)/server_writer_write_cqtag.o \
 	$(OBJDIR)/service.o \
 	$(OBJDIR)/status.o \
 	$(OBJDIR)/string_ref.o \
@@ -179,6 +180,9 @@ $(OBJDIR)/server_replier_cqtag.o: ../src/cpp_cb/server/server_replier_cqtag.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/server_writer_impl.o: ../src/cpp_cb/server/server_writer_impl.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/server_writer_write_cqtag.o: ../src/cpp_cb/server/server_writer_write_cqtag.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/service.o: ../src/cpp_cb/server/service.cc

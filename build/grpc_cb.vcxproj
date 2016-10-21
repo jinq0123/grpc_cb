@@ -158,6 +158,7 @@
     <ClCompile Include="..\src\cpp_cb\server\server_method_call_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_replier_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_writer_impl.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_writer_write_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\server\service.cc" />
     <ClCompile Include="..\src\cpp_cb\util\status.cc" />
     <ClCompile Include="..\src\cpp_cb\util\string_ref.cc" />
