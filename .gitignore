@@ -27,10 +27,11 @@
 *.exe
 *.out
 *.app
-/build/.vs
-/build/*.db
-/build/obj
-/build/*.opendb
+
 /third_party/grpc
+
+/build/*.db
+/build/*.opendb
+/build/.vs
 /build/bin
-/build/*.filters
+/build/obj
