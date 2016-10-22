@@ -7,7 +7,8 @@
 #include <cassert>     // for assert()
 #include <functional>  // for std::function
 
-#include <grpc_cb/channel.h>                           // for MakeSharedCall()
+#include <grpc_cb/channel.h>                         // for MakeSharedCall()
+#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_reader_helper.h>  // for ClientReaderHelper
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
 #include <grpc_cb/status.h>                                // for Status
@@ -21,15 +22,15 @@ class ClientReader GRPC_FINAL {
  public:
   // Todo: Also need to template request?
   inline ClientReader(const ChannelSptr& channel, const std::string& method,
-               const ::google::protobuf::Message& request,
-               const CompletionQueueSptr& cq_sptr);
+                      const ::google::protobuf::Message& request,
+                      const CompletionQueueSptr& cq_sptr);
 
  public:
   inline bool BlockingReadOne(Response* response) const {
     assert(response);
     Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingReadOne(
-        d.call_sptr, d.cq_sptr, *response, d.status);
+    return ClientReaderHelper::BlockingReadOne(d.call_sptr, d.cq_sptr,
+                                               *response, d.status);
   }
 
   inline Status BlockingRecvStatus() const {
@@ -54,10 +55,10 @@ class ClientReader GRPC_FINAL {
 };  // class ClientReader<>
 
 template <class Response>
-ClientReader<Response>::ClientReader(
-    const ChannelSptr& channel, const std::string& method,
-    const ::google::protobuf::Message& request,
-    const CompletionQueueSptr& cq_sptr)
+ClientReader<Response>::ClientReader(const ChannelSptr& channel,
+                                     const std::string& method,
+                                     const ::google::protobuf::Message& request,
+                                     const CompletionQueueSptr& cq_sptr)
     : data_sptr_(new Data{cq_sptr, channel->MakeSharedCall(method, *cq_sptr)}) {
   assert(cq_sptr);
   assert(channel);
@@ -65,8 +66,7 @@ ClientReader<Response>::ClientReader(
   ClientReaderInitCqTag* tag = new ClientReaderInitCqTag(data_sptr_->call_sptr);
   if (tag->Start(request)) return;
   delete tag;
-  data_sptr_->status.SetInternalError(
-      "Failed to start client reader stream.");
+  data_sptr_->status.SetInternalError("Failed to start client reader stream.");
 }  // ClientReader()
 
 }  // namespace grpc_cb
