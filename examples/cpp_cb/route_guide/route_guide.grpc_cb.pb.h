@@ -65,9 +65,10 @@ class Service : public ::grpc_cb::Service {
   virtual ~Service();
 
   virtual const std::string& GetMethodName(size_t i) const GRPC_OVERRIDE;
-  virtual void CallMethod(
-      size_t method_index, grpc_byte_buffer& request_buffer,
-      const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;
+  virtual void CallMethod(size_t method_index, grpc_byte_buffer& request_buffer,
+                          const ::grpc_cb::CallSptr& call_sptr,
+                          const ::grpc_cb::CompletionQueueSptr& cq_sptr)
+      GRPC_OVERRIDE;
 
  protected:
   using GetFeature_Replier = ::grpc_cb::ServerReplier<
@@ -99,9 +100,9 @@ class Service : public ::grpc_cb::Service {
   virtual void RecordRoute_OnEnd(
       const RecordRoute_Replier& replier);
 
-  void RouteChat(const ::grpc_cb::CallSptr& call_sptr);
-  using RouteChat_Writer = ::grpc_cb::ServerWriter<
-      ::routeguide::RouteNote>;
+  void RouteChat(const ::grpc_cb::CallSptr& call_sptr,
+                 const ::grpc_cb::CompletionQueueSptr& cq_sptr);
+  using RouteChat_Writer = ::grpc_cb::ServerWriter<::routeguide::RouteNote>;
   virtual void RouteChat_OnStart(
       const RouteChat_Writer& writer);
   virtual void RouteChat_OnMsg(

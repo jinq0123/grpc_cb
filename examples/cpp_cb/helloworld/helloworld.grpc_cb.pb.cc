@@ -100,9 +100,9 @@ const std::string& Service::GetMethodName(size_t method_index) const {
   return method_names[method_index];
 }
 
-void Service::CallMethod(
-    size_t method_index, grpc_byte_buffer& request_buffer,
-    const ::grpc_cb::CallSptr& call_sptr) {
+void Service::CallMethod(size_t method_index, grpc_byte_buffer& request_buffer,
+                         const ::grpc_cb::CallSptr& call_sptr,
+                         const ::grpc_cb::CompletionQueueSptr& cq_sptr) {
   assert(method_index < GetMethodCount());
   switch (method_index) {
     case 0:
@@ -111,6 +111,9 @@ void Service::CallMethod(
       return;
   }  // switch
   assert(false);
+  (void)request_buffer;
+  (void)call_sptr;
+  (void)cq_sptr;
 }
 
 void Service::SayHello(

@@ -11,9 +11,11 @@
 
 namespace grpc_cb {
 
-ServerWriterImpl::ServerWriterImpl(const CallSptr& call_sptr)
-    : call_sptr_(call_sptr) {
+ServerWriterImpl::ServerWriterImpl(const CallSptr& call_sptr,
+                                   const CompletionQueueSptr& cq_sptr)
+    : call_sptr_(call_sptr), cq_sptr_(cq_sptr) {
   assert(call_sptr);
+  assert(cq_sptr);
 }
 
 ServerWriterImpl::~ServerWriterImpl() {

@@ -18,12 +18,12 @@
 namespace grpc_cb {
 
 Server::Server()
-    : cq_uptr_(new CompletionQueue),  // unique_ptr
+    : cq_sptr_(new CompletionQueue),  // shared_ptr
       started_(false),
       shutdown_(false),
       c_server_uptr_(MakeUniqueGrpcServer()) {
-  assert(cq_uptr_ && c_server_uptr_);
-  grpc_server_register_completion_queue(c_server_uptr_.get(), &cq_uptr_->c_cq(),
+  assert(cq_sptr_ && c_server_uptr_);
+  grpc_server_register_completion_queue(c_server_uptr_.get(), &cq_sptr_->c_cq(),
                                         nullptr);
 }
 
@@ -67,10 +67,10 @@ void Server::ShutdownInternal(gpr_timespec deadline) {
   if (shutdown_) return;
   shutdown_ = true;
 
-  assert(cq_uptr_);
-  grpc_server_shutdown_and_notify(c_server_uptr_.get(), &cq_uptr_->c_cq(), this);
-  cq_uptr_->Pluck(this);
-  cq_uptr_->Shutdown();
+  assert(cq_sptr_);
+  grpc_server_shutdown_and_notify(c_server_uptr_.get(), &cq_sptr_->c_cq(), this);
+  cq_sptr_->Pluck(this);
+  cq_sptr_->Shutdown();
 }
 
 void Server::BlockingRun() {
@@ -81,8 +81,8 @@ void Server::BlockingRun() {
   grpc_server_start(c_server_uptr_.get());
   RequestMethodsCalls();
 
-  assert(cq_uptr_);
-  CompletionQueue& cq = *cq_uptr_;
+  assert(cq_sptr_);
+  CompletionQueue& cq = *cq_sptr_;
   while (true) {
     grpc_event ev = cq.Next();
     switch (ev.type) {
@@ -120,7 +120,7 @@ void Server::RequestServiceMethodsCalls(const RegisteredService& rs) const {
     if (!rms[i]) continue;
     // Delete in Run(). Calls grpc_server_request_registered_call() in ctr().
     new ServerMethodCallCqTag(c_server_uptr_.get(), rs.service, i, rms[i],
-                            &cq_uptr_->c_cq());
+                              cq_sptr_);
   }
 }
 

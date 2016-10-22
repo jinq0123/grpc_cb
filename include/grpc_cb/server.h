@@ -9,7 +9,7 @@
 
 #include <grpc/support/time.h>  // for gpr_inf_future()
 
-#include <grpc_cb/impl/completion_queue_uptr.h>  // for CompletionQueueUptr
+#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/grpc_library.h>  // for GrpcLibrary
 #include <grpc_cb/support/config.h>  // for GRPC_FINAL
 #include <grpc_cb/support/time.h>  // for TimePoint
@@ -85,7 +85,7 @@ class Server GRPC_FINAL : public GrpcLibrary {
 
  private:
   // Completion queue.
-  const CompletionQueueUptr cq_uptr_;
+  const CompletionQueueSptr cq_sptr_;
 
   // Sever status
   bool started_;

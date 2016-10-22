@@ -39,7 +39,6 @@
 #include <cassert>
 
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/impl/completion_queue_uptr.h>  // for CompletionQueueUptr
 #include <grpc_cb/impl/grpc_library.h>           // for GrpcLibrary
 #include <grpc_cb/support/config.h>  // for GRPC_OVERRIDE
 

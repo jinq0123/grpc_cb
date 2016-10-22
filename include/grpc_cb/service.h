@@ -9,6 +9,7 @@
 #include <grpc/grpc.h>  // for grpc_server_register_method_payload_handling
 
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
+#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/support/protobuf_fwd.h>  // for ServiceDescriptor
 
 struct grpc_byte_buffer;
@@ -29,7 +30,7 @@ class Service {
   // TODO: need request_context. Need client address in Ctr?
   virtual void CallMethod(
       size_t method_index, grpc_byte_buffer& request,
-      const CallSptr& call_sptr) = 0;
+      const CallSptr& call_sptr, const CompletionQueueSptr& cq_sptr) = 0;
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
