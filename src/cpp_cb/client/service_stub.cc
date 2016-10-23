@@ -6,6 +6,8 @@
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/completion_queue.h>
 
+#include "common/do_next_completion.h"  // for DoNextCompletion()
+
 namespace grpc_cb {
 
 ErrorCallback ServiceStub::default_error_callback_(&ServiceStub::IgnoreError);
@@ -27,24 +29,7 @@ void ServiceStub::BlockingRun() {
   assert(cq_sptr_);
   CompletionQueue& cq = *cq_sptr_;
   while (true) {
-    grpc_event ev = cq.Next();
-    switch (ev.type) {
-      case GRPC_OP_COMPLETE: {
-        auto* tag = static_cast<CompletionQueueTag*>(ev.tag);
-        assert(tag);
-        tag->DoComplete(0 != ev.success);
-        delete tag;  // DEL DeleteCompletionQueueTag(tag);  // Match NewCompletionQueueTag().
-        break;
-      }  // case
-      case GRPC_QUEUE_SHUTDOWN:
-        return;
-      case GRPC_QUEUE_TIMEOUT:
-        assert(false);
-        break;
-      default:
-        assert(false);
-        break;
-    }  // switch
+    DoNextCompletion(cq);
   }
 }
 

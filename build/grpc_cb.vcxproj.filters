@@ -132,9 +132,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_tag.h">
       <Filter>include\grpc_cb\impl</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\completion_queue_uptr.h">
-      <Filter>include\grpc_cb\impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\grpc_library.h">
       <Filter>include\grpc_cb\impl</Filter>
     </ClInclude>
@@ -201,6 +198,9 @@
     <ClInclude Include="..\include\grpc_cb\support\time.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h">
+      <Filter>src\cpp_cb\common</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h">
       <Filter>src\cpp_cb\server</Filter>
     </ClInclude>
@@ -234,6 +234,9 @@
       <Filter>src\cpp_cb\common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc">
+      <Filter>src\cpp_cb\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc">
       <Filter>src\cpp_cb\common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\proto\proto_utils.cc">

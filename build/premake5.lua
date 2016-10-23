@@ -84,6 +84,9 @@ project "grpc_cpp_cb_plugin"
 
 project "grpc_cb"
 	kind "StaticLib"
+	includedirs {
+		"../src/cpp_cb",
+	}
 	files {
 		"../include/grpc_cb/**.h",
 		"../src/cpp_cb/**",

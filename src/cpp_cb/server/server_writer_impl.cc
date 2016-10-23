@@ -43,7 +43,10 @@ bool ServerWriterImpl::Write(
 
 bool ServerWriterImpl::BlockingWrite(
     const ::google::protobuf::Message& response) {
-  AsyncWrite(response);  // Will trigger sending.
+  if (GetQueueSize()) {
+      // Next XXX
+  }
+  // DEL AsyncWrite(response);  // Will trigger sending.
 
   while (GetQueueSize())
     std::this_thread::yield();

@@ -7,13 +7,13 @@
 
 #include <grpc/grpc.h>
 #include <grpc/grpc_security.h>  // for grpc_server_add_secure_http2_port()
-#include <grpc/support/log.h>    // for GPR_ASSERT()
 
 #include <grpc_cb/impl/completion_queue.h>        // for CompletionQueue
 #include <grpc_cb/security/server_credentials.h>  // for InsecureServerCredentials
 #include <grpc_cb/service.h>
 
-#include "server_method_call_cqtag.h"  // for ServerMethodCallCqTag
+#include "common/do_next_completion.h"  // for DoNextCompletion()
+#include "server_method_call_cqtag.h"   // for ServerMethodCallCqTag
 
 namespace grpc_cb {
 
@@ -84,25 +84,7 @@ void Server::BlockingRun() {
   assert(cq_sptr_);
   CompletionQueue& cq = *cq_sptr_;
   while (true) {
-    grpc_event ev = cq.Next();
-    switch (ev.type) {
-      case GRPC_OP_COMPLETE: {
-        GPR_ASSERT(ev.success);
-        auto* tag = static_cast<CompletionQueueTag*>(ev.tag);
-        assert(tag);
-        tag->DoComplete(0 != ev.success);
-        delete tag;  // created in RequestMethodCall()
-        break;
-      }  // case
-      case GRPC_QUEUE_SHUTDOWN:
-        return;
-      case GRPC_QUEUE_TIMEOUT:
-        assert(false);
-        break;
-      default:
-        assert(false);
-        break;
-    }  // switch
+    DoNextCompletion(cq);
   }
 }
 

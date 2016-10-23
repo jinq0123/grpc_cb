@@ -56,7 +56,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\third_party\grpc\include;..\third_party\grpc\third_party\protobuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\third_party\grpc\include;..\third_party\grpc\third_party\protobuf\src;..\src\cpp_cb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -71,7 +71,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\include;..\third_party\grpc\include;..\third_party\grpc\third_party\protobuf\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\third_party\grpc\include;..\third_party\grpc\third_party\protobuf\src;..\src\cpp_cb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -116,7 +116,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_tag.h" />
-    <ClInclude Include="..\include\grpc_cb\impl\completion_queue_uptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\grpc_library.h" />
     <ClInclude Include="..\include\grpc_cb\impl\message_queue.h" />
     <ClInclude Include="..\include\grpc_cb\impl\metadata_vector.h" />
@@ -139,6 +138,7 @@
     <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h" />
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
     <ClInclude Include="..\include\grpc_cb\support\time.h" />
+    <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_writer_send_status_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_writer_write_cqtag.h" />
@@ -152,6 +152,7 @@
     <ClCompile Include="..\src\cpp_cb\common\call_op_data.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />
     <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc" />
     <ClCompile Include="..\src\cpp_cb\proto\proto_utils.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_credentials.cc" />

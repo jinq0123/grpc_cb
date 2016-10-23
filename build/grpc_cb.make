@@ -16,7 +16,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/libgrpc_cb.a
   OBJDIR = obj/Debug/grpc_cb
   DEFINES +=
-  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../src/cpp_cb
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g
@@ -43,7 +43,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/libgrpc_cb.a
   OBJDIR = obj/Release/grpc_cb
   DEFINES += -DNDEBUG
-  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../src/cpp_cb
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2
@@ -73,6 +73,7 @@ OBJECTS := \
 	$(OBJDIR)/call_op_data.o \
 	$(OBJDIR)/call_operations.o \
 	$(OBJDIR)/completion_queue.o \
+	$(OBJDIR)/do_next_completion.o \
 	$(OBJDIR)/proto_utils.o \
 	$(OBJDIR)/server.o \
 	$(OBJDIR)/server_credentials.o \
@@ -162,6 +163,9 @@ $(OBJDIR)/call_operations.o: ../src/cpp_cb/common/call_operations.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/completion_queue.o: ../src/cpp_cb/common/completion_queue.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/do_next_completion.o: ../src/cpp_cb/common/do_next_completion.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/proto_utils.o: ../src/cpp_cb/proto/proto_utils.cc
