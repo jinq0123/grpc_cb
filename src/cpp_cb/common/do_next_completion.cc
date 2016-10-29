@@ -11,7 +11,8 @@
 namespace grpc_cb {
 
 // Blocking go next and complete.
-void DoNextCompletion(CompletionQueue& cq) {
+// Return false if shutdown.
+bool DoNextCompletion(CompletionQueue& cq) {
     grpc_event ev = cq.Next();
     switch (ev.type) {
       case GRPC_OP_COMPLETE: {
@@ -22,7 +23,7 @@ void DoNextCompletion(CompletionQueue& cq) {
         break;
       }  // case
       case GRPC_QUEUE_SHUTDOWN:
-        return;
+        return true;
       case GRPC_QUEUE_TIMEOUT:
         assert(false);
         break;
@@ -30,6 +31,7 @@ void DoNextCompletion(CompletionQueue& cq) {
         assert(false);
         break;
     }  // switch
+    return false;
 }
 
 }  // namespace grpv_cb

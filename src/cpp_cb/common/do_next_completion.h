@@ -11,7 +11,8 @@ namespace grpc_cb {
 class CompletionQueue;
 
 // Blocking go next and complete.
-void DoNextCompletion(CompletionQueue& cq);
+// Return false if completion queue is shut down.
+bool DoNextCompletion(CompletionQueue& cq);
 
 }  // namespace grpv_cb
 #endif  // GRPC_CB_COMMON_DO_NEXT_COMPLETION_H

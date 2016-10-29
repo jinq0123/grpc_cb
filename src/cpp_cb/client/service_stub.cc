@@ -28,9 +28,8 @@ ServiceStub::~ServiceStub() {
 void ServiceStub::BlockingRun() {
   assert(cq_sptr_);
   CompletionQueue& cq = *cq_sptr_;
-  while (true) {
-    DoNextCompletion(cq);
-  }
+  while (DoNextCompletion(cq))
+    ;
 }
 
 void ServiceStub::Shutdown() {
