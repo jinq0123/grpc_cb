@@ -94,23 +94,45 @@ void Stub::AsyncGetFeature(
   ecb(::grpc_cb::Status::InternalError("Failed to async request."));
 }
 
-::grpc_cb::ClientReader<::routeguide::Feature>
+::grpc_cb::ClientSyncReader<::routeguide::Feature>
 Stub::ListFeatures(const ::routeguide::Rectangle& request) {
-  return ::grpc_cb::ClientReader<::routeguide::Feature>(
+  return ::grpc_cb::ClientSyncReader<::routeguide::Feature>(
+      GetChannelSptr(), method_names[1], request);
+}
+
+::grpc_cb::ClientAsyncReader<::routeguide::Feature>
+Stub::AsyncListFeatures(const ::routeguide::Rectangle& request) {
+  return ::grpc_cb::ClientAsyncReader<::routeguide::Feature>(
       GetChannelSptr(), method_names[1], request, GetCqSptr());
 }
 
-::grpc_cb::ClientWriter<::routeguide::Point>
+::grpc_cb::ClientSyncWriter<::routeguide::Point>
 Stub::RecordRoute() {
-  return ::grpc_cb::ClientWriter<::routeguide::Point>(
+  return ::grpc_cb::ClientSyncWriter<::routeguide::Point>(
+      GetChannelSptr(), method_names[2]);
+}
+
+::grpc_cb::ClientAsyncWriter<::routeguide::Point>
+Stub::AsyncRecordRoute() {
+  return ::grpc_cb::ClientAsyncWriter<::routeguide::Point>(
       GetChannelSptr(), method_names[2], GetCqSptr());
 }
 
-::grpc_cb::ClientReaderWriter<
+::grpc_cb::ClientSyncReaderWriter<
   ::routeguide::RouteNote,
   ::routeguide::RouteNote>
 Stub::RouteChat() {
-  return ::grpc_cb::ClientReaderWriter<
+  return ::grpc_cb::ClientSyncReaderWriter<
+    ::routeguide::RouteNote,
+    ::routeguide::RouteNote>(
+        GetChannelSptr(), method_names[3]);
+}
+
+::grpc_cb::ClientAsyncReaderWriter<
+  ::routeguide::RouteNote,
+  ::routeguide::RouteNote>
+Stub::AsyncRouteChat() {
+  return ::grpc_cb::ClientAsyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>(
         GetChannelSptr(), method_names[3], GetCqSptr());

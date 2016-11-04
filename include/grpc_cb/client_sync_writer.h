@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_WRITER_H
-#define GRPC_CB_CLIENT_WRITER_H
+#ifndef GRPC_CB_CLIENT_WRITER_SYNC_
+#define GRPC_CB_CLIENT_WRITER_SYNC_
 
 #include <cassert>     // for assert()
 
@@ -20,10 +20,10 @@ namespace grpc_cb {
 //    to ensure client input the correct request type.
 // Todo: Use non_template class as the implement.
 template <class Request>
-class ClientWriter GRPC_FINAL {
+class ClientSyncWriter GRPC_FINAL {
  public:
-  inline ClientWriter(const ChannelSptr& channel, const std::string& method,
-                      const CompletionQueueSptr& cq_sptr);
+  inline ClientSyncWriter(const ChannelSptr& channel, const std::string& method);
+                      // XXX const CompletionQueueSptr& cq_sptr);
 
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
@@ -43,26 +43,29 @@ class ClientWriter GRPC_FINAL {
     CallSptr call_sptr;
     Status status;
   };
-  std::shared_ptr<Data> data_sptr_;  // Easy to copy.
-};  // class ClientWriter<>
+  using DataSptr = std::shared_ptr<Data>;
+
+  DataSptr data_sptr_;  // Easy to copy.
+};  // class ClientSyncWriter<>
 
 template <class Request>
-ClientWriter<Request>::ClientWriter(const ChannelSptr& channel,
-                                    const std::string& method,
-                                    const CompletionQueueSptr& cq_sptr)
+ClientSyncWriter<Request>::ClientSyncWriter(const ChannelSptr& channel,
+                                    const std::string& method)
     // Todo: same as ClientReader?
-    : data_sptr_(new Data{cq_sptr, channel->MakeSharedCall(method, *cq_sptr)}) {
-  assert(cq_sptr);
+    : data_sptr_(new Data) {
   assert(channel);
-  assert(data_sptr_->call_sptr);
-  ClientInitMdCqTag* tag = new ClientInitMdCqTag(data_sptr_->call_sptr);
+  CompletionQueueSptr cq_sptr(new CompletionQueue);
+  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
+  data_sptr_->cq_sptr = cq_sptr;
+  data_sptr_->call_sptr = call_sptr;
+  ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr);
   if (tag->Start()) return;
   delete tag;
   data_sptr_->status.SetInternalError("Failed to init client stream.");
 }
 
 template <class Request>
-Status ClientWriter<Request>::BlockingFinish(
+Status ClientSyncWriter<Request>::BlockingFinish(
     ::google::protobuf::Message* response) const {
   assert(response);
   assert(data_sptr_);
@@ -91,4 +94,4 @@ Status ClientWriter<Request>::BlockingFinish(
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_WRITER_H
+#endif  // GRPC_CB_CLIENT_WRITER_SYNC_

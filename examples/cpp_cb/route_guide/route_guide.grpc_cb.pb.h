@@ -44,16 +44,27 @@ class Stub : public ::grpc_cb::ServiceStub {
       const GetFeatureCallback& cb,
       const ::grpc_cb::ErrorCallback& ecb);
 
-  ::grpc_cb::ClientReader<::routeguide::Feature>
+  ::grpc_cb::ClientSyncReader<::routeguide::Feature>
   ListFeatures(const ::routeguide::Rectangle& request);
 
-  ::grpc_cb::ClientWriter<::routeguide::Point>
+  ::grpc_cb::ClientAsyncReader<::routeguide::Feature>
+  AsyncListFeatures(const ::routeguide::Rectangle& request);
+
+  ::grpc_cb::ClientSyncWriter<::routeguide::Point>
   RecordRoute();
 
-  ::grpc_cb::ClientReaderWriter<
+  ::grpc_cb::ClientAsyncWriter<::routeguide::Point>
+  AsyncRecordRoute();
+
+  ::grpc_cb::ClientSyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>
   RouteChat();
+
+  ::grpc_cb::ClientAsyncReaderWriter<
+    ::routeguide::RouteNote,
+    ::routeguide::RouteNote>
+  AsyncRouteChat();
 
 };  // class Stub
 

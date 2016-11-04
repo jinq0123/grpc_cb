@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_READER_WRITER_IMPL_H
-#define GRPC_CB_CLIENT_CLIENT_READER_WRITER_IMPL_H
+#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
+#define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 // Todo: include?
@@ -10,12 +10,12 @@
 namespace grpc_cb {
 
 template <class Request, class Response>
-class ClientReaderWriterImpl GRPC_FINAL {
+class ClientAsyncReaderWriterImpl GRPC_FINAL {
  public:
-  inline ClientReaderWriterImpl(const ChannelSptr& channel,
+  inline ClientAsyncReaderWriterImpl(const ChannelSptr& channel,
                             const std::string& method,
                             const CompletionQueueSptr& cq_sptr);
-  inline ~ClientReaderWriterImpl();
+  inline ~ClientAsyncReaderWriterImpl();
 
  public:
   // Write is always asynchronous.
@@ -40,12 +40,12 @@ class ClientReaderWriterImpl GRPC_FINAL {
   using DataSptr = ClientReaderDataSptr<Response>;
   DataSptr data_sptr_;  // Same as reader. Easy to copy.
   bool writes_done_ = false;  // Is WritesDone() called?
-};  // class ClientReaderWriterImpl<>
+};  // class ClientAsyncReaderWriterImpl<>
 
 // Todo: BlockingGetInitMd();
 
 template <class Request, class Response>
-ClientReaderWriterImpl<Request, Response>::ClientReaderWriterImpl(
+ClientAsyncReaderWriterImpl<Request, Response>::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,
     const CompletionQueueSptr& cq_sptr)
     // Todo: same as ClientReader?
@@ -60,12 +60,12 @@ ClientReaderWriterImpl<Request, Response>::ClientReaderWriterImpl(
 }
 
 template <class Request, class Response>
-ClientReaderWriterImpl<Request, Response>::~ClientReaderWriterImpl() {
+ClientAsyncReaderWriterImpl<Request, Response>::~ClientAsyncReaderWriterImpl() {
   WritesDone();
 }
 
 template <class Request, class Response>
-bool ClientReaderWriterImpl<Request, Response>::Write(const Request& request) const {
+bool ClientAsyncReaderWriterImpl<Request, Response>::Write(const Request& request) const {
   assert(data_sptr_);
   assert(data_sptr_->call_sptr);
   return ClientWriterHelper::Write(data_sptr_->call_sptr,
@@ -73,7 +73,7 @@ bool ClientReaderWriterImpl<Request, Response>::Write(const Request& request) co
 }
 
 template <class Request, class Response>
-void ClientReaderWriterImpl<Request, Response>::WritesDone() {
+void ClientAsyncReaderWriterImpl<Request, Response>::WritesDone() {
   if (writes_done_) return;
   writes_done_ = true;
   Status& status = data_sptr_->status;
@@ -87,7 +87,7 @@ void ClientReaderWriterImpl<Request, Response>::WritesDone() {
 
 // Todo: same as ClientReader?
 template <class Request, class Response>
-bool ClientReaderWriterImpl<Request, Response>::BlockingReadOne(Response* response) const {
+bool ClientAsyncReaderWriterImpl<Request, Response>::BlockingReadOne(Response* response) const {
   assert(response);
   Data& d = *data_sptr_;
   return ClientReaderHelper::BlockingReadOne(
@@ -95,7 +95,7 @@ bool ClientReaderWriterImpl<Request, Response>::BlockingReadOne(Response* respon
 }
 
 template <class Request, class Response>
-void ClientReaderWriterImpl<Request, Response>::AsyncReadEach(
+void ClientAsyncReaderWriterImpl<Request, Response>::AsyncReadEach(
     const ReadCallback& on_read,
     const StatusCallback& on_status) const {
     data_sptr_->on_msg = on_read;
@@ -105,4 +105,4 @@ void ClientReaderWriterImpl<Request, Response>::AsyncReadEach(
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_READER_WRITER_IMPL_H
+#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H

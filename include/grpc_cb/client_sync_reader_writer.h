@@ -1,23 +1,21 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_READER_WRITER_H
-#define GRPC_CB_CLIENT_CLIENT_READER_WRITER_H
+#ifndef GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_H
+#define GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_H
 
-#include <grpc_cb/impl/client/client_reader_writer_impl.h>  // for ClientReaderWriterImpl<>
+#include <grpc_cb/impl/client/client_sync_reader_writer_impl.h>  // for ClientSyncReaderWriterImpl<>
 
 namespace grpc_cb {
 
 // Copyable.
 template <class Request, class Response>
-class ClientReaderWriter GRPC_FINAL {
+class ClientSyncReaderWriter GRPC_FINAL {
  public:
-  ClientReaderWriter(const ChannelSptr& channel,
-                            const std::string& method,
-                            const CompletionQueueSptr& cq_sptr)
+  ClientSyncReaderWriter(const ChannelSptr& channel, const std::string& method)
+                            // XXX const CompletionQueueSptr& cq_sptr)
       // Todo: same as ClientReader?
-      : impl_sptr_(new Impl(channel, method, cq_sptr)) {
-    assert(cq_sptr);
+      : impl_sptr_(new Impl(channel, method)) {
     assert(channel);
   }
 
@@ -49,9 +47,9 @@ class ClientReaderWriter GRPC_FINAL {
   }
 
  private:
-  using Impl = ClientReaderWriterImpl<Request, Response>;
+  using Impl = ClientSyncReaderWriterImpl<Request, Response>;
   std::shared_ptr<Impl> impl_sptr_;
-};  // class ClientReaderWriter<>
+};  // class ClientSyncReaderWriter<>
 
 // Todo: BlockingGetInitMd();
 
@@ -59,4 +57,4 @@ class ClientReaderWriter GRPC_FINAL {
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_READER_WRITER_H
+#endif  // GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_H

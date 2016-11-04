@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_READER_H
-#define GRPC_CB_CLIENT_CLIENT_READER_H
+#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_H
+#define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_H
 
 #include <cassert>     // for assert()
 #include <functional>  // for std::function
@@ -18,10 +18,10 @@ namespace grpc_cb {
 
 // Copyable.
 template <class Response>
-class ClientReader GRPC_FINAL {
+class ClientAsyncReader GRPC_FINAL {
  public:
   // Todo: Also need to template request?
-  inline ClientReader(const ChannelSptr& channel, const std::string& method,
+  inline ClientAsyncReader(const ChannelSptr& channel, const std::string& method,
                       const ::google::protobuf::Message& request,
                       const CompletionQueueSptr& cq_sptr);
 
@@ -52,10 +52,10 @@ class ClientReader GRPC_FINAL {
   using Data = ClientReaderData<Response>;
   using DataSptr = ClientReaderDataSptr<Response>;
   DataSptr data_sptr_;
-};  // class ClientReader<>
+};  // class ClientAsyncReader<>
 
 template <class Response>
-ClientReader<Response>::ClientReader(const ChannelSptr& channel,
+ClientAsyncReader<Response>::ClientAsyncReader(const ChannelSptr& channel,
                                      const std::string& method,
                                      const ::google::protobuf::Message& request,
                                      const CompletionQueueSptr& cq_sptr)
@@ -67,8 +67,8 @@ ClientReader<Response>::ClientReader(const ChannelSptr& channel,
   if (tag->Start(request)) return;
   delete tag;
   data_sptr_->status.SetInternalError("Failed to start client reader stream.");
-}  // ClientReader()
+}  // ClientAsyncReader()
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_READER_H
+#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_H

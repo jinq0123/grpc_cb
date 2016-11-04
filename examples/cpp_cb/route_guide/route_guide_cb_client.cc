@@ -43,9 +43,12 @@
 
 using grpc_cb::Channel;
 using grpc_cb::ChannelSptr;
-using grpc_cb::ClientReader;
-using grpc_cb::ClientReaderWriter;
-using grpc_cb::ClientWriter;
+using grpc_cb::ClientAsyncReader;
+using grpc_cb::ClientAsyncReaderWriter;
+using grpc_cb::ClientAsyncWriter;
+using grpc_cb::ClientSyncReader;
+using grpc_cb::ClientSyncReaderWriter;
+using grpc_cb::ClientSyncWriter;
 using grpc_cb::Status;
 using routeguide::Point;
 using routeguide::Feature;
@@ -123,7 +126,8 @@ void RandomSleep() {
       delay_distribution(generator)));
 }
 
-void RunWriteRouteNote(ClientReaderWriter<RouteNote, RouteNote> reader_writer) {
+void RunWriteRouteNote(ClientSyncReaderWriter<RouteNote, RouteNote>
+    sync_reader_writer) {
   std::vector<RouteNote> notes{
     MakeRouteNote("First message", 0, 0),
     MakeRouteNote("Second message", 0, 1),
@@ -133,10 +137,10 @@ void RunWriteRouteNote(ClientReaderWriter<RouteNote, RouteNote> reader_writer) {
     std::cout << "Sending message " << note.message()
               << " at " << note.location().latitude() << ", "
               << note.location().longitude() << std::endl;
-    reader_writer.Write(note);
+    sync_reader_writer.Write(note);
     // RandomSleep();
   }
-  reader_writer.WritesDone();  // Optional close writing.
+  sync_reader_writer.WritesDone();  // Optional close writing.
 }
 
 class RouteGuideClient {
@@ -164,7 +168,7 @@ class RouteGuideClient {
     std::cout << "Looking for features between 40, -75 and 42, -73"
         << std::endl;
 
-    ClientReader<Feature> reader(
+    ClientSyncReader<Feature> reader(
         stub_->ListFeatures(rect));
     while (reader.BlockingReadOne(&feature)) {
       std::cout << "Found feature called "
@@ -186,7 +190,7 @@ class RouteGuideClient {
     std::uniform_int_distribution<int> feature_distribution(
         0, feature_list_.size() - 1);
 
-    ClientWriter<Point> writer(stub_->RecordRoute());
+    ClientSyncWriter<Point> writer(stub_->RecordRoute());
     for (int i = 0; i < kPoints; i++) {
       const Feature& f = feature_list_[feature_distribution(generator)];
       std::cout << "Visiting point "
@@ -216,20 +220,20 @@ class RouteGuideClient {
   // Todo: Callback on client stream response and status.
 
   void BlockingRouteChat() {
-    ClientReaderWriter<RouteNote, RouteNote> reader_writer(
+    ClientSyncReaderWriter<RouteNote, RouteNote> sync_reader_writer(
         stub_->RouteChat());
 
-    std::thread thd([reader_writer]() {
-        RunWriteRouteNote(reader_writer);
+    std::thread thd([sync_reader_writer]() {
+        RunWriteRouteNote(sync_reader_writer);
     });
 
     RouteNote server_note;
-    while (reader_writer.BlockingReadOne(&server_note))
+    while (sync_reader_writer.BlockingReadOne(&server_note))
         PrintServerNote(server_note);
 
     thd.join();
     // Todo: Finish() should auto close writing.
-    Status status = reader_writer.BlockingRecvStatus();
+    Status status = sync_reader_writer.BlockingRecvStatus();
     if (!status.ok()) {
       std::cout << "RouteChat rpc failed." << std::endl;
     }
@@ -280,7 +284,7 @@ void ListFeaturesAsync(const ChannelSptr& channel) {
       400000000, -750000000, 420000000, -730000000);
   std::cout << "Looking for features between 40, -75 and 42, -73" << std::endl;
 
-  ClientReader<Feature> reader(stub.ListFeatures(rect));
+  ClientAsyncReader<Feature> reader(stub.AsyncListFeatures(rect));
   reader.AsyncReadEach(
     [](const Feature& feature){
       std::cout << "Got feature " << feature.name() << " at "
@@ -308,7 +312,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
       0, feature_list.size() - 1);
 
   Stub stub(channel);
-  ClientWriter<Point> writer(stub.RecordRoute());
+  ClientAsyncWriter<Point> writer(stub.AsyncRecordRoute());
   for (int i = 0; i < kPoints; i++) {
     const Feature& f = feature_list[feature_distribution(generator)];
     std::cout << "Visiting point "
@@ -334,12 +338,30 @@ void RecordRouteAsync(const ChannelSptr& channel,
   }
 }  // RecordRouteAsync()
 
+void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>
+    async_reader_writer) {
+  std::vector<RouteNote> notes{
+    MakeRouteNote("First message", 0, 0),
+    MakeRouteNote("Second message", 0, 1),
+    MakeRouteNote("Third message", 1, 0),
+    MakeRouteNote("Fourth message", 0, 0)};
+  for (const RouteNote& note : notes) {
+    std::cout << "Sending message " << note.message()
+              << " at " << note.location().latitude() << ", "
+              << note.location().longitude() << std::endl;
+    async_reader_writer.Write(note);
+    // RandomSleep();
+  }
+  async_reader_writer.WritesDone();  // Optional close writing.
+}
+
 void RouteChatAsync(const ChannelSptr& channel) {
   Stub stub(channel);
-  ClientReaderWriter<RouteNote, RouteNote> reader_writer(stub.RouteChat());
+  ClientAsyncReaderWriter<RouteNote, RouteNote> async_reader_writer(
+    stub.AsyncRouteChat());
 
   volatile bool bReadDone = false;
-  reader_writer.AsyncReadEach(
+  async_reader_writer.AsyncReadEach(
       [](const RouteNote& note) { PrintServerNote(note); },
       [&bReadDone](const Status& status) {
         if (!status.ok()) {
@@ -348,15 +370,9 @@ void RouteChatAsync(const ChannelSptr& channel) {
         }
         bReadDone = true;
       });
-
-  std::thread thd([reader_writer, &bReadDone, &stub]() {
-      RunWriteRouteNote(reader_writer);
-      while (!bReadDone);
-      stub.Shutdown();
-  });
+  AsyncWriteRouteNotes(async_reader_writer);
 
   stub.BlockingRun();
-  thd.join();
 }  // RouteChatAsync()
 
 int main(int argc, char** argv) {

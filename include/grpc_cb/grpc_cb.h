@@ -14,8 +14,11 @@
 
 #include <grpc_cb/server_writer.h>
 
-#include <grpc_cb/client_reader.h>
-#include <grpc_cb/client_writer.h>
-#include <grpc_cb/client_reader_writer.h>
+#include <grpc_cb/client_async_reader.h>
+#include <grpc_cb/client_async_writer.h>
+#include <grpc_cb/client_async_reader_writer.h>
+#include <grpc_cb/client_sync_reader.h>
+#include <grpc_cb/client_sync_writer.h>
+#include <grpc_cb/client_sync_reader_writer.h>
 
 #endif  // GRPC_CB_GRPC_CB_H
