@@ -21,9 +21,10 @@ template <class Response>
 class ClientAsyncReader GRPC_FINAL {
  public:
   // Todo: Also need to template request?
-  inline ClientAsyncReader(const ChannelSptr& channel, const std::string& method,
-                      const ::google::protobuf::Message& request,
-                      const CompletionQueueSptr& cq_sptr);
+  inline ClientAsyncReader(const ChannelSptr& channel,
+                           const std::string& method,
+                           const ::google::protobuf::Message& request,
+                           const CompletionQueueSptr& cq_sptr);
 
  public:
   using MsgCallback = std::function<void(const Response&)>;
@@ -45,10 +46,10 @@ class ClientAsyncReader GRPC_FINAL {
 // XXX Delete ClientAsyncReader. Only need DataSptr.
 
 template <class Response>
-ClientAsyncReader<Response>::ClientAsyncReader(const ChannelSptr& channel,
-                                     const std::string& method,
-                                     const ::google::protobuf::Message& request,
-                                     const CompletionQueueSptr& cq_sptr)
+ClientAsyncReader<Response>::ClientAsyncReader(
+    const ChannelSptr& channel, const std::string& method,
+    const ::google::protobuf::Message& request,
+    const CompletionQueueSptr& cq_sptr)
     : data_sptr_(new Data{cq_sptr, channel->MakeSharedCall(method, *cq_sptr)}) {
   assert(cq_sptr);
   assert(channel);
@@ -56,7 +57,7 @@ ClientAsyncReader<Response>::ClientAsyncReader(const ChannelSptr& channel,
   ClientReaderInitCqTag* tag = new ClientReaderInitCqTag(data_sptr_->call_sptr);
   if (tag->Start(request)) return;
   delete tag;
-  data_sptr_->status.SetInternalError("Failed to start client reader stream.");
+  data_sptr_->status.SetInternalError("Failed to start async client reader.");
 }  // ClientAsyncReader()
 
 }  // namespace grpc_cb
