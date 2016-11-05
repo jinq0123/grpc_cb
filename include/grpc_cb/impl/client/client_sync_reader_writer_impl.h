@@ -91,7 +91,7 @@ void ClientSyncReaderWriterImpl<Request, Response>::CloseWriting() {
     return;
   }
 
-  status.SetInternalError("Failed to set stream writes done.");
+  status.SetInternalError("Failed to close writing.");
 }
 
 // Todo: same as ClientReader?
