@@ -55,10 +55,12 @@ ClientSyncReaderWriterImpl<Request, Response>::ClientSyncReaderWriterImpl(
   CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
-  ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr);
-  if (tag->Start()) return;
-  delete tag;
-  data_sptr_->status.SetInternalError("Failed to init stream.");
+  ClientInitMdCqTag tag(call_sptr);
+  if (tag.Start()) {
+    cq_sptr->Pluck(&tag);
+    return;
+  }
+  data_sptr_->status.SetInternalError("Failed to start client sync reader writer.");
 }
 
 template <class Request, class Response>
@@ -80,10 +82,13 @@ void ClientSyncReaderWriterImpl<Request, Response>::CloseWriting() {
   writing_closed_ = true;
   Status& status = data_sptr_->status;
   if (!status.ok()) return;
-  ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(data_sptr_->call_sptr);
-  if (tag->Start()) return;
 
-  delete tag;
+  ClientSendCloseCqTag tag(data_sptr_->call_sptr);
+  if (tag.Start()) {
+    data_sptr_->cq_sptr->Pluck(&tag);
+    return;
+  }
+
   status.SetInternalError("Failed to set stream writes done.");
 }
 

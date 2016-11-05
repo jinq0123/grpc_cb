@@ -13,8 +13,6 @@ template <class Request, class Response>
 class ClientSyncReaderWriter GRPC_FINAL {
  public:
   ClientSyncReaderWriter(const ChannelSptr& channel, const std::string& method)
-                            // XXX const CompletionQueueSptr& cq_sptr)
-      // Todo: same as ClientReader?
       : impl_sptr_(new Impl(channel, method)) {
     assert(channel);
   }
