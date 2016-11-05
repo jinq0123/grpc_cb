@@ -69,11 +69,13 @@ ClientSyncReaderWriterImpl<Request, Response>::~ClientSyncReaderWriterImpl() {
 }
 
 template <class Request, class Response>
-bool ClientSyncReaderWriterImpl<Request, Response>::Write(const Request& request) const {
+bool ClientSyncReaderWriterImpl<Request, Response>::Write(
+    const Request& request) const {
   assert(data_sptr_);
-  assert(data_sptr_->call_sptr);
-  return ClientSyncWriterHelper::BlockingWrite(data_sptr_->call_sptr,
-      request, data_sptr_->status);
+  Data& d = *data_sptr_;
+  assert(d.call_sptr);
+  return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, d.cq_sptr, request,
+                                               d.status);
 }
 
 template <class Request, class Response>

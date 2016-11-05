@@ -17,26 +17,23 @@ namespace ClientSyncWriterHelper {
 
 inline bool BlockingWrite(
     const CallSptr& call_sptr,
+    const CompletionQueueSptr& cq_sptr,
     const ::google::protobuf::Message& request,
     Status& status) {
-  // XXX
-  return false;
-}
+  assert(call_sptr);
+  assert(cq_sptr);
+  if (!status.ok())
+    return false;
 
-//inline bool AsyncWrite(
-//    const CallSptr& call_sptr,
-//    const ::google::protobuf::Message& request,
-//    Status& status) {
-//  assert(call_sptr);
-//  if (!status.ok()) return false;
-//
-//  ClientSendMsgCqTag* tag = new ClientSendMsgCqTag(call_sptr);
-//  if (tag->Start(request)) return true;
-//
-//  delete tag;
-//  status.SetInternalError("Failed to write client stream.");
-//  return false;
-//}  // Write()
+  ClientSendMsgCqTag tag(call_sptr);
+  if (tag.Start(request)) {
+    cq_sptr->Pluck(&tag);
+    return true;
+  }
+
+  status.SetInternalError("Failed to write client stream.");
+  return false;
+}  // BlockingWrite()
 
 }  // namespace ClientSyncWriterHelper
 }  // namespace grpc_cb

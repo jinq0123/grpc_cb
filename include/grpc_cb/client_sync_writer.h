@@ -27,7 +27,8 @@ class ClientSyncWriter GRPC_FINAL {
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
     Data& d = *data_sptr_;
-    return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, request, d.status);
+    return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, d.cq_sptr,
+                                                 request, d.status);
   }
 
   Status Finish(::google::protobuf::Message* response) const;
