@@ -96,6 +96,9 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_writer_impl.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_helper.h">
+      <Filter>include\grpc_cb\impl\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_call_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
@@ -132,10 +135,10 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_writer_impl.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\client\client_writer_finish_cqtag.h">
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_writer_helper.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\client\client_writer_helper.h">
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_writer_finish_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue.h">

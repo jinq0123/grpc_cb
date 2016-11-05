@@ -4,8 +4,15 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_IMPL_H
 
+#include <grpc_cb/channel.h>                         // for MakeSharedCall()
+#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
-// Todo: include?
+#include <grpc_cb/impl/client/client_sync_reader_helper.h>  // for ClientSyncReaderHelper
+#include <grpc_cb/impl/client/client_sync_writer_helper.h>  // for ClientSyncWriterHelper
+#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/status.h>                      // for Status
+
+#include <string>
 
 namespace grpc_cb {
 
@@ -62,7 +69,7 @@ template <class Request, class Response>
 bool ClientSyncReaderWriterImpl<Request, Response>::Write(const Request& request) const {
   assert(data_sptr_);
   assert(data_sptr_->call_sptr);
-  return ClientWriterHelper::BlockingWrite(data_sptr_->call_sptr,
+  return ClientSyncWriterHelper::BlockingWrite(data_sptr_->call_sptr,
       request, data_sptr_->status);
 }
 

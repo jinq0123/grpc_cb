@@ -6,12 +6,12 @@
 
 #include <cassert>     // for assert()
 
-#include <grpc_cb/channel.h>                           // for MakeSharedCall()
-#include <grpc_cb/impl/call_sptr.h>                    // for CallSptr
+#include <grpc_cb/channel.h>         // for MakeSharedCall()
+#include <grpc_cb/impl/call_sptr.h>  // for CallSptr
+#include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
-#include <grpc_cb/impl/client/client_writer_helper.h>  // for ClientWriterHelper
-#include <grpc_cb/status.h>                            // for Status
 #include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
+#include <grpc_cb/status.h>                                  // for Status
 
 namespace grpc_cb {
 
@@ -28,7 +28,7 @@ class ClientAsyncWriter GRPC_FINAL {
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
     Data& d = *data_sptr_;
-    return ClientWriterHelper::AsyncWrite(d.call_sptr, request, d.status);
+    return ClientAsyncWriterHelper::AsyncWrite(d.call_sptr, request, d.status);
   }
 
   Status Finish(
