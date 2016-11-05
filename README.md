@@ -21,6 +21,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface.
 * ClientAsyncWriterHelper
 * ClientAsyncReaderWriter
 * ClientAsyncReaderWriterImpl
+* ServerWriter
 
-
+* Check thread-safety
 

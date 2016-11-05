@@ -4,7 +4,7 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_WRITER_H
 #define GRPC_CB_CLIENT_ASYNC_WRITER_H
 
-#include <cassert>     // for assert()
+#include <cassert>  // for assert()
 
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
@@ -22,8 +22,9 @@ namespace grpc_cb {
 template <class Request>
 class ClientAsyncWriter GRPC_FINAL {
  public:
-  inline ClientAsyncWriter(const ChannelSptr& channel, const std::string& method,
-                      const CompletionQueueSptr& cq_sptr);
+  inline ClientAsyncWriter(const ChannelSptr& channel,
+                           const std::string& method,
+                           const CompletionQueueSptr& cq_sptr);
 
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
@@ -31,10 +32,7 @@ class ClientAsyncWriter GRPC_FINAL {
     return ClientAsyncWriterHelper::AsyncWrite(d.call_sptr, request, d.status);
   }
 
-  Status Finish(
-      ::google::protobuf::Message* response) const;
-
-  // Todo: AsyncFinish
+  Status Finish(::google::protobuf::Message* response) const;
 
  private:
   // Wrap all data in shared struct pointer to make copy quick.
@@ -47,9 +45,9 @@ class ClientAsyncWriter GRPC_FINAL {
 };  // class ClientAsyncWriter<>
 
 template <class Request>
-ClientAsyncWriter<Request>::ClientAsyncWriter(const ChannelSptr& channel,
-                                    const std::string& method,
-                                    const CompletionQueueSptr& cq_sptr)
+ClientAsyncWriter<Request>::ClientAsyncWriter(
+    const ChannelSptr& channel, const std::string& method,
+    const CompletionQueueSptr& cq_sptr)
     // Todo: same as ClientReader?
     : data_sptr_(new Data{cq_sptr, channel->MakeSharedCall(method, *cq_sptr)}) {
   assert(cq_sptr);
