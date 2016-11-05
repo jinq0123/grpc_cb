@@ -4,6 +4,8 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_IMPL_H
 
+#include <string>
+
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
@@ -11,8 +13,6 @@
 #include <grpc_cb/impl/client/client_sync_writer_helper.h>  // for ClientSyncWriterHelper
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/status.h>                      // for Status
-
-#include <string>
 
 namespace grpc_cb {
 
@@ -31,6 +31,7 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
   inline bool ReadOne(Response* response) const;
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
+    if (!d.status.ok()) return d.status;
     return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
   }
 

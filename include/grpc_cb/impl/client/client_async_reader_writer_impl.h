@@ -4,6 +4,9 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 
+#include <functional>  // for function
+#include <string>
+
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_reader_helper.h>  // for ClientAsyncReaderHelper
 #include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
@@ -11,9 +14,6 @@
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/status.h>                      // for Status
-
-#include <functional>  // for function
-#include <string>
 
 namespace grpc_cb {
 

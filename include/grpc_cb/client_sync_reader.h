@@ -34,6 +34,7 @@ class ClientSyncReader GRPC_FINAL {
 
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
+    if (!d.status.ok()) return d.status;
     return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
   }
 
@@ -54,10 +55,15 @@ ClientSyncReader<Response>::ClientSyncReader(
   CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
-  ClientReaderInitCqTag* tag = new ClientReaderInitCqTag(call_sptr);
-  if (tag->Start(request)) return;
-  delete tag;
-  data_sptr_->status.SetInternalError("Failed to start client reader stream.");
+
+  ClientReaderInitCqTag tag(call_sptr);
+  if (tag.Start(request)) {
+    cq_sptr->Pluck(&tag);
+    return;
+  }
+
+  data_sptr_->status.SetInternalError(
+      "Failed to start client sync reader stream.");
 }  // ClientSyncReader()
 
 }  // namespace grpc_cb

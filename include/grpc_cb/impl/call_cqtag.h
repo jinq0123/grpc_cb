@@ -4,14 +4,10 @@
 #ifndef GRPC_CB_IMPL_CALL_CQTAG_H
 #define GRPC_CB_IMPL_CALL_CQTAG_H
 
-#include <cassert>
-
 #include <grpc_cb/impl/call_sptr.h>             // for CallSptr
 #include <grpc_cb/impl/completion_queue_tag.h>  // for CompletionQueueTag
 
 namespace grpc_cb {
-
-class Status;
 
 // Call completion queue tag.
 // Used as base class of other call CqTag which keeps a CallSptr.
