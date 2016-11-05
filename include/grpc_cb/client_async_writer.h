@@ -28,10 +28,10 @@ class ClientAsyncWriter GRPC_FINAL {
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
     Data& d = *data_sptr_;
-    return ClientWriterHelper::Write(d.call_sptr, request, d.status);
+    return ClientWriterHelper::AsyncWrite(d.call_sptr, request, d.status);
   }
 
-  Status BlockingFinish(
+  Status Finish(
       ::google::protobuf::Message* response) const;
 
   // Todo: AsyncFinish
@@ -62,32 +62,35 @@ ClientAsyncWriter<Request>::ClientAsyncWriter(const ChannelSptr& channel,
 }
 
 template <class Request>
-Status ClientAsyncWriter<Request>::BlockingFinish(
+Status ClientAsyncWriter<Request>::Finish(
     ::google::protobuf::Message* response) const {
-  assert(response);
-  assert(data_sptr_);
-  Data& data = *data_sptr_;
-  assert(data.call_sptr);
-  assert(data.cq_sptr);
+  // XXX
+  return Status::UNIMPLEMENTED;
+}
 
-  Status& status = data.status;
-  if (!status.ok()) return status;
-  ClientWriterFinishCqTag tag(data.call_sptr);
-  if (!tag.Start()) {
-    status.SetInternalError("Failed to finish client stream.");
-    return status;
-  }
+  //assert(response);
+  //assert(data_sptr_);
+  //Data& data = *data_sptr_;
+  //assert(data.call_sptr);
+  //assert(data.cq_sptr);
 
-  data.cq_sptr->Pluck(&tag);
+  //Status& status = data.status;
+  //if (!status.ok()) return status;
+  //ClientWriterFinishCqTag tag(data.call_sptr);
+  //if (!tag.Start()) {
+  //  status.SetInternalError("Failed to finish client stream.");
+  //  return status;
+  //}
 
-  // Todo: Get trailing metadata.
-  if (tag.IsStatusOk())
-    status = tag.GetResponse(*response);
-  else
-    status = tag.GetStatus();
+  //data.cq_sptr->Pluck(&tag);
 
-  return status;
-}  // BlockingFinish()
+  //// Todo: Get trailing metadata.
+  //if (tag.IsStatusOk())
+  //  status = tag.GetResponse(*response);
+  //else
+  //  status = tag.GetStatus();
+
+  //return status;
 
 }  // namespace grpc_cb
 

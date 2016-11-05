@@ -25,14 +25,14 @@ class ClientSyncReader GRPC_FINAL {
                       const ::google::protobuf::Message& request);
 
  public:
-  inline bool BlockingReadOne(Response* response) const {
+  inline bool ReadOne(Response* response) const {
     assert(response);
     Data& d = *data_sptr_;
     return ClientReaderHelper::BlockingReadOne(d.call_sptr, d.cq_sptr,
                                                *response, d.status);
   }
 
-  inline Status BlockingRecvStatus() const {
+  inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
     return ClientReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
   }

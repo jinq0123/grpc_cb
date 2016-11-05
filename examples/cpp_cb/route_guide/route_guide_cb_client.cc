@@ -140,7 +140,7 @@ void RunWriteRouteNote(ClientSyncReaderWriter<RouteNote, RouteNote>
     sync_reader_writer.Write(note);
     // RandomSleep();
   }
-  sync_reader_writer.WritesDone();  // Optional close writing.
+  sync_reader_writer.CloseWriting();  // Optional.
 }
 
 class RouteGuideClient {
@@ -170,13 +170,13 @@ class RouteGuideClient {
 
     ClientSyncReader<Feature> reader(
         stub_->SyncListFeatures(rect));
-    while (reader.BlockingReadOne(&feature)) {
+    while (reader.ReadOne(&feature)) {
       std::cout << "Found feature called "
                 << feature.name() << " at "
                 << feature.location().latitude()/kCoordFactor << ", "
                 << feature.location().longitude()/kCoordFactor << std::endl;
     }
-    Status status = reader.BlockingRecvStatus();
+    Status status = reader.RecvStatus();
     if (status.ok()) {
       std::cout << "ListFeatures rpc succeeded." << std::endl;
     } else {
@@ -204,7 +204,7 @@ class RouteGuideClient {
     }
     RouteSummary stats;
     // Recv reponse and status. BlockingRecvRespAndStatus()?
-    Status status = writer.BlockingFinish(&stats);  // Todo: timeout
+    Status status = writer.Finish(&stats);  // Todo: timeout
     if (status.ok()) {
       std::cout << "Finished trip with " << stats.point_count() << " points\n"
                 << "Passed " << stats.feature_count() << " features\n"
@@ -227,12 +227,12 @@ class RouteGuideClient {
     });
 
     RouteNote server_note;
-    while (sync_reader_writer.BlockingReadOne(&server_note))
+    while (sync_reader_writer.ReadOne(&server_note))
         PrintServerNote(server_note);
 
     thd.join();
     // Todo: Finish() should auto close writing.
-    Status status = sync_reader_writer.BlockingRecvStatus();
+    Status status = sync_reader_writer.RecvStatus();
     if (!status.ok()) {
       std::cout << "RouteChat rpc failed." << std::endl;
     }
@@ -324,7 +324,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
   }
   RouteSummary stats;
   // Recv reponse and status. BlockingRecvRespAndStatus()?
-  Status status = writer.BlockingFinish(&stats);  // Todo: timeout
+  Status status = writer.Finish(&stats);  // Todo: timeout
   if (status.ok()) {
     std::cout << "Finished trip with " << stats.point_count() << " points\n"
               << "Passed " << stats.feature_count() << " features\n"
@@ -350,7 +350,7 @@ void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>
     async_reader_writer.Write(note);
     // RandomSleep();
   }
-  async_reader_writer.WritesDone();  // Optional close writing.
+  async_reader_writer.CloseWriting();  // Optional.
 }
 
 void RouteChatAsync(const ChannelSptr& channel) {
@@ -359,7 +359,7 @@ void RouteChatAsync(const ChannelSptr& channel) {
     stub.AsyncRouteChat());
 
   volatile bool bReadDone = false;
-  async_reader_writer.AsyncReadEach(
+  async_reader_writer.ReadEach(
       [](const RouteNote& note) { PrintServerNote(note); },
       [&bReadDone](const Status& status) {
         if (!status.ok()) {

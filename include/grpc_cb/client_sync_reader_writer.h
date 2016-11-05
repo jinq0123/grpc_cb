@@ -20,30 +20,22 @@ class ClientSyncReaderWriter GRPC_FINAL {
   }
 
  public:
-  // Write is always asynchronous.
   bool Write(const Request& request) const {
     return impl_sptr_->Write(request);
   }
 
-  // Optional. Writes are auto done in dtr().
+  // Optional. Writing is auto closed in dtr().
   // Redundant calls are ignored.
-  void WritesDone() {
-    impl_sptr_->WritesDone();
+  void CloseWriting() {
+    impl_sptr_->CloseWriting();
   }
 
-  bool BlockingReadOne(Response* response) const {
-    return impl_sptr_->BlockingReadOne(response);
+  bool ReadOne(Response* response) const {
+    return impl_sptr_->ReadOne(response);
   }
 
-  Status BlockingRecvStatus() const {
-    return impl_sptr_->BlockingRecvStatus();
-  }
-
-  using ReadCallback = std::function<void(const Response&)>;
-  void AsyncReadEach(
-      const ReadCallback& on_read,
-      const StatusCallback& on_status = StatusCallback()) const {
-    impl_sptr_->AsyncReadEach(on_read, on_status);
+  Status RecvStatus() const {
+    return impl_sptr_->RecvStatus();
   }
 
  private:

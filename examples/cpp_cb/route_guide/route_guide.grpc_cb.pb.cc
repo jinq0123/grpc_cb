@@ -106,7 +106,7 @@ void Stub::AsyncListFeatures(
     const ::grpc_cb::StatusCallback& on_status) {
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
       GetChannelSptr(), method_names[1], request, GetCqSptr());
-  reader.AsyncReadEach(on_msg, on_status);
+  reader.ReadEach(on_msg, on_status);
 }
 
 // XXX void Stub::AsyncListFeatures(request, reader)

@@ -34,6 +34,8 @@ class ClientWriterFinishCqTag GRPC_FINAL : public CallCqTag {
   CodClientRecvStatus cod_client_recv_status_;
 };  // class ClientWriterFinishCqTag
 
+// Todo: Rename to ClientWriterCloseCqTag
+
 bool ClientWriterFinishCqTag::Start() {
   CallOperations ops;
   ops.ClientSendClose();

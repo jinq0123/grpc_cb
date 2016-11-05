@@ -16,8 +16,15 @@ namespace ClientWriterHelper {
 // Todo: BlockingGetInitMd();
 
 // Todo: AsyncFinish
+inline bool BlockingWrite(
+    const CallSptr& call_sptr,
+    const ::google::protobuf::Message& request,
+    Status& status) {
+  // XXX
+  return false;
+}
 
-inline bool Write(
+inline bool AsyncWrite(
     const CallSptr& call_sptr,
     const ::google::protobuf::Message& request,
     Status& status) {

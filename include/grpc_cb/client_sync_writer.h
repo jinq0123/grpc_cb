@@ -28,10 +28,10 @@ class ClientSyncWriter GRPC_FINAL {
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
     Data& d = *data_sptr_;
-    return ClientWriterHelper::Write(d.call_sptr, request, d.status);
+    return ClientWriterHelper::BlockingWrite(d.call_sptr, request, d.status);
   }
 
-  Status BlockingFinish(
+  Status Finish(
       ::google::protobuf::Message* response) const;
 
   // Todo: AsyncFinish
@@ -65,7 +65,7 @@ ClientSyncWriter<Request>::ClientSyncWriter(const ChannelSptr& channel,
 }
 
 template <class Request>
-Status ClientSyncWriter<Request>::BlockingFinish(
+Status ClientSyncWriter<Request>::Finish(
     ::google::protobuf::Message* response) const {
   assert(response);
   assert(data_sptr_);

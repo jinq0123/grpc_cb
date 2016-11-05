@@ -27,7 +27,7 @@ class ClientAsyncReader GRPC_FINAL {
 
  public:
   using MsgCallback = std::function<void(const Response&)>;
-  inline void AsyncReadEach(
+  inline void ReadEach(
       const MsgCallback& on_msg,
       const StatusCallback& on_status = StatusCallback()) const {
     data_sptr_->on_msg = on_msg;

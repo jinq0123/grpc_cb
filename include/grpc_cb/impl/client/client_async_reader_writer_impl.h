@@ -18,19 +18,12 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   inline ~ClientAsyncReaderWriterImpl();
 
  public:
-  // Write is always asynchronous.
   inline bool Write(const Request& request) const;
-  // WritesDone() is optional. Writes are auto done in dtr().
-  inline void WritesDone();
-
-  inline bool BlockingReadOne(Response* response) const;
-  inline Status BlockingRecvStatus() const {
-    const Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
-  }
+  // AsyncCloseWriting() is optional. Auto closed on dtr().
+  inline void CloseWriting();
 
   using ReadCallback = std::function<void(const Response&)>;
-  inline void AsyncReadEach(
+  inline void ReadEach(
       const ReadCallback& on_read,
       const StatusCallback& on_status = StatusCallback()) const;
 
@@ -39,7 +32,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   using Data = ClientReaderData<Response>;
   using DataSptr = ClientReaderDataSptr<Response>;
   DataSptr data_sptr_;  // Same as reader. Easy to copy.
-  bool writes_done_ = false;  // Is WritesDone() called?
+  bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
 };  // class ClientAsyncReaderWriterImpl<>
 
 // Todo: BlockingGetInitMd();
@@ -61,21 +54,21 @@ ClientAsyncReaderWriterImpl<Request, Response>::ClientAsyncReaderWriterImpl(
 
 template <class Request, class Response>
 ClientAsyncReaderWriterImpl<Request, Response>::~ClientAsyncReaderWriterImpl() {
-  WritesDone();
+  CloseWriting();  // XXX
 }
 
 template <class Request, class Response>
 bool ClientAsyncReaderWriterImpl<Request, Response>::Write(const Request& request) const {
   assert(data_sptr_);
   assert(data_sptr_->call_sptr);
-  return ClientWriterHelper::Write(data_sptr_->call_sptr,
+  return ClientWriterHelper::AsyncWrite(data_sptr_->call_sptr,
       request, data_sptr_->status);
 }
 
 template <class Request, class Response>
-void ClientAsyncReaderWriterImpl<Request, Response>::WritesDone() {
-  if (writes_done_) return;
-  writes_done_ = true;
+void ClientAsyncReaderWriterImpl<Request, Response>::CloseWriting() {
+  if (writing_closed_) return;
+  writing_closed_ = true;
   Status& status = data_sptr_->status;
   if (!status.ok()) return;
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(data_sptr_->call_sptr);
@@ -86,16 +79,9 @@ void ClientAsyncReaderWriterImpl<Request, Response>::WritesDone() {
 }
 
 // Todo: same as ClientReader?
-template <class Request, class Response>
-bool ClientAsyncReaderWriterImpl<Request, Response>::BlockingReadOne(Response* response) const {
-  assert(response);
-  Data& d = *data_sptr_;
-  return ClientReaderHelper::BlockingReadOne(
-      d.call_sptr, d.cq_sptr, *response, d.status);
-}
 
 template <class Request, class Response>
-void ClientAsyncReaderWriterImpl<Request, Response>::AsyncReadEach(
+void ClientAsyncReaderWriterImpl<Request, Response>::ReadEach(
     const ReadCallback& on_read,
     const StatusCallback& on_status) const {
     data_sptr_->on_msg = on_read;
