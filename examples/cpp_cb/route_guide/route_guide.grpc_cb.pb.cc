@@ -117,9 +117,13 @@ Stub::SyncRecordRoute() {
       GetChannelSptr(), method_names[2]);
 }
 
-::grpc_cb::ClientAsyncWriter<::routeguide::Point>
+::grpc_cb::ClientAsyncWriter<
+    ::routeguide::Point,
+    ::routeguide::RouteSummary>
 Stub::AsyncRecordRoute() {
-  return ::grpc_cb::ClientAsyncWriter<::routeguide::Point>(
+  return ::grpc_cb::ClientAsyncWriter<
+      ::routeguide::Point,
+      ::routeguide::RouteSummary>(
       GetChannelSptr(), method_names[2], GetCqSptr());
 }
 

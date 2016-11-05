@@ -56,17 +56,19 @@ class Stub : public ::grpc_cb::ServiceStub {
   ::grpc_cb::ClientSyncWriter<::routeguide::Point>
   SyncRecordRoute();
 
-  ::grpc_cb::ClientAsyncWriter<::routeguide::Point>
+  ::grpc_cb::ClientAsyncWriter<
+      ::routeguide::Point,
+      ::routeguide::RouteSummary>
   AsyncRecordRoute();
 
   ::grpc_cb::ClientSyncReaderWriter<
-    ::routeguide::RouteNote,
-    ::routeguide::RouteNote>
+      ::routeguide::RouteNote,
+      ::routeguide::RouteNote>
   SyncRouteChat();
 
   ::grpc_cb::ClientAsyncReaderWriter<
-    ::routeguide::RouteNote,
-    ::routeguide::RouteNote>
+      ::routeguide::RouteNote,
+      ::routeguide::RouteNote>
   AsyncRouteChat();
 
 };  // class Stub

@@ -203,8 +203,8 @@ class RouteGuideClient {
       RandomSleep();
     }
     RouteSummary stats;
-    // Recv reponse and status. BlockingRecvRespAndStatus()?
-    Status status = writer.Finish(&stats);  // Todo: timeout
+    // Recv reponse and status.
+    Status status = writer.Close(&stats);  // Todo: timeout
     if (status.ok()) {
       std::cout << "Finished trip with " << stats.point_count() << " points\n"
                 << "Passed " << stats.feature_count() << " features\n"
@@ -231,7 +231,7 @@ class RouteGuideClient {
         PrintServerNote(server_note);
 
     thd.join();
-    // Todo: Finish() should auto close writing.
+    // Todo: Close() should auto close writing.
     Status status = sync_reader_writer.RecvStatus();
     if (!status.ok()) {
       std::cout << "RouteChat rpc failed." << std::endl;
@@ -310,7 +310,10 @@ void RecordRouteAsync(const ChannelSptr& channel,
       0, feature_list.size() - 1);
 
   Stub stub(channel);
-  ClientAsyncWriter<Point> writer(stub.AsyncRecordRoute());
+  std::thread thd([&stub]() { stub.BlockingRun(); });
+
+  // ClientAsyncWriter<Point, RouteSummary> writer;
+  auto writer = stub.AsyncRecordRoute();
   for (int i = 0; i < kPoints; i++) {
     const Feature& f = feature_list[feature_distribution(generator)];
     std::cout << "Visiting point "
@@ -322,18 +325,22 @@ void RecordRouteAsync(const ChannelSptr& channel,
     }
     RandomSleep();
   }
-  RouteSummary stats;
-  // Recv reponse and status. BlockingRecvRespAndStatus()?
-  Status status = writer.Finish(&stats);  // Todo: timeout
-  if (status.ok()) {
-    std::cout << "Finished trip with " << stats.point_count() << " points\n"
-              << "Passed " << stats.feature_count() << " features\n"
-              << "Travelled " << stats.distance() << " meters\n"
-              << "It took " << stats.elapsed_time() << " seconds"
-              << std::endl;
-  } else {
-    std::cout << "RecordRoute rpc failed." << std::endl;
-  }
+  // Recv reponse and status.
+  writer.Close([](const Status& status, const RouteSummary& resp) {
+    if (!status.ok()) {
+      std::cout << "RecordRoute rpc failed." << std::endl;
+      return;
+    }
+    std::cout << "Finished trip with " << resp.point_count() << " points\n"
+              << "Passed " << resp.feature_count() << " features\n"
+              << "Travelled " << resp.distance() << " meters\n"
+              << "It took " << resp.elapsed_time() << " seconds" << std::endl;
+  });
+
+  // Todo: timeout
+
+  stub.Shutdown();
+  thd.join();
 }  // RecordRouteAsync()
 
 void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>

@@ -124,7 +124,7 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
           // std::this_thread::sleep_for(std::chrono::seconds(1));
         }
       }
-      // Todo: auto writer.Finish(Status::OK);
+      // Todo: auto writer.Close(Status::OK);
     });  // thread t
     t.detach();
   }

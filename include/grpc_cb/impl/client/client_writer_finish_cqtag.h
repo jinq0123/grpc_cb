@@ -14,6 +14,7 @@
 
 namespace grpc_cb {
 
+// Todo: Rename to ClientWriterCloseCqTag.
 class ClientWriterFinishCqTag GRPC_FINAL : public CallCqTag {
  public:
   inline explicit ClientWriterFinishCqTag(const CallSptr& call_sptr)

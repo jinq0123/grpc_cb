@@ -5,90 +5,63 @@
 #define GRPC_CB_CLIENT_ASYNC_WRITER_H
 
 #include <cassert>  // for assert()
+#include <string>
 
-#include <grpc_cb/channel.h>         // for MakeSharedCall()
-#include <grpc_cb/impl/call_sptr.h>  // for CallSptr
-#include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
-#include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
-#include <grpc_cb/status.h>                                  // for Status
+#include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
+#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for ClientAsyncWriterCloseHandler
+#include <grpc_cb/impl/client/client_async_writer_impl.h>  // for Write()
+#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/support/protobuf_fwd.h>        // for Message
 
 namespace grpc_cb {
+
+class Status;
 
 // Copyable.
 // Use template class instead of template member function
 //    to ensure client input the correct request type.
-// Todo: Use non_template class as the implement.
-template <class Request>
+template <class Request, class Response>
 class ClientAsyncWriter GRPC_FINAL {
  public:
   inline ClientAsyncWriter(const ChannelSptr& channel,
                            const std::string& method,
-                           const CompletionQueueSptr& cq_sptr);
+                           const CompletionQueueSptr& cq_sptr)
+      // Todo: same as ClientReader?
+      : impl_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr)) {
+    assert(channel);
+    assert(cq_sptr);
+  }
 
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
-    Data& d = *data_sptr_;
-    return ClientAsyncWriterHelper::AsyncWrite(d.call_sptr, request, d.status);
+    return impl_sptr_->Write(request);
   }
 
-  Status Finish(::google::protobuf::Message* response) const;
+  using ClosedCallback = std::function<void (const Status&, const Response&)>;
+  void Close(const ClosedCallback& on_closed = ClosedCallback()) {
+    // Use CloseHandler to make impl non-template.
+    class CloseHandler GRPC_FINAL : public ClientAsyncWriterCloseHandler {
+     public:
+      explicit CloseHandler(const ClosedCallback& on_closed)
+        : on_closed_(on_closed) {};
+      Message& GetMessage() override { return msg_; }
+      void operator()(const Status& status) override {
+        if (on_closed_)
+          on_closed_(status, msg_);
+      }
+     private:
+      Response msg_;
+      ClosedCallback on_closed_;
+    };
+
+    auto handler = std::make_shared<CloseHandler>(on_closed);
+    impl_sptr_->Close(handler);
+  }
 
  private:
-  // Wrap all data in shared struct pointer to make copy quick.
-  struct Data {
-    CompletionQueueSptr cq_sptr;
-    CallSptr call_sptr;
-    Status status;
-  };
-  std::shared_ptr<Data> data_sptr_;  // Easy to copy.
+  // Use non_template class as the implement.
+  std::shared_ptr<ClientAsyncWriterImpl> impl_sptr_;  // Easy to copy.
 };  // class ClientAsyncWriter<>
-
-template <class Request>
-ClientAsyncWriter<Request>::ClientAsyncWriter(
-    const ChannelSptr& channel, const std::string& method,
-    const CompletionQueueSptr& cq_sptr)
-    // Todo: same as ClientReader?
-    : data_sptr_(new Data{cq_sptr, channel->MakeSharedCall(method, *cq_sptr)}) {
-  assert(cq_sptr);
-  assert(channel);
-  assert(data_sptr_->call_sptr);
-  ClientInitMdCqTag* tag = new ClientInitMdCqTag(data_sptr_->call_sptr);
-  if (tag->Start()) return;
-  delete tag;
-  data_sptr_->status.SetInternalError("Failed to init client stream.");
-}
-
-template <class Request>
-Status ClientAsyncWriter<Request>::Finish(
-    ::google::protobuf::Message* response) const {
-  // XXX
-  return Status::UNIMPLEMENTED;
-}
-
-  //assert(response);
-  //assert(data_sptr_);
-  //Data& data = *data_sptr_;
-  //assert(data.call_sptr);
-  //assert(data.cq_sptr);
-
-  //Status& status = data.status;
-  //if (!status.ok()) return status;
-  //ClientWriterFinishCqTag tag(data.call_sptr);
-  //if (!tag.Start()) {
-  //  status.SetInternalError("Failed to finish client stream.");
-  //  return status;
-  //}
-
-  //data.cq_sptr->Pluck(&tag);
-
-  //// Todo: Get trailing metadata.
-  //if (tag.IsStatusOk())
-  //  status = tag.GetResponse(*response);
-  //else
-  //  status = tag.GetStatus();
-
-  //return status;
 
 }  // namespace grpc_cb
 

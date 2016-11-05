@@ -104,7 +104,9 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_call_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_helper.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_writer_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_helper.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_call_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_init_md_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_async_read_cqtag.h" />
@@ -151,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\cpp_cb\client\channel.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\service_stub.cc" />
