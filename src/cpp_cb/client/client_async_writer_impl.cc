@@ -7,6 +7,7 @@
 
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
+#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
 #include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
@@ -34,22 +35,21 @@ bool ClientAsyncWriterImpl::Write(
 
 void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   assert(handler_sptr);
+  close_handler_sptr_ = handler_sptr;
+
+  if (!status_.ok()) {
+    (*handler_sptr).OnClose(status_);
+    return;
+  }
+
+  ClientWriterFinishCqTag tag(call_sptr_);
+  if (!tag.Start()) {
+    status_.SetInternalError("Failed to close client stream.");
+    (*handler_sptr).OnClose(status_);
+    return;
+  }
+
   // XXX
-}
-
-  //assert(response);
-  //assert(data_sptr_);
-  //Data& data = *data_sptr_;
-  //assert(data.call_sptr);
-  //assert(data.cq_sptr);
-
-  //Status& status = data.status;
-  //if (!status.ok()) return status;
-  //ClientWriterFinishCqTag tag(data.call_sptr);
-  //if (!tag.Start()) {
-  //  status.SetInternalError("Failed to finish client stream.");
-  //  return status;
-  //}
 
   //data.cq_sptr->Pluck(&tag);
 
@@ -58,7 +58,6 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   //  status = tag.GetResponse(*response);
   //else
   //  status = tag.GetStatus();
-
-  //return status;
+}  // Close()
 
 }  // namespace grpc_cb

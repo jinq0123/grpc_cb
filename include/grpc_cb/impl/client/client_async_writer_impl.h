@@ -32,6 +32,8 @@ class ClientAsyncWriterImpl GRPC_FINAL {
   CompletionQueueSptr cq_sptr_;
   CallSptr call_sptr_;
   Status status_;
+  // Close handler hides the Response and on_closed callback.
+  CloseHandlerSptr close_handler_sptr_;
 
   // XXX cache messages
 };  // class ClientAsyncWriterImpl<>

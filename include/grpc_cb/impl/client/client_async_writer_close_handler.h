@@ -17,7 +17,7 @@ class ClientAsyncWriterCloseHandler {
 
   using Message = ::google::protobuf::Message;
   virtual Message& GetMessage() = 0;
-  virtual void operator()(const Status& status) = 0;
+  virtual void OnClose(const Status& status) = 0;
 };  // class ClientAsyncWriterCloseHandler
 
 }  // namespace grpc_cb
