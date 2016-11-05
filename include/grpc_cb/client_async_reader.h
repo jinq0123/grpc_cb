@@ -26,18 +26,6 @@ class ClientAsyncReader GRPC_FINAL {
                       const CompletionQueueSptr& cq_sptr);
 
  public:
-  inline bool BlockingReadOne(Response* response) const {
-    assert(response);
-    Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingReadOne(d.call_sptr, d.cq_sptr,
-                                               *response, d.status);
-  }
-
-  inline Status BlockingRecvStatus() const {
-    const Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
-  }
-
   using MsgCallback = std::function<void(const Response&)>;
   inline void AsyncReadEach(
       const MsgCallback& on_msg,
@@ -53,6 +41,8 @@ class ClientAsyncReader GRPC_FINAL {
   using DataSptr = ClientReaderDataSptr<Response>;
   DataSptr data_sptr_;
 };  // class ClientAsyncReader<>
+
+// XXX Delete ClientAsyncReader. Only need DataSptr.
 
 template <class Response>
 ClientAsyncReader<Response>::ClientAsyncReader(const ChannelSptr& channel,

@@ -37,15 +37,6 @@ class ClientSyncReader GRPC_FINAL {
     return ClientReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
   }
 
-  using MsgCallback = std::function<void(const Response&)>;
-  inline void AsyncReadEach(
-      const MsgCallback& on_msg,
-      const StatusCallback& on_status = StatusCallback()) const {
-    data_sptr_->on_msg = on_msg;
-    data_sptr_->on_status = on_status;
-    ClientReaderHelper::AsyncReadNext(data_sptr_);
-  }
-
  private:
   // Wrap all data in shared struct pointer to make copy quick.
   using Data = ClientReaderData<Response>;

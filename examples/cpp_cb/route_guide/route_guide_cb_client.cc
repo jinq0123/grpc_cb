@@ -283,8 +283,7 @@ void ListFeaturesAsync(const ChannelSptr& channel) {
       400000000, -750000000, 420000000, -730000000);
   std::cout << "Looking for features between 40, -75 and 42, -73" << std::endl;
 
-  ClientAsyncReader<Feature> reader(stub.AsyncListFeatures(rect));
-  reader.AsyncReadEach(
+  stub.AsyncListFeatures(rect,
     [](const Feature& feature){
       std::cout << "Got feature " << feature.name() << " at "
           << feature.location().latitude()/kCoordFactor << ", "
