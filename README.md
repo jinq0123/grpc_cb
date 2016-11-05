@@ -16,7 +16,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface.
 * ClientSyncReaderWriter		DONE
 * ClientSyncReaderWriterImpl	DONE
 * ClientAsyncReader				DONE
-* ClientAsyncReaderHelper
+* ClientAsyncReaderHelper		DONE
 * ClientAsyncWriter
 * ClientAsyncWriterHelper
 * ClientAsyncReaderWriter
