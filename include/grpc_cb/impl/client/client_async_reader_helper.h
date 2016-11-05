@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_IMPL_CLIENT_CLIENT_READER_HELPER_H
-#define GRPC_CB_IMPL_CLIENT_CLIENT_READER_HELPER_H
+#ifndef GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_HELPER_H
+#define GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 
 #include <cassert>     // for assert()
 #include <functional>  // for std::function
@@ -18,18 +18,8 @@
 #include <grpc_cb/status_callback.h>        // for StatusCallback
 
 namespace grpc_cb {
-namespace ClientReaderHelper {
-// ClientReaderHelper is used in ClientReader and ClientReaderWriter.
-
-inline bool BlockingReadOne(
-    const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr,
-    ::google::protobuf::Message& response,
-    Status& status);
-
-inline Status BlockingRecvStatus(
-    const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr);
+namespace ClientAsyncReaderHelper {
+// ClientAsyncReaderHelper is used in ClientAsyncReader and ClientAsyncReaderWriter.
 
 // Callback on each message.
 template <class Response>
@@ -51,38 +41,6 @@ inline void AsyncRecvStatus(
     const StatusCallback& on_status);
 
 // Todo: move to cpp file.
-
-inline bool BlockingReadOne(
-    const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr,
-    ::google::protobuf::Message& response,
-    Status& status) {
-  if (!status.ok()) return false;
-
-  ClientReaderReadCqTag tag(call_sptr);
-  if (!tag.Start()) {
-    status.SetInternalError("End of server stream.");  // Todo: use EndOfStream instead of status.
-    return false;
-  }
-
-  // tag.Start() has queued the tag. Wait for completion.
-  cq_sptr->Pluck(&tag);
-  // Todo: check HasGotMsg()...
-  status = tag.GetResultMsg(response);
-  return status.ok();
-}
-
-inline Status BlockingRecvStatus(
-    const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr) {
-  assert(call_sptr);
-  assert(cq_sptr);
-  ClientReaderRecvStatusCqTag tag(call_sptr);
-  if (!tag.Start())
-      return Status::InternalError("Failed to receive status.");
-  cq_sptr->Pluck(&tag);
-  return tag.GetStatus();
-}
 
 template <class Response>
 inline void AsyncReadNext(const ClientReaderDataSptr<Response>& data_sptr) {
@@ -142,7 +100,7 @@ inline void OnEnd(const Status& status,
   if (on_status) on_status(status);
 }
 
-}  // namespace ClientReaderHelper
+}  // namespace ClientAsyncReaderHelper
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_IMPL_CLIENT_CLIENT_READER_HELPER_H
+#endif  // GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_HELPER_H

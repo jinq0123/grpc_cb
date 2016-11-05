@@ -9,10 +9,10 @@
 
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
-#include <grpc_cb/impl/client/client_reader_helper.h>  // for ClientReaderHelper
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
-#include <grpc_cb/status.h>                                // for Status
-#include <grpc_cb/status_callback.h>                       // for StatusCallback
+#include <grpc_cb/impl/client/client_sync_reader_helper.h>  // for ClientSyncReaderHelper
+#include <grpc_cb/status.h>                                 // for Status
+#include <grpc_cb/status_callback.h>  // for StatusCallback
 
 namespace grpc_cb {
 
@@ -28,13 +28,13 @@ class ClientSyncReader GRPC_FINAL {
   inline bool ReadOne(Response* response) const {
     assert(response);
     Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingReadOne(d.call_sptr, d.cq_sptr,
-                                               *response, d.status);
+    return ClientSyncReaderHelper::BlockingReadOne(d.call_sptr, d.cq_sptr,
+                                                   *response, d.status);
   }
 
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
+    return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
   }
 
  private:

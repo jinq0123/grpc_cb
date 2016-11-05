@@ -7,9 +7,9 @@
 #include <cassert>     // for assert()
 #include <functional>  // for std::function
 
-#include <grpc_cb/channel.h>                         // for MakeSharedCall()
+#include <grpc_cb/channel.h>  // for MakeSharedCall()
+#include <grpc_cb/impl/client/client_async_reader_helper.h>  // for ClientAsyncReaderHelper
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
-#include <grpc_cb/impl/client/client_reader_helper.h>  // for ClientReaderHelper
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
 #include <grpc_cb/status.h>                                // for Status
 #include <grpc_cb/status_callback.h>                       // for StatusCallback
@@ -32,7 +32,7 @@ class ClientAsyncReader GRPC_FINAL {
       const StatusCallback& on_status = StatusCallback()) const {
     data_sptr_->on_msg = on_msg;
     data_sptr_->on_status = on_status;
-    ClientReaderHelper::AsyncReadNext(data_sptr_);
+    ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
   }
 
  private:

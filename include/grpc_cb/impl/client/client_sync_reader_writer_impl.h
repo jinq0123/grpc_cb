@@ -24,7 +24,7 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
   inline bool ReadOne(Response* response) const;
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
-    return ClientReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
+    return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
   }
 
  private:
@@ -84,7 +84,7 @@ template <class Request, class Response>
 bool ClientSyncReaderWriterImpl<Request, Response>::ReadOne(Response* response) const {
   assert(response);
   Data& d = *data_sptr_;
-  return ClientReaderHelper::BlockingReadOne(
+  return ClientSyncReaderHelper::BlockingReadOne(
       d.call_sptr, d.cq_sptr, *response, d.status);
 }
 
