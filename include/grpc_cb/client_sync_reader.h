@@ -5,14 +5,12 @@
 #define GRPC_CB_CLIENT_CLIENT_SYNC_READER_H
 
 #include <cassert>     // for assert()
-#include <functional>  // for std::function
 
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
 #include <grpc_cb/impl/client/client_sync_reader_helper.h>  // for ClientSyncReaderHelper
 #include <grpc_cb/status.h>                                 // for Status
-#include <grpc_cb/status_callback.h>  // for StatusCallback
 
 namespace grpc_cb {
 

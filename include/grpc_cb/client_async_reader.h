@@ -11,7 +11,6 @@
 #include <grpc_cb/impl/client/client_async_reader_helper.h>  // for ClientAsyncReaderHelper
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
-#include <grpc_cb/status.h>                                // for Status
 #include <grpc_cb/status_callback.h>                       // for StatusCallback
 
 namespace grpc_cb {

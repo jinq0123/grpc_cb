@@ -4,6 +4,9 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_H
 #define GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_H
 
+#include <memory>  // for shared_ptr
+#include <string>
+
 #include <grpc_cb/impl/client/client_sync_reader_writer_impl.h>  // for ClientSyncReaderWriterImpl<>
 
 namespace grpc_cb {

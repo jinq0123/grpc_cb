@@ -5,17 +5,12 @@
 #define GRPC_CB_IMPL_CLIENT_CLIENT_SYNC_READER_HELPER_H
 
 #include <cassert>     // for assert()
-#include <functional>  // for std::function
 
 #include <grpc_cb/impl/call_sptr.h>                              // for CallSptr
-#include <grpc_cb/impl/client/client_reader_async_read_cqtag.h>  // for ClientReaderAsyncReadCqTag
-#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
-#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_reader_read_cqtag.h>  // for ClientReaderReadCqTag
 #include <grpc_cb/impl/client/client_reader_recv_status_cqtag.h>  // for ClientReaderRecvStatusCqTag
 #include <grpc_cb/impl/completion_queue.h>  // for CompletionQueue::Pluck()
 #include <grpc_cb/status.h>                 // for Status
-#include <grpc_cb/status_callback.h>        // for StatusCallback
 
 namespace grpc_cb {
 namespace ClientSyncReaderHelper {
