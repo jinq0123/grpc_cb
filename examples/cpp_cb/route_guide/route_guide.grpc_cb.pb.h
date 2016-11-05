@@ -45,13 +45,13 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::grpc_cb::ErrorCallback& ecb);
 
   ::grpc_cb::ClientSyncReader<::routeguide::Feature>
-  ListFeatures(const ::routeguide::Rectangle& request);
+  SyncListFeatures(const ::routeguide::Rectangle& request);
 
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature>
   AsyncListFeatures(const ::routeguide::Rectangle& request);
 
   ::grpc_cb::ClientSyncWriter<::routeguide::Point>
-  RecordRoute();
+  SyncRecordRoute();
 
   ::grpc_cb::ClientAsyncWriter<::routeguide::Point>
   AsyncRecordRoute();
@@ -59,7 +59,7 @@ class Stub : public ::grpc_cb::ServiceStub {
   ::grpc_cb::ClientSyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>
-  RouteChat();
+  SyncRouteChat();
 
   ::grpc_cb::ClientAsyncReaderWriter<
     ::routeguide::RouteNote,

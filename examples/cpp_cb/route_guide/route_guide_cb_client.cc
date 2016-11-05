@@ -169,7 +169,7 @@ class RouteGuideClient {
         << std::endl;
 
     ClientSyncReader<Feature> reader(
-        stub_->ListFeatures(rect));
+        stub_->SyncListFeatures(rect));
     while (reader.BlockingReadOne(&feature)) {
       std::cout << "Found feature called "
                 << feature.name() << " at "
@@ -190,7 +190,7 @@ class RouteGuideClient {
     std::uniform_int_distribution<int> feature_distribution(
         0, feature_list_.size() - 1);
 
-    ClientSyncWriter<Point> writer(stub_->RecordRoute());
+    ClientSyncWriter<Point> writer(stub_->SyncRecordRoute());
     for (int i = 0; i < kPoints; i++) {
       const Feature& f = feature_list_[feature_distribution(generator)];
       std::cout << "Visiting point "
@@ -216,12 +216,11 @@ class RouteGuideClient {
     }
   }
 
-  // Tood: writing is always non-blocking.
   // Todo: Callback on client stream response and status.
 
   void BlockingRouteChat() {
     ClientSyncReaderWriter<RouteNote, RouteNote> sync_reader_writer(
-        stub_->RouteChat());
+        stub_->SyncRouteChat());
 
     std::thread thd([sync_reader_writer]() {
         RunWriteRouteNote(sync_reader_writer);

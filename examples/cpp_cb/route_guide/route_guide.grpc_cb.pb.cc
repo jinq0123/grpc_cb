@@ -95,7 +95,7 @@ void Stub::AsyncGetFeature(
 }
 
 ::grpc_cb::ClientSyncReader<::routeguide::Feature>
-Stub::ListFeatures(const ::routeguide::Rectangle& request) {
+Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
   return ::grpc_cb::ClientSyncReader<::routeguide::Feature>(
       GetChannelSptr(), method_names[1], request);
 }
@@ -107,7 +107,7 @@ Stub::AsyncListFeatures(const ::routeguide::Rectangle& request) {
 }
 
 ::grpc_cb::ClientSyncWriter<::routeguide::Point>
-Stub::RecordRoute() {
+Stub::SyncRecordRoute() {
   return ::grpc_cb::ClientSyncWriter<::routeguide::Point>(
       GetChannelSptr(), method_names[2]);
 }
@@ -121,7 +121,7 @@ Stub::AsyncRecordRoute() {
 ::grpc_cb::ClientSyncReaderWriter<
   ::routeguide::RouteNote,
   ::routeguide::RouteNote>
-Stub::RouteChat() {
+Stub::SyncRouteChat() {
   return ::grpc_cb::ClientSyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>(
