@@ -24,6 +24,7 @@ class ClientAsyncWriterImpl GRPC_FINAL
  public:
   ClientAsyncWriterImpl(const ChannelSptr& channel, const std::string& method,
                         const CompletionQueueSptr& cq_sptr);
+  ~ClientAsyncWriterImpl();
 
   void Init();
 

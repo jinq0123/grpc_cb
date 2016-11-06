@@ -26,6 +26,10 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
   assert(channel);
 }
 
+ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
+  // XXX auto close if not. necessary?
+}
+
 // Do not Init() in ctr() because we need enable_from_this().
 void ClientAsyncWriterImpl::Init() {
   Guard g(mtx_);
@@ -95,7 +99,7 @@ void ClientAsyncWriterImpl::Next() {
 void ClientAsyncWriterImpl::InternalNext() {
   // XXX check status?
   is_idle_ = false;
-  // XXX
+  // XXX Send messages one by one, and finally close.
 }
 
 }  // namespace grpc_cb
