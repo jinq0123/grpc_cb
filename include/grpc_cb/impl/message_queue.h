@@ -5,13 +5,11 @@
 #define GRPC_CB_IMPL_MESSAGE_QUEUE_H
 
 #include <queue>
-#include <memory>
 
-#include <grpc_cb/support/protobuf_fwd.h>  // for Message
+#include <grpc_cb/impl/message_sptr.h>  // for MessageSptr
 
 namespace grpc_cb {
 
-using MessageSptr = std::shared_ptr<::google::protobuf::Message>;
 using MessageQueue = std::queue<MessageSptr>;
 
 }  // namespace grpc_cb

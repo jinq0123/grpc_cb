@@ -26,3 +26,6 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface.
 
 * Check thread-safety
 * Rename ...CallBack to On...
+* Make impl sptr const:
+  const std::shared_ptr<Impl> impl_sptr_;
+

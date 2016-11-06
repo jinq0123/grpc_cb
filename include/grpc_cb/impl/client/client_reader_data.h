@@ -10,6 +10,8 @@
 
 namespace grpc_cb {
 
+// Todo: Delete it.
+
 // Wrap all data in shared struct pointer to make copy quick.
 template <class Response>
 struct ClientReaderData {

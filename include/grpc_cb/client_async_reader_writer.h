@@ -5,6 +5,7 @@
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_H
 
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
+#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
 
 namespace grpc_cb {
 
@@ -15,7 +16,6 @@ class ClientAsyncReaderWriter GRPC_FINAL {
   ClientAsyncReaderWriter(const ChannelSptr& channel,
                             const std::string& method,
                             const CompletionQueueSptr& cq_sptr)
-      // Todo: same as ClientReader?
       : impl_sptr_(new Impl(channel, method, cq_sptr)) {
     assert(cq_sptr);
     assert(channel);
@@ -23,7 +23,8 @@ class ClientAsyncReaderWriter GRPC_FINAL {
 
  public:
   bool Write(const Request& request) const {
-    return impl_sptr_->Write(request);
+    auto msg_sptr = std::make_shared<Request>(request);
+    return impl_sptr_->Write(msg_sptr);
   }
 
   // Optional. Writing is auto closed in dtr().
@@ -34,20 +35,22 @@ class ClientAsyncReaderWriter GRPC_FINAL {
 
   using OnRead = std::function<void(const Response&)>;
   void SetOnRead(const OnRead& on_read) {
-    impl_sptr_->SetOnRead(on_read);
+    class ReadHandler : public ClientAsyncReadHandler {
+     public:
+      // XXX
+    };
+    auto handler_sptr = std::make_shared<ReadHandler>();
+    impl_sptr_->SetReadHandler(handler_sptr);
   }
+
   void SetOnEnd(const StatusCallback& on_status) {
     impl_sptr_->SetOnEnd(on_status);
   }
 
  private:
-  using Impl = ClientAsyncReaderWriterImpl<Request, Response>;
-  std::shared_ptr<Impl> impl_sptr_;
+  using Impl = ClientAsyncReaderWriterImpl;
+  const std::shared_ptr<Impl> impl_sptr_;
 };  // class ClientAsyncReaderWriter<>
-
-// Todo: BlockingGetInitMd();
-
-// Todo: same as ClientReader?
 
 }  // namespace grpc_cb
 

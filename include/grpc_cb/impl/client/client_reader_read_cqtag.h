@@ -6,6 +6,7 @@
 
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 
+#include <grpc_cb/impl/call.h>             // for GetMaxMsgSize()
 #include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
 #include <grpc_cb/impl/call_op_data.h>     // for CodRecvMsg
 #include <grpc_cb/impl/call_operations.h>  // for CallOperations

@@ -4,10 +4,13 @@
 #include <grpc_cb/impl/server/server_writer_impl.h>
 
 #include <thread>
+
 #include <google/protobuf/message.h>
 
+#include <grpc_cb/impl/message_sptr.h>  // for MessageSptr
+
 #include "server_writer_send_status_cqtag.h"  // for ServerWriterSendStatusCqTag
-#include "server_writer_write_cqtag.h"  // for ServerWriterWriteCqTag
+#include "server_writer_write_cqtag.h"        // for ServerWriterWriteCqTag
 
 namespace grpc_cb {
 
