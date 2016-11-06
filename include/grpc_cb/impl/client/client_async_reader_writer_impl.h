@@ -17,6 +17,8 @@
 
 namespace grpc_cb {
 
+// XXXX make it non template
+
 template <class Request, class Response>
 class ClientAsyncReaderWriterImpl GRPC_FINAL {
  public:
@@ -27,13 +29,14 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
 
  public:
   inline bool Write(const Request& request) const;
-  // AsyncCloseWriting() is optional. Auto closed on dtr().
+  // CloseWriting() is optional. Auto closed on dtr().
   inline void CloseWriting();
 
-  using ReadCallback = std::function<void(const Response&)>;
-  inline void ReadEach(
-      const ReadCallback& on_read,
-      const StatusCallback& on_status = StatusCallback()) const;
+  using OnRead = std::function<void(const Response&)>;
+  inline void SetOnRead(const OnRead& on_read) const;
+  inline void SetOnEnd(const StatusCallback& on_status) const {
+    // XXX data_sptr_->on_status = on_status;
+  }
 
  private:
   // Wrap all data in shared struct pointer to make copy quick.
@@ -89,12 +92,11 @@ void ClientAsyncReaderWriterImpl<Request, Response>::CloseWriting() {
 // Todo: same as ClientReader?
 
 template <class Request, class Response>
-void ClientAsyncReaderWriterImpl<Request, Response>::ReadEach(
-    const ReadCallback& on_read,
-    const StatusCallback& on_status) const {
-    data_sptr_->on_msg = on_read;
-    data_sptr_->on_status = on_status;
-    ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
+void ClientAsyncReaderWriterImpl<Request, Response>::SetOnRead(
+    const OnRead& on_read) const {
+  data_sptr_->on_msg = on_read;
+  // XXX data_sptr_->on_status = on_status;
+  ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
 }
 
 }  // namespace grpc_cb

@@ -32,11 +32,12 @@ class ClientAsyncReaderWriter GRPC_FINAL {
     impl_sptr_->CloseWriting();
   }
 
-  using ReadCallback = std::function<void(const Response&)>;
-  void ReadEach(
-      const ReadCallback& on_read,
-      const StatusCallback& on_status = StatusCallback()) const {
-    impl_sptr_->ReadEach(on_read, on_status);
+  using OnRead = std::function<void(const Response&)>;
+  void SetOnRead(const OnRead& on_read) {
+    impl_sptr_->SetOnRead(on_read);
+  }
+  void SetOnEnd(const StatusCallback& on_status) {
+    impl_sptr_->SetOnEnd(on_status);
   }
 
  private:

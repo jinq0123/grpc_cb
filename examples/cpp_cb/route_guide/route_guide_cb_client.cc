@@ -366,15 +366,14 @@ void RouteChatAsync(const ChannelSptr& channel) {
     stub.AsyncRouteChat());
 
   volatile bool bReadDone = false;
-  async_reader_writer.ReadEach(
-      [](const RouteNote& note) { PrintServerNote(note); },
-      [&bReadDone](const Status& status) {
-        if (!status.ok()) {
-          std::cout << "RouteChat rpc failed. "
-              << status.GetDetails() << std::endl;
-        }
-        bReadDone = true;
-      });
+  async_reader_writer.SetOnRead(
+      [](const RouteNote& note) { PrintServerNote(note); });
+  async_reader_writer.SetOnEnd([&bReadDone](const Status& status) {
+    if (!status.ok()) {
+      std::cout << "RouteChat rpc failed. " << status.GetDetails() << std::endl;
+    }
+    bReadDone = true;
+  });
   AsyncWriteRouteNotes(async_reader_writer);
 
   stub.BlockingRun();
