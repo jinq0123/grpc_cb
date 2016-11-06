@@ -222,6 +222,9 @@
     <ClInclude Include="..\include\grpc_cb\support\time.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\async_client_init_md_cqtag.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h">
       <Filter>src\cpp_cb\common</Filter>
     </ClInclude>

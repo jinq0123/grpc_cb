@@ -146,6 +146,7 @@
     <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h" />
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
     <ClInclude Include="..\include\grpc_cb\support\time.h" />
+    <ClInclude Include="..\src\cpp_cb\client\async_client_init_md_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_writer_send_status_cqtag.h" />

@@ -30,11 +30,15 @@ class ClientAsyncWriter GRPC_FINAL {
       : impl_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr)) {
     assert(channel);
     assert(cq_sptr);
+    impl_sptr_->Init();
   }
 
+  // Todo: Get queue size()
   // Todo: BlockingGetInitMd();
+
   bool Write(const Request& request) const {
-    return impl_sptr_->Write(request);
+    auto sptr = std::make_shared<Request>(request);
+    return impl_sptr_->Write(sptr);
   }
 
   using ClosedCallback = std::function<void (const Status&, const Response&)>;

@@ -17,7 +17,7 @@ class ClientSendCloseCqTag GRPC_FINAL : public CallCqTag {
  public:
   inline explicit ClientSendCloseCqTag(const CallSptr& call_sptr) : CallCqTag(call_sptr) {}
   inline bool Start() GRPC_MUST_USE_RESULT;
-};  // class ClientInitMdCqTag
+};  // class ClientSendCloseCqTag
 
 bool ClientSendCloseCqTag::Start() {
   CallOperations ops;
