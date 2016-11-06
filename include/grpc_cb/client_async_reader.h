@@ -34,6 +34,7 @@ class ClientAsyncReader GRPC_FINAL {
     data_sptr_->on_status = on_status;
     ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
   }
+  // Todo: void GetStatus(on_status), OnEnd(on_end_status)
 
  private:
   // Wrap all data in shared struct pointer to make copy quick.

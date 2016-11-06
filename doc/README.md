@@ -40,6 +40,16 @@ Because completion queue can not mix pluck() and next(), the stream rpc call mus
 Sync call uses own completion queue and pluck on each read or write.
 Async call uses a shared completion queue and do next for all calls.
 
+## Async reader writer interfaces
+* SetOnStart() to get init metadata from reader/writer
+* SetOnRead(on_read)
+* SetOnEnd(on_end) to check status and get trail metadata
+    on_end(status) or 
+    on_end(status, response) for client stream
+* Write()
+* CloseWrite()
+
+
 #Other
  
 To generate grpc_cb files:

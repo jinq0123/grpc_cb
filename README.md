@@ -25,4 +25,4 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface.
 * ServerWriter
 
 * Check thread-safety
-
+* Rename ...CallBack to On...
