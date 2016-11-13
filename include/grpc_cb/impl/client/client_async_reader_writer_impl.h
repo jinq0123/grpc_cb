@@ -17,7 +17,9 @@
 
 namespace grpc_cb {
 
-class ClientAsyncReaderWriterImpl GRPC_FINAL {
+// Todo: make it thread-safe
+class ClientAsyncReaderWriterImpl GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncReaderWriterImpl> {
  public:
   ClientAsyncReaderWriterImpl(const ChannelSptr& channel,
                               const std::string& method,
@@ -43,6 +45,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   ReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
 
+  bool is_reading_ = false;  // SetReadHandler() to trigger reading.
   bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
 };  // class ClientAsyncReaderWriterImpl<>
 

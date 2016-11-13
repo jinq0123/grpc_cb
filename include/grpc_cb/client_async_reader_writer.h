@@ -35,11 +35,18 @@ class ClientAsyncReaderWriter GRPC_FINAL {
 
   using OnRead = std::function<void(const Response&)>;
   void SetOnRead(const OnRead& on_read) {
+
     class ReadHandler : public ClientAsyncReadHandler {
      public:
+      explicit ReadHandler(const OnRead& on_read) : on_read_(on_read) {}
+      Message& GetMessage() override { return msg_; }
+     private:
+      OnRead on_read_;
+      Response msg_;
       // XXX
     };
-    auto handler_sptr = std::make_shared<ReadHandler>();
+
+    auto handler_sptr = std::make_shared<ReadHandler>(on_read);
     impl_sptr_->SetReadHandler(handler_sptr);
   }
 

@@ -11,6 +11,9 @@ class ClientAsyncReadHandler {
  public:
   ClientAsyncReadHandler() {}
   virtual ~ClientAsyncReadHandler() {}
+
+  using Message = ::google::protobuf::Message;
+  virtual Message& GetMessage() = 0;
 };  // class ClientAsyncReadHandler
 
 }  // namespace grpc_cb

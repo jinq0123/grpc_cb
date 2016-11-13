@@ -57,8 +57,12 @@ void ClientAsyncReaderWriterImpl::CloseWriting() {
 
 void ClientAsyncReaderWriterImpl::SetReadHandler(
     const ReadHandlerSptr& handler_sptr) {
-  // XXX on_msg_ = on_read;
-  // XXX data_sptr_->on_status = on_status;
+  read_handler_sptr_ = handler_sptr;
+  if (is_reading_) return;
+  is_reading_ = true;
+
+  auto sptr = shared_from_this();
+  // XXX ClientAsyncReaderHelper::AsyncReadNext(on_read, on_end)
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
 }
 
