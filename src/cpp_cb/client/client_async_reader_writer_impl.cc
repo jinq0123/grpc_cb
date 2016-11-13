@@ -17,8 +17,6 @@
 
 namespace grpc_cb {
 
-// XXXX make it non template
-
 // Todo: BlockingGetInitMd();
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(

@@ -17,8 +17,6 @@
 
 namespace grpc_cb {
 
-// XXXX make it non template
-
 class ClientAsyncReaderWriterImpl GRPC_FINAL {
  public:
   ClientAsyncReaderWriterImpl(const ChannelSptr& channel,
@@ -34,7 +32,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   using ReadHandlerSptr = ClientAsyncReadHandlerSptr;
   void SetReadHandler(const ReadHandlerSptr& handler_sptr);
   void SetOnEnd(const StatusCallback& on_status) {
-    // XXX data_sptr_->on_status = on_status;
+    on_status_ = on_status;
   }
 
  private:
@@ -43,7 +41,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   Status status_;
 
   ReadHandlerSptr read_handler_sptr_;
-  StatusCallback on_status;
+  StatusCallback on_status_;
 
   bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
 };  // class ClientAsyncReaderWriterImpl<>
