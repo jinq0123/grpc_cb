@@ -32,9 +32,17 @@ ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
 
 bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
   assert(call_sptr_);
+  if (!status_.ok()) return false;
+
   // XXX cache messages
-  return ClientAsyncWriterHelper::AsyncWrite(call_sptr_,
-      *msg_sptr, status_);
+  msg_queue_.push(msg_sptr);
+  if (is_writing_) return true;
+  InternalNext();
+  return true;
+
+  // XXX
+  //return ClientAsyncWriterHelper::AsyncWrite(call_sptr_,
+  //    *msg_sptr, status_);
 }
 
 void ClientAsyncReaderWriterImpl::CloseWriting() {
@@ -59,6 +67,27 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   auto sptr = shared_from_this();
   // XXX ClientAsyncReaderHelper::AsyncReadNext(on_read, on_end)
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
+}
+
+void ClientAsyncReaderWriterImpl::Next() {
+  Guard g(mtx_);
+  assert(is_writing_);  // Because Next() is called from completion callback.
+  InternalNext();
+}
+
+// Send messages one by one, and finally close.
+void ClientAsyncReaderWriterImpl::InternalNext() {
+  if (!status_.ok() || msg_queue_.empty())
+  {
+    is_writing_ = false;
+    // Do not close before Close(handler).
+    // XXX if (close_handler_sptr_)
+    // XXX   CloseNow();
+    return;
+  }
+
+  is_writing_ = true;
+  // XXX write one message...
 }
 
 }  // namespace grpc_cb

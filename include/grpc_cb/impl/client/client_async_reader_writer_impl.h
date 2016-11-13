@@ -4,12 +4,14 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 
+#include <mutex>
 #include <string>
 
 #include <grpc_cb/impl/call_sptr.h>     // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/impl/message_queue.h>          // for MessageQueue
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/status.h>                      // for Status
 #include <grpc_cb/status_callback.h>             // for StatusCallback
@@ -38,6 +40,15 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   }
 
  private:
+  // Write next message and close.
+  void Next();
+  void InternalNext();
+  void CloseWritingNow();
+
+ private:
+  mutable std::mutex mtx_;
+  using Guard = std::lock_guard<std::mutex>;
+
   CompletionQueueSptr cq_sptr_;
   CallSptr call_sptr_;
   Status status_;
@@ -47,6 +58,8 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
 
   bool is_reading_ = false;  // SetReadHandler() to trigger reading.
   bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
+  MessageQueue msg_queue_;  // cache messages to write
+  bool is_writing_ = false;
 };  // class ClientAsyncReaderWriterImpl<>
 
 // Todo: BlockingGetInitMd();

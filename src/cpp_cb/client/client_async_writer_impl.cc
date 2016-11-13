@@ -84,7 +84,7 @@ void ClientAsyncWriterImpl::CloseNow() {
 
 void ClientAsyncWriterImpl::Next() {
   Guard g(mtx_);
-  assert(is_writing_);  // Because WriteNext() is called from completion callback.
+  assert(is_writing_);  // Because Next() is called from completion callback.
   InternalNext();
 }
 
