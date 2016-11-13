@@ -9,8 +9,8 @@ namespace grpc_cb {
 // As the base class of handler template class.
 class ClientAsyncReadHandler {
  public:
-  ClientAsyncReadHandler();
-  virtual ~ClientAsyncReadHandler();
+  ClientAsyncReadHandler() {}
+  virtual ~ClientAsyncReadHandler() {}
 };  // class ClientAsyncReadHandler
 
 }  // namespace grpc_cb
