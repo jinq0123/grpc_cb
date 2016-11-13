@@ -90,4 +90,6 @@ void ClientAsyncReaderWriterImpl::InternalNext() {
   // XXX write one message...
 }
 
+// XXXX Extract ClientAsyncWriterHelper to queue, to write, to next.
+
 }  // namespace grpc_cb
