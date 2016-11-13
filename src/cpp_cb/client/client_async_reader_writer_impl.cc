@@ -3,17 +3,12 @@
 
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
 
-#include <functional>  // for function
-#include <string>
-
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_reader_helper.h>  // for ClientAsyncReaderHelper
 #include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
-#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/status.h>                      // for Status
 
 namespace grpc_cb {
 

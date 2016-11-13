@@ -30,7 +30,6 @@ class ClientAsyncWriter GRPC_FINAL {
       : impl_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr)) {
     assert(channel);
     assert(cq_sptr);
-    impl_sptr_->Init();
   }
 
   // Todo: Get queue size()

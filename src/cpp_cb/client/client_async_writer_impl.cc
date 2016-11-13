@@ -11,10 +11,9 @@
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
 #include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
+#include <grpc_cb/impl/client/client_init_md_cqtag.h>        // for ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
 #include <grpc_cb/status.h>                                  // for Status
-
-#include "async_client_init_md_cqtag.h"  // for AsyncClientInitMdCqTag
 
 namespace grpc_cb {
 
@@ -24,26 +23,14 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
     : cq_sptr_(cq_sptr), call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   assert(channel);
+  ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
+  if (tag->Start()) return;
+  delete tag;
+  status_.SetInternalError("Failed to init client stream.");
 }
 
 ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
   // XXX auto close if not. necessary?
-}
-
-// Do not Init() in ctr() because we need enable_from_this().
-void ClientAsyncWriterImpl::Init() {
-  Guard g(mtx_);
-
-  assert(is_idle_);
-  is_idle_ = false;
-
-  AsyncClientInitMdCqTag* tag = new AsyncClientInitMdCqTag(call_sptr_);
-  auto sptr = shared_from_this();
-  tag->SetCompleteCb([sptr]() { sptr->Next(); });
-  if (tag->Start()) return;
-  delete tag;
-  status_.SetInternalError("Failed to init client stream.");
-  is_idle_ = true;
 }
 
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
@@ -51,38 +38,43 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
   if (!status_.ok()) return false;
 
   msg_queue_.push(request_sptr);
-  if (is_idle_)
-    InternalNext();
-  return true;
-
+  if (is_writing_) return true;
+  InternalNext();
   // XXX return ClientAsyncWriterHelper::AsyncWrite(call_sptr_, request, status_);
+  return true;
 }
 
 void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
-  if (!status_.ok()) return;
+  if (!status_.ok()) {
+    if (handler_sptr)
+      handler_sptr->OnClose(status_);
+    return;
+  }
 
   close_handler_sptr_ = handler_sptr;
-  if (is_idle_)
-    InternalNext();
+  if (is_writing_) return;
+  assert(msg_queue_.empty());
+  CloseNow();
+}
 
-  // XXX Finally close...
-  //if (!status_.ok()) {
-  //  (*handler_sptr).OnClose(status_);
-  //  return;
-  //}
+// Finally close...
+void ClientAsyncWriterImpl::CloseNow() {
+  if (!status_.ok()) {
+    if (close_handler_sptr_)
+      close_handler_sptr_->OnClose(status_);
+    return;
+  }
 
-  //ClientWriterFinishCqTag tag(call_sptr_);
-  //if (!tag.Start()) {
-  //  status_.SetInternalError("Failed to close client stream.");
-  //  (*handler_sptr).OnClose(status_);
-  //  return;
-  //}
+  ClientWriterFinishCqTag tag(call_sptr_);
+  if (!tag.Start()) {
+    status_.SetInternalError("Failed to close client stream.");
+    if (close_handler_sptr_)
+      close_handler_sptr_->OnClose(status_);
+    return;
+  }
 
-  // XXX
-
-  //data.cq_sptr->Pluck(&tag);
-
+  // XXX get response...
   //// Todo: Get trailing metadata.
   //if (tag.IsStatusOk())
   //  status = tag.GetResponse(*response);
@@ -92,14 +84,23 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
 
 void ClientAsyncWriterImpl::Next() {
   Guard g(mtx_);
-  assert(!is_idle_);  // Because Next() is called from completion callback.
+  assert(is_writing_);  // Because WriteNext() is called from completion callback.
   InternalNext();
 }
 
+// Send messages one by one, and finally close.
 void ClientAsyncWriterImpl::InternalNext() {
-  // XXX check status?
-  is_idle_ = false;
-  // XXX Send messages one by one, and finally close.
+  if (!status_.ok() || msg_queue_.empty())
+  {
+    is_writing_ = false;
+    // Do not close before Close(handler).
+    if (close_handler_sptr_)
+      CloseNow();
+    return;
+  }
+
+  is_writing_ = true;
+  // XXX write one message...
 }
 
 }  // namespace grpc_cb

@@ -4,8 +4,6 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
 
-#include <functional>  // for std::function
-#include <memory>  // for enable_shared_from_this
 #include <mutex>
 
 #include <grpc_cb/impl/call_sptr.h>              // for CallSptr
@@ -20,14 +18,11 @@ namespace grpc_cb {
 
 class ClientAsyncWriterCloseHandler;
 
-class ClientAsyncWriterImpl GRPC_FINAL
-    : public std::enable_shared_from_this<ClientAsyncWriterImpl> {
+class ClientAsyncWriterImpl GRPC_FINAL {
  public:
   ClientAsyncWriterImpl(const ChannelSptr& channel, const std::string& method,
                         const CompletionQueueSptr& cq_sptr);
   ~ClientAsyncWriterImpl();
-
-  void Init();
 
   bool Write(const MessageSptr& request_sptr);
 
@@ -37,8 +32,10 @@ class ClientAsyncWriterImpl GRPC_FINAL
   // Todo: get queue size
 
  private:
+  // Write next message and close.
   void Next();
   void InternalNext();
+  void CloseNow();
 
  private:
   mutable std::mutex mtx_;
@@ -50,7 +47,7 @@ class ClientAsyncWriterImpl GRPC_FINAL
   // Close handler hides the Response and on_closed callback.
   CloseHandlerSptr close_handler_sptr_;
   MessageQueue msg_queue_;  // cache messages
-  bool is_idle_ = true;  // Is call idle?
+  bool is_writing_ = false;  // grpc only allows to write one by one
 };  // class ClientAsyncWriterImpl<>
 
 }  // namespace grpc_cb
