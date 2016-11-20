@@ -39,10 +39,12 @@ class ClientAsyncWriterImpl GRPC_FINAL
   void WriteNext();
   void InternalNext();
   void CloseNow();
+  void CallCloseHandler();
 
  private:
-  mutable std::mutex mtx_;
-  using Guard = std::lock_guard<std::mutex>;
+  // The callback may lock the mutex recursively.
+  mutable std::recursive_mutex mtx_;
+  using Guard = std::lock_guard<std::recursive_mutex>;
 
   CompletionQueueSptr cq_sptr_;
   CallSptr call_sptr_;

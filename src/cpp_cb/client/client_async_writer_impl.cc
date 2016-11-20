@@ -49,8 +49,7 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
 void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
   if (!status_.ok()) {
-    if (handler_sptr)
-      handler_sptr->OnClose(status_);  // XXX no lock
+    CallCloseHandler();
     return;
   }
 
@@ -63,16 +62,14 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
 // Finally close...
 void ClientAsyncWriterImpl::CloseNow() {
   if (!status_.ok()) {
-    if (close_handler_sptr_)
-      close_handler_sptr_->OnClose(status_);
+    CallCloseHandler();
     return;
   }
 
   ClientWriterFinishCqTag tag(call_sptr_);
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
-    if (close_handler_sptr_)
-      close_handler_sptr_->OnClose(status_);  // XXX no lock
+    CallCloseHandler();
     return;
   }
 
@@ -102,6 +99,11 @@ void ClientAsyncWriterImpl::InternalNext() {
   // Do not close before Close(handler).
   if (close_handler_sptr_)
     CloseNow();
+}
+
+void ClientAsyncWriterImpl::CallCloseHandler() {
+  if (close_handler_sptr_)
+    close_handler_sptr_->OnClose(status_);
 }
 
 }  // namespace grpc_cb
