@@ -19,6 +19,8 @@
 
 namespace grpc_cb {
 
+class ClientAsyncWriterHelper;
+
 // Todo: make it thread-safe
 class ClientAsyncReaderWriterImpl GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderWriterImpl> {
@@ -60,6 +62,8 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
   MessageQueue msg_queue_;  // cache messages to write
   bool is_writing_ = false;
+
+  std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncReaderWriterImpl<>
 
 // Todo: BlockingGetInitMd();

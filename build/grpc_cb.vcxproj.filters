@@ -105,9 +105,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_helper.h">
-      <Filter>include\grpc_cb\impl\client</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
@@ -231,7 +228,7 @@
     <ClInclude Include="..\include\grpc_cb\support\time.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cpp_cb\client\async_client_init_md_cqtag.h">
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h">
@@ -252,6 +249,9 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_helper.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl.cc">

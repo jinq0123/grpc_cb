@@ -17,6 +17,7 @@
 namespace grpc_cb {
 
 class ClientAsyncWriterCloseHandler;
+class ClientAsyncWriterHelper;
 
 class ClientAsyncWriterImpl GRPC_FINAL {
  public:
@@ -48,6 +49,8 @@ class ClientAsyncWriterImpl GRPC_FINAL {
   CloseHandlerSptr close_handler_sptr_;
   MessageQueue msg_queue_;  // cache messages
   bool is_writing_ = false;  // grpc only allows to write one by one
+
+  std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncWriterImpl<>
 
 }  // namespace grpc_cb

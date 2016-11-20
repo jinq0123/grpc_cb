@@ -10,17 +10,20 @@
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
-#include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>        // for ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
 #include <grpc_cb/status.h>                                  // for Status
+
+#include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
 
 namespace grpc_cb {
 
 ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
                                              const std::string& method,
                                              const CompletionQueueSptr& cq_sptr)
-    : cq_sptr_(cq_sptr), call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+    : cq_sptr_(cq_sptr),
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+      writer_uptr_(new ClientAsyncWriterHelper) {
   assert(cq_sptr);
   assert(channel);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);

@@ -46,8 +46,8 @@ void ServerMethodCallCqTag::DoComplete(bool success)
   // TODO: check success
 
   // Deal payload.
-  using Message = ::google::protobuf::Message;
-  std::unique_ptr<Message> request;
+  // DEL using Message = ::google::protobuf::Message;
+  //     std::unique_ptr<Message> request;
   assert(service_);
   assert(payload_ptr_);
   assert(call_ptr_);

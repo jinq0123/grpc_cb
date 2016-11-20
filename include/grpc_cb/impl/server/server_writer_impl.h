@@ -70,7 +70,7 @@ class ServerWriterImpl GRPC_FINAL
 
   size_t high_queue_size_ = std::numeric_limits<size_t>::max();
   MessageQueue queue_;
-  std::unique_ptr<Status> close_status_sptr_;
+  std::unique_ptr<Status> close_status_uptr_;
 
   mutable std::mutex mtx_;
   using Guard = std::lock_guard<std::mutex>;

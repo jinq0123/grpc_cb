@@ -61,7 +61,7 @@ void ServerWriterImpl::AsyncWrite(
     const ::google::protobuf::Message& response) {
   Guard g(mtx_);
 
-  if (closed_ || close_status_sptr_)
+  if (closed_ || close_status_uptr_)
     return;
 
   if (is_sending_) {
@@ -84,10 +84,10 @@ void ServerWriterImpl::BlockingClose(const Status& status) {
 void ServerWriterImpl::AsyncClose(const Status& status) {
   Guard g(mtx_);
 
-  if (closed_ || close_status_sptr_)
+  if (closed_ || close_status_uptr_)
     return;
 
-  close_status_sptr_.reset(new Status(status));
+  close_status_uptr_.reset(new Status(status));
   if (is_sending_) return;
   assert(queue_.empty());
   SendStatus();
@@ -107,7 +107,7 @@ void ServerWriterImpl::TryToWriteNext() {
     return;
   }
 
-  if (close_status_sptr_) {
+  if (close_status_uptr_) {
     SendStatus();
     return;
   }
@@ -118,11 +118,11 @@ void ServerWriterImpl::TryToWriteNext() {
 
 void ServerWriterImpl::SendStatus() {
   assert(!closed_);
-  assert(close_status_sptr_);
+  assert(close_status_uptr_);
   assert(queue_.empty());
 
   closed_ = true;
-  const Status& status = *close_status_sptr_;
+  const Status& status = *close_status_uptr_;
   using CqTag = ServerWriterSendStatusCqTag;
   CqTag* tag = new CqTag(call_sptr_);
   // Todo: set init md and trail md

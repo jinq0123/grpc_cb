@@ -5,10 +5,11 @@
 
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_reader_helper.h>  // for ClientAsyncReaderHelper
-#include <grpc_cb/impl/client/client_async_writer_helper.h>  // for ClientAsyncWriterHelper
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+
+#include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
 
 namespace grpc_cb {
 
@@ -18,7 +19,8 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,
     const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr), 
-    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+    writer_uptr_(new ClientAsyncWriterHelper) {
   assert(cq_sptr);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
