@@ -6,11 +6,10 @@
 
 #include <functional>  // for function
 
-// #include <grpc_cb/impl/call_sptr.h>                    // for CallSptr
-#include <grpc_cb/support/config.h>   // for GRPC_FINAL
-#include <grpc_cb/impl/message_queue.h>          // for MessageQueue
-#include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
-#include <grpc_cb/impl/call_sptr.h>              // for CallSptr
+#include <grpc_cb/impl/call_sptr.h>      // for CallSptr
+#include <grpc_cb/impl/message_queue.h>  // for MessageQueue
+#include <grpc_cb/impl/message_sptr.h>   // for MessageSptr
+#include <grpc_cb/support/config.h>      // for GRPC_FINAL
 
 namespace grpc_cb {
 

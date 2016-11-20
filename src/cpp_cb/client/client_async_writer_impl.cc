@@ -5,14 +5,10 @@
 
 #include <cassert>  // for assert()
 
-#include <google/protobuf/message.h>  // for Message
-
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
-#include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>        // for ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
-#include <grpc_cb/status.h>                                  // for Status
 
 #include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
 
@@ -54,13 +50,13 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
   if (!status_.ok()) {
     if (handler_sptr)
-      handler_sptr->OnClose(status_);
+      handler_sptr->OnClose(status_);  // XXX no lock
     return;
   }
 
   close_handler_sptr_ = handler_sptr;
-  if (writer_uptr_ && writer_uptr_->IsWriting()) return;
-  // DEL assert(msg_queue_.empty());
+  if (writer_uptr_ && writer_uptr_->IsWriting())
+    return;
   CloseNow();
 }
 
@@ -76,7 +72,7 @@ void ClientAsyncWriterImpl::CloseNow() {
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
     if (close_handler_sptr_)
-      close_handler_sptr_->OnClose(status_);
+      close_handler_sptr_->OnClose(status_);  // XXX no lock
     return;
   }
 
@@ -90,8 +86,9 @@ void ClientAsyncWriterImpl::CloseNow() {
 
 void ClientAsyncWriterImpl::WriteNext() {
   Guard g(mtx_);
-  assert(writer_uptr_);
+
   // Called from the write completion callback.
+  assert(writer_uptr_);
   assert(writer_uptr_->IsWriting());
   InternalNext();
 }

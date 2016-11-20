@@ -11,7 +11,6 @@
 #include <grpc_cb/impl/call_sptr.h>              // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>           // for ChannelSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/impl/message_queue.h>          // for MessageQueue
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/status.h>                      // for Status
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
