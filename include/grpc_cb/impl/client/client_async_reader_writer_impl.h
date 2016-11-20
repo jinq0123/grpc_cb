@@ -11,7 +11,6 @@
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/impl/message_queue.h>          // for MessageQueue
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/status.h>                      // for Status
 #include <grpc_cb/status_callback.h>             // for StatusCallback
@@ -60,8 +59,6 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
 
   bool is_reading_ = false;  // SetReadHandler() to trigger reading.
   bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
-  MessageQueue msg_queue_;  // cache messages to write
-  bool is_writing_ = false;
 
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncReaderWriterImpl<>

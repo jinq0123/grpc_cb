@@ -11,19 +11,45 @@
 
 namespace grpc_cb {
 
-inline bool AsyncWrite(
+ClientAsyncWriterHelper::ClientAsyncWriterHelper(const CallSptr& call_sptr,
+  Status& status,const OnWritten& on_written)
+    : call_sptr_(call_sptr), status_(status), on_written_(on_written) {
+  assert(call_sptr);
+  assert(on_written);
+}
+
+ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
+
+bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
+  if (!status_.ok()) return false;
+
+  // cache messages
+  msg_queue_.push(msg_sptr);
+  if (is_writing_) return true;
+  return WriteNext();
+}
+
+static bool AsyncWrite(
     const CallSptr& call_sptr,
-    const ::google::protobuf::Message& request,
+    const ::google::protobuf::Message& msg,
     Status& status) {
   assert(call_sptr);
-  if (!status.ok()) return false;
+  assert(status.ok());
 
   ClientSendMsgCqTag* tag = new ClientSendMsgCqTag(call_sptr);
-  if (tag->Start(request)) return true;
+  if (tag->Start(msg)) return true;
 
   delete tag;
   status.SetInternalError("Failed to write client stream.");
   return false;
-}  // Write()
+}  // SayncWrite()
+
+bool ClientAsyncWriterHelper::WriteNext() {
+  if (!status_.ok()) return false;
+  if (msg_queue_.empty()) return false;
+  MessageSptr msg = msg_queue_.front();
+  msg_queue_.pop();
+  return AsyncWrite(call_sptr_, *msg, status_);
+}
 
 }  // namespace grpc_cb

@@ -23,7 +23,8 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
                                              const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
       call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-      writer_uptr_(new ClientAsyncWriterHelper) {
+      writer_uptr_(new ClientAsyncWriterHelper(call_sptr_, status_,
+        [this]() { Next(); })) {
   assert(cq_sptr);
   assert(channel);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
@@ -39,11 +40,7 @@ ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
   Guard g(mtx_);
   if (!status_.ok()) return false;
-
-  msg_queue_.push(request_sptr);
-  if (is_writing_) return true;
-  InternalNext();
-  // XXX return ClientAsyncWriterHelper::AsyncWrite(call_sptr_, request, status_);
+  writer_uptr_->Write(request_sptr);
   return true;
 }
 
@@ -56,8 +53,8 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   }
 
   close_handler_sptr_ = handler_sptr;
-  if (is_writing_) return;
-  assert(msg_queue_.empty());
+  if (writer_uptr_->IsWriting()) return;
+  // DEL assert(msg_queue_.empty());
   CloseNow();
 }
 
@@ -85,25 +82,21 @@ void ClientAsyncWriterImpl::CloseNow() {
   //  status = tag.GetStatus();
 }  // Close()
 
+// Todo: rename to WriteNext()?
 void ClientAsyncWriterImpl::Next() {
   Guard g(mtx_);
-  assert(is_writing_);  // Because Next() is called from completion callback.
+  assert(writer_uptr_->IsWriting());  // Because Next() is called from completion callback.
   InternalNext();
 }
 
 // Send messages one by one, and finally close.
 void ClientAsyncWriterImpl::InternalNext() {
-  if (!status_.ok() || msg_queue_.empty())
-  {
-    is_writing_ = false;
-    // Do not close before Close(handler).
-    if (close_handler_sptr_)
-      CloseNow();
+  if (status_.ok() && writer_uptr_->WriteNext())
     return;
-  }
 
-  is_writing_ = true;
-  // XXX write one message...
+  // Do not close before Close(handler).
+  if (close_handler_sptr_)
+    CloseNow();
 }
 
 }  // namespace grpc_cb

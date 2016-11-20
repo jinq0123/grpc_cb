@@ -20,7 +20,8 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr), 
     call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-    writer_uptr_(new ClientAsyncWriterHelper) {
+    writer_uptr_(new ClientAsyncWriterHelper(call_sptr_, status_,
+      [this]() { Next(); })) {
   assert(cq_sptr);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
@@ -35,16 +36,7 @@ ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
 bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
   assert(call_sptr_);
   if (!status_.ok()) return false;
-
-  // XXX cache messages
-  msg_queue_.push(msg_sptr);
-  if (is_writing_) return true;
-  InternalNext();
-  return true;
-
-  // XXX
-  //return ClientAsyncWriterHelper::AsyncWrite(call_sptr_,
-  //    *msg_sptr, status_);
+  writer_uptr_->Write(msg_sptr);
 }
 
 void ClientAsyncReaderWriterImpl::CloseWriting() {
@@ -71,25 +63,18 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
 }
 
+// Todo: rename to WriteNext()
 void ClientAsyncReaderWriterImpl::Next() {
   Guard g(mtx_);
-  assert(is_writing_);  // Because Next() is called from completion callback.
+  assert(writer_uptr_->IsWriting());  // Because Next() is called from completion callback.
   InternalNext();
 }
 
 // Send messages one by one, and finally close.
 void ClientAsyncReaderWriterImpl::InternalNext() {
-  if (!status_.ok() || msg_queue_.empty())
-  {
-    is_writing_ = false;
-    // Do not close before Close(handler).
-    // XXX if (close_handler_sptr_)
-    // XXX   CloseNow();
+  if (writer_uptr_->WriteNext())
     return;
-  }
-
-  is_writing_ = true;
-  // XXX write one message...
+  // XXX
 }
 
 // XXXX Extract ClientAsyncWriterHelper to queue, to write, to next.

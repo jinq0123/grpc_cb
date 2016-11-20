@@ -47,8 +47,6 @@ class ClientAsyncWriterImpl GRPC_FINAL {
   Status status_;
   // Close handler hides the Response and on_closed callback.
   CloseHandlerSptr close_handler_sptr_;
-  MessageQueue msg_queue_;  // cache messages
-  bool is_writing_ = false;  // grpc only allows to write one by one
 
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncWriterImpl<>
