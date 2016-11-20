@@ -52,6 +52,7 @@ class ClientAsyncWriterImpl GRPC_FINAL
   // Close handler hides the Response and on_closed callback.
   CloseHandlerSptr close_handler_sptr_;
 
+  // XXX Add writing_closed_ to ClientAsyncWriterHelper
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncWriterImpl<>
 
