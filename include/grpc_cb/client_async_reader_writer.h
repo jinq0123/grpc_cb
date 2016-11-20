@@ -4,8 +4,9 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_H
 
-#include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
 #include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
+#include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
+#include <grpc_cb/support/config.h>  // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -39,7 +40,7 @@ class ClientAsyncReaderWriter GRPC_FINAL {
     class ReadHandler : public ClientAsyncReadHandler {
      public:
       explicit ReadHandler(const OnRead& on_read) : on_read_(on_read) {}
-      Message& GetMessage() override { return msg_; }
+      Message& GetMessage() GRPC_OVERRIDE { return msg_; }
      private:
       OnRead on_read_;
       Response msg_;

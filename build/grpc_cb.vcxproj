@@ -160,6 +160,7 @@
     <ClCompile Include="..\src\cpp_cb\client\channel.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_helper.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />

@@ -10,15 +10,16 @@
 #include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
 #include <grpc_cb/impl/call_op_data.h>     // for CodRecvMsg
 #include <grpc_cb/impl/call_operations.h>  // for CallOperations
-#include <grpc_cb/support/config.h>        // for GRPC_FINAL
 
 namespace grpc_cb {
 
-// Base of ClientWriterAsyncCloseCqTag XXX
-class ClientWriterCloseCqTag GRPC_FINAL : public CallCqTag {
+// Base of ClientAsyncWriterCloseCqTag.
+class ClientWriterCloseCqTag : public CallCqTag {
  public:
-  inline explicit ClientWriterCloseCqTag(const CallSptr& call_sptr)
+  explicit ClientWriterCloseCqTag(const CallSptr& call_sptr)
       : CallCqTag(call_sptr) {}
+  virtual ~ClientWriterCloseCqTag() {}
+
   inline bool Start() GRPC_MUST_USE_RESULT;
   inline bool IsStatusOk() const {
     return cod_client_recv_status_.IsStatusOk();
@@ -27,8 +28,6 @@ class ClientWriterCloseCqTag GRPC_FINAL : public CallCqTag {
     return cod_client_recv_status_.GetStatus();
   }
   inline Status GetResponse(::google::protobuf::Message& response) GRPC_MUST_USE_RESULT;
-
-  inline void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
   CodRecvMsg cod_recv_msg_;
@@ -47,10 +46,6 @@ Status ClientWriterCloseCqTag::GetResponse(
     ::google::protobuf::Message& response) {
   return cod_recv_msg_.GetResultMsg(
         response, GetCallSptr()->GetMaxMsgSize());
-}
-
-void ClientWriterCloseCqTag::DoComplete(bool success) {
-  // Todo: Add async client writer example.
 }
 
 }  // namespace grpc_cb

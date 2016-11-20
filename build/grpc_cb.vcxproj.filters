@@ -260,6 +260,9 @@
     <ClCompile Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.cc">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_helper.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>

@@ -4,55 +4,24 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_CLOSE_CQTAG_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_CLOSE_CQTAG_H
 
-#include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
+#include <functional>  // for std::function
 
-#include <grpc_cb/impl/call.h>             // for StartBatch()
-#include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
-#include <grpc_cb/impl/call_op_data.h>     // for CodRecvMsg
-#include <grpc_cb/impl/call_operations.h>  // for CallOperations
-#include <grpc_cb/support/config.h>        // for GRPC_FINAL
+#include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
+#include <grpc_cb/support/config.h>                         // for GRPC_FINAL
 
 namespace grpc_cb {
 
-// Base of ClientWriterAsyncCloseCqTag XXX
-class ClientAsyncWriterCloseCqTag GRPC_FINAL : public CallCqTag {
+class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
-  inline explicit ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr)
-      : CallCqTag(call_sptr) {}
-  inline bool Start() GRPC_MUST_USE_RESULT;
-  inline bool IsStatusOk() const {
-    return cod_client_recv_status_.IsStatusOk();
-  }
-  inline Status GetStatus() const {
-    return cod_client_recv_status_.GetStatus();
-  }
-  inline Status GetResponse(::google::protobuf::Message& response) GRPC_MUST_USE_RESULT;
+  using OnComplete = std::function<void()>;
+  ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr,
+                              const OnComplete& on_complete = OnComplete());
 
-  inline void DoComplete(bool success) GRPC_OVERRIDE;
+  void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
-  CodRecvMsg cod_recv_msg_;
-  CodClientRecvStatus cod_client_recv_status_;
+  const OnComplete on_complete_;
 };  // class ClientAsyncWriterCloseCqTag
 
-bool ClientAsyncWriterCloseCqTag::Start() {
-  CallOperations ops;
-  ops.ClientSendClose();
-  ops.RecvMsg(cod_recv_msg_);
-  ops.ClientRecvStatus(cod_client_recv_status_);
-  return GetCallSptr()->StartBatch(ops, this);
-}
-
-Status ClientAsyncWriterCloseCqTag::GetResponse(
-    ::google::protobuf::Message& response) {
-  return cod_recv_msg_.GetResultMsg(
-        response, GetCallSptr()->GetMaxMsgSize());
-}
-
-void ClientAsyncWriterCloseCqTag::DoComplete(bool success) {
-  // Todo: Add async client writer example.
-}
-
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_CLOSE_CQTAG_H

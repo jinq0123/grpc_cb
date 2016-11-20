@@ -17,7 +17,7 @@ class ClientAsyncSendMsgCqTag GRPC_FINAL : public ClientSendMsgCqTag {
   ClientAsyncSendMsgCqTag(const CallSptr& call_sptr,
                                    const OnComplete& on_complete);
 
-  void DoComplete(bool success) override;
+  void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
   const OnComplete on_complete_;

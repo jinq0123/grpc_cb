@@ -11,6 +11,7 @@
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for ClientAsyncWriterCloseHandler
 #include <grpc_cb/impl/client/client_async_writer_impl.h>  // for Write()
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/support/config.h>              // for GRPC_OVERRIDE
 #include <grpc_cb/support/protobuf_fwd.h>        // for Message
 
 namespace grpc_cb {
@@ -47,8 +48,8 @@ class ClientAsyncWriter GRPC_FINAL {
      public:
       explicit CloseHandler(const ClosedCallback& on_closed)
         : on_closed_(on_closed) {};
-      Message& GetMessage() override { return msg_; }
-      void OnClose(const Status& status) override {
+      Message& GetMessage() GRPC_OVERRIDE { return msg_; }
+      void OnClose(const Status& status) GRPC_OVERRIDE {
         if (on_closed_)
           on_closed_(status, msg_);
       }

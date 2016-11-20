@@ -68,6 +68,7 @@ OBJECTS := \
 	$(OBJDIR)/channel.o \
 	$(OBJDIR)/client_async_reader_writer_impl.o \
 	$(OBJDIR)/client_async_send_msg_cqtag.o \
+	$(OBJDIR)/client_async_writer_close_cqtag.o \
 	$(OBJDIR)/client_async_writer_helper.o \
 	$(OBJDIR)/client_async_writer_impl.o \
 	$(OBJDIR)/client_call_cqtag.o \
@@ -152,6 +153,9 @@ $(OBJDIR)/client_async_reader_writer_impl.o: ../src/cpp_cb/client/client_async_r
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/client_async_send_msg_cqtag.o: ../src/cpp_cb/client/client_async_send_msg_cqtag.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/client_async_writer_close_cqtag.o: ../src/cpp_cb/client/client_async_writer_close_cqtag.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/client_async_writer_helper.o: ../src/cpp_cb/client/client_async_writer_helper.cc
