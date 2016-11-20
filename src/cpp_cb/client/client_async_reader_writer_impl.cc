@@ -19,9 +19,7 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,
     const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr), 
-    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-    writer_uptr_(new ClientAsyncWriterHelper(call_sptr_, status_,
-      [this]() { Next(); })) {
+    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
@@ -30,19 +28,34 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
 }
 
 ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
-  CloseWriting();  // XXX
+  CloseWritingNow();  // XXX
 }
 
 bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
   assert(call_sptr_);
-  if (!status_.ok()) return false;
+  if (!status_.ok())
+    return false;
+
+  if (!writer_uptr_) {
+    auto sptr = shared_from_this();
+    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
+      [sptr]() { sptr->WriteNext(); }));
+  }
+
   writer_uptr_->Write(msg_sptr);
+  return true;
 }
 
 void ClientAsyncReaderWriterImpl::CloseWriting() {
+  // Set to send close when all messages are written.
+  can_close_writing_ = true;
+}
+
+void ClientAsyncReaderWriterImpl::CloseWritingNow() {
   if (writing_closed_) return;
   writing_closed_ = true;
   if (!status_.ok()) return;
+
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
 
@@ -63,20 +76,22 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
 }
 
-// Todo: rename to WriteNext()
-void ClientAsyncReaderWriterImpl::Next() {
+void ClientAsyncReaderWriterImpl::WriteNext() {
   Guard g(mtx_);
-  assert(writer_uptr_->IsWriting());  // Because Next() is called from completion callback.
+  assert(writer_uptr_);
+  // Called from the write completion callback.
+  assert(writer_uptr_->IsWriting());
   InternalNext();
 }
 
 // Send messages one by one, and finally close.
 void ClientAsyncReaderWriterImpl::InternalNext() {
+  assert(writer_uptr_);
   if (writer_uptr_->WriteNext())
     return;
-  // XXX
-}
 
-// XXXX Extract ClientAsyncWriterHelper to queue, to write, to next.
+  if (can_close_writing_)
+     CloseWritingNow();
+}
 
 }  // namespace grpc_cb

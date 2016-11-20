@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 
+#include <memory>
 #include <mutex>
 #include <string>
 
@@ -42,7 +43,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
 
  private:
   // Write next message and close.
-  void Next();
+  void WriteNext();
   void InternalNext();
   void CloseWritingNow();
 
@@ -58,7 +59,8 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   StatusCallback on_status_;
 
   bool is_reading_ = false;  // SetReadHandler() to trigger reading.
-  bool writing_closed_ = false;  // Is AsyncCloseWriting() called?
+  bool can_close_writing_ = false;  // Waiting to close?
+  bool writing_closed_ = false;  // Is close sent?
 
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncReaderWriterImpl<>

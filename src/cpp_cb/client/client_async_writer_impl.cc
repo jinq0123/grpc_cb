@@ -22,9 +22,7 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
                                              const std::string& method,
                                              const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-      writer_uptr_(new ClientAsyncWriterHelper(call_sptr_, status_,
-        [this]() { Next(); })) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   assert(channel);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
@@ -39,7 +37,15 @@ ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
 
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
   Guard g(mtx_);
-  if (!status_.ok()) return false;
+  if (!status_.ok())
+    return false;
+
+  if (!writer_uptr_) {
+    auto sptr = shared_from_this();
+    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
+        [sptr]() { sptr->WriteNext(); }));
+  }
+
   writer_uptr_->Write(request_sptr);
   return true;
 }
@@ -53,7 +59,7 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   }
 
   close_handler_sptr_ = handler_sptr;
-  if (writer_uptr_->IsWriting()) return;
+  if (writer_uptr_ && writer_uptr_->IsWriting()) return;
   // DEL assert(msg_queue_.empty());
   CloseNow();
 }
@@ -82,16 +88,18 @@ void ClientAsyncWriterImpl::CloseNow() {
   //  status = tag.GetStatus();
 }  // Close()
 
-// Todo: rename to WriteNext()?
-void ClientAsyncWriterImpl::Next() {
+void ClientAsyncWriterImpl::WriteNext() {
   Guard g(mtx_);
-  assert(writer_uptr_->IsWriting());  // Because Next() is called from completion callback.
+  assert(writer_uptr_);
+  // Called from the write completion callback.
+  assert(writer_uptr_->IsWriting());
   InternalNext();
 }
 
 // Send messages one by one, and finally close.
 void ClientAsyncWriterImpl::InternalNext() {
-  if (status_.ok() && writer_uptr_->WriteNext())
+  assert(writer_uptr_);
+  if (writer_uptr_->WriteNext())
     return;
 
   // Do not close before Close(handler).

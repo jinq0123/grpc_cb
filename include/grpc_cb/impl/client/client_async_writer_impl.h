@@ -4,7 +4,9 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
 
+#include <memory>
 #include <mutex>
+#include <string>
 
 #include <grpc_cb/impl/call_sptr.h>              // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>           // for ChannelSptr
@@ -19,7 +21,8 @@ namespace grpc_cb {
 class ClientAsyncWriterCloseHandler;
 class ClientAsyncWriterHelper;
 
-class ClientAsyncWriterImpl GRPC_FINAL {
+class ClientAsyncWriterImpl GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncWriterImpl> {
  public:
   ClientAsyncWriterImpl(const ChannelSptr& channel, const std::string& method,
                         const CompletionQueueSptr& cq_sptr);
@@ -34,7 +37,7 @@ class ClientAsyncWriterImpl GRPC_FINAL {
 
  private:
   // Write next message and close.
-  void Next();
+  void WriteNext();
   void InternalNext();
   void CloseNow();
 
