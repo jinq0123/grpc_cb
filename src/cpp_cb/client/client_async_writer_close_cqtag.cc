@@ -13,7 +13,7 @@ ClientAsyncWriterCloseCqTag::ClientAsyncWriterCloseCqTag(
 void ClientAsyncWriterCloseCqTag::DoComplete(bool success) {
   assert(success);  // Todo
   if (on_complete_)
-    on_complete_();
+    on_complete_(*this);
 
   // Todo: Add async client writer example.
 }

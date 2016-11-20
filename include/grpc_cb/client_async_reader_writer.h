@@ -40,7 +40,7 @@ class ClientAsyncReaderWriter GRPC_FINAL {
     class ReadHandler : public ClientAsyncReadHandler {
      public:
       explicit ReadHandler(const OnRead& on_read) : on_read_(on_read) {}
-      Message& GetMessage() GRPC_OVERRIDE { return msg_; }
+      Message& GetMsg() GRPC_OVERRIDE { return msg_; }
      private:
       OnRead on_read_;
       Response msg_;

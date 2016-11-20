@@ -5,14 +5,19 @@
 
 #include <cassert>  // for assert()
 
-#include <grpc_cb/channel.h>         // for MakeSharedCall()
-#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>       // for ClientInitMdCqTag
+#include <google/protobuf/message.h>  // for Message
 
-#include "client_async_writer_close_cqtag.h"  // for ClientWriterCloseCqTag
-#include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
+#include <grpc_cb/channel.h>  // for MakeSharedCall()
+#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
+#include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
+
+#include "client_async_writer_close_cqtag.h"  // for ClientAsyncWriterCloseCqTag
+#include "client_async_writer_helper.h"       // for ClientAsyncWriterHelper
 
 namespace grpc_cb {
+
+using Sptr = ClientAsyncWriterImplSptr;
+using Wptr = std::weak_ptr<ClientAsyncWriterImpl>;
 
 ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
                                              const std::string& method,
@@ -37,10 +42,12 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
     return false;
 
   if (!writer_uptr_) {
-    // XXX use weak ptr?
-    auto sptr = shared_from_this();
+    Wptr wptr = shared_from_this();
     writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
-        [sptr]() { sptr->WriteNext(); }));
+        [wptr]() {
+            Sptr sptr = wptr.lock();
+            if (sptr) sptr->WriteNext();
+        }));
   }
 
   writer_uptr_->Write(request_sptr);
@@ -69,19 +76,17 @@ void ClientAsyncWriterImpl::CloseNow() {
     return;
   }
 
-  ClientAsyncWriterCloseCqTag tag(call_sptr_);
+  Wptr wptr = shared_from_this();
+  ClientAsyncWriterCloseCqTag tag(call_sptr_,
+    [wptr](ClientAsyncWriterCloseCqTag& tag) {
+      Sptr sptr = wptr.lock();
+      if (sptr) sptr->OnClose(tag);
+    });
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
     CallCloseHandler();
     return;
   }
-
-  // XXX get response...
-  //// Todo: Get trailing metadata.
-  //if (tag.IsStatusOk())
-  //  status = tag.GetResponse(*response);
-  //else
-  //  status = tag.GetStatus();
 }  // Close()
 
 void ClientAsyncWriterImpl::WriteNext() {
@@ -111,6 +116,21 @@ void ClientAsyncWriterImpl::CallCloseHandler() {
 
   // XXX use writing_closed_ instead
   close_handler_sptr_.reset();  // call once
+}
+
+void ClientAsyncWriterImpl::OnClose(ClientAsyncWriterCloseCqTag& tag) {
+  // Todo: Get trailing metadata.
+  if (tag.IsStatusOk()) {
+    if (close_handler_sptr_) {
+      status_ = tag.GetResponse(close_handler_sptr_->GetMsg());
+    } else {
+      status_.InternalError("Response is ignored.");
+    }
+  } else {
+    status_ = tag.GetStatus();
+  }
+
+  CallCloseHandler();
 }
 
 }  // namespace grpc_cb

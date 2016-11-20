@@ -16,7 +16,7 @@ class ClientAsyncWriterCloseHandler {
   virtual ~ClientAsyncWriterCloseHandler() {};
 
   using Message = ::google::protobuf::Message;
-  virtual Message& GetMessage() = 0;
+  virtual Message& GetMsg() = 0;
   virtual void OnClose(const Status& status) = 0;
 };  // class ClientAsyncWriterCloseHandler
 

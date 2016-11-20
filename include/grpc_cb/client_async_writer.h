@@ -48,7 +48,7 @@ class ClientAsyncWriter GRPC_FINAL {
      public:
       explicit CloseHandler(const ClosedCallback& on_closed)
         : on_closed_(on_closed) {};
-      Message& GetMessage() GRPC_OVERRIDE { return msg_; }
+      Message& GetMsg() GRPC_OVERRIDE { return msg_; }
       void OnClose(const Status& status) GRPC_OVERRIDE {
         if (on_closed_)
           on_closed_(status, msg_);
@@ -61,6 +61,8 @@ class ClientAsyncWriter GRPC_FINAL {
     auto handler = std::make_shared<CloseHandler>(on_closed);
     impl_sptr_->Close(handler);
   }  // Close()
+
+  // XXX Use a default CloseHandler if no Close().
 
  private:
   // Use non_template class as the implement.

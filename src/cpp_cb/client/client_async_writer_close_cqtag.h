@@ -13,9 +13,10 @@ namespace grpc_cb {
 
 class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
-  using OnComplete = std::function<void()>;
+  using OnComplete = std::function<void(ClientAsyncWriterCloseCqTag& tag)>;
   ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr,
-                              const OnComplete& on_complete = OnComplete());
+                              const OnComplete& on_complete);
+  // XXX Use ClientAsyncWriterImpl weak_ptr instead of OnComplete
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
