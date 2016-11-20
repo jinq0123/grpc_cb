@@ -28,7 +28,7 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
 }
 
 ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
-  // XXX auto close if not. necessary?
+  CloseNow();  // XXX auto close if not. necessary?
 }
 
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
@@ -48,12 +48,14 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
 
 void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
+
+  close_handler_sptr_ = handler_sptr;
+
   if (!status_.ok()) {
     CallCloseHandler();
     return;
   }
 
-  close_handler_sptr_ = handler_sptr;
   if (writer_uptr_ && writer_uptr_->IsWriting())
     return;
   CloseNow();
@@ -102,8 +104,10 @@ void ClientAsyncWriterImpl::InternalNext() {
 }
 
 void ClientAsyncWriterImpl::CallCloseHandler() {
-  if (close_handler_sptr_)
-    close_handler_sptr_->OnClose(status_);
+  if (!close_handler_sptr_)
+    return;
+  close_handler_sptr_->OnClose(status_);
+  close_handler_sptr_.reset();  // call once
 }
 
 }  // namespace grpc_cb
