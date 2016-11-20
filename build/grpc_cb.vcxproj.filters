@@ -228,6 +228,9 @@
     <ClInclude Include="..\include\grpc_cb\support\time.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
@@ -249,6 +252,9 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_helper.cc">

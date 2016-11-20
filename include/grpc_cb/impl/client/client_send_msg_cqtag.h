@@ -10,14 +10,17 @@
 #include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
 #include <grpc_cb/impl/call_op_data.h>     // for CodSendMsg
 #include <grpc_cb/impl/call_operations.h>  // for CallOperations
-#include <grpc_cb/support/config.h>        // for GRPC_FINAL
 
 namespace grpc_cb {
 
-class ClientSendMsgCqTag GRPC_FINAL : public CallCqTag {
+// Base of ClientAsyncSendMsgCqTag.
+class ClientSendMsgCqTag : public CallCqTag {
  public:
-  inline explicit ClientSendMsgCqTag(const CallSptr& call_sptr)
+  explicit ClientSendMsgCqTag(const CallSptr& call_sptr)
       : CallCqTag(call_sptr) {}
+  virtual ~ClientSendMsgCqTag() {}
+
+ public:
   inline bool Start(const ::google::protobuf::Message& message) GRPC_MUST_USE_RESULT;
 
  private:
