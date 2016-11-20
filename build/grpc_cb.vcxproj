@@ -149,6 +149,7 @@
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
     <ClInclude Include="..\include\grpc_cb\support\time.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />

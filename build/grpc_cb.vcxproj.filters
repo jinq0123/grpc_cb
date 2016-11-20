@@ -231,6 +231,9 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
