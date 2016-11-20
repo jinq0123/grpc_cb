@@ -7,8 +7,8 @@
 
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>        // for ClientInitMdCqTag
-#include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
+#include <grpc_cb/impl/client/client_init_md_cqtag.h>       // for ClientInitMdCqTag
+#include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
 
 #include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
 
@@ -37,6 +37,7 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
     return false;
 
   if (!writer_uptr_) {
+    // XXX use weak ptr?
     auto sptr = shared_from_this();
     writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
         [sptr]() { sptr->WriteNext(); }));
@@ -68,7 +69,7 @@ void ClientAsyncWriterImpl::CloseNow() {
     return;
   }
 
-  ClientWriterFinishCqTag tag(call_sptr_);
+  ClientWriterCloseCqTag tag(call_sptr_);
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
     CallCloseHandler();

@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_WRITER_FINISH_CQTAG_H
-#define GRPC_CB_CLIENT_CLIENT_WRITER_FINISH_CQTAG_H
+#ifndef GRPC_CB_CLIENT_CLIENT_WRITER_CLOSE_CQTAG_H
+#define GRPC_CB_CLIENT_CLIENT_WRITER_CLOSE_CQTAG_H
 
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 
@@ -14,10 +14,10 @@
 
 namespace grpc_cb {
 
-// Todo: Rename to ClientWriterCloseCqTag.
-class ClientWriterFinishCqTag GRPC_FINAL : public CallCqTag {
+// Base of ClientWriterAsyncCloseCqTag XXX
+class ClientWriterCloseCqTag GRPC_FINAL : public CallCqTag {
  public:
-  inline explicit ClientWriterFinishCqTag(const CallSptr& call_sptr)
+  inline explicit ClientWriterCloseCqTag(const CallSptr& call_sptr)
       : CallCqTag(call_sptr) {}
   inline bool Start() GRPC_MUST_USE_RESULT;
   inline bool IsStatusOk() const {
@@ -33,11 +33,9 @@ class ClientWriterFinishCqTag GRPC_FINAL : public CallCqTag {
  private:
   CodRecvMsg cod_recv_msg_;
   CodClientRecvStatus cod_client_recv_status_;
-};  // class ClientWriterFinishCqTag
+};  // class ClientWriterCloseCqTag
 
-// Todo: Rename to ClientWriterCloseCqTag
-
-bool ClientWriterFinishCqTag::Start() {
+bool ClientWriterCloseCqTag::Start() {
   CallOperations ops;
   ops.ClientSendClose();
   ops.RecvMsg(cod_recv_msg_);
@@ -45,16 +43,16 @@ bool ClientWriterFinishCqTag::Start() {
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-Status ClientWriterFinishCqTag::GetResponse(
+Status ClientWriterCloseCqTag::GetResponse(
     ::google::protobuf::Message& response) {
   return cod_recv_msg_.GetResultMsg(
         response, GetCallSptr()->GetMaxMsgSize());
 }
 
-void ClientWriterFinishCqTag::DoComplete(bool success) {
+void ClientWriterCloseCqTag::DoComplete(bool success) {
   // Todo: Add async client writer example.
 }
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_WRITER_FINISH_CQTAG_H
+#endif  // GRPC_CB_CLIENT_CLIENT_WRITER_CLOSE_CQTAG_H

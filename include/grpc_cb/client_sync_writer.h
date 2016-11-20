@@ -10,8 +10,8 @@
 #include <grpc_cb/impl/call_sptr.h>                    // for CallSptr
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_sync_writer_helper.h>  // for ClientSyncWriterHelper
-#include <grpc_cb/impl/client/client_writer_finish_cqtag.h>  // for ClientWriterFinishCqTag
-#include <grpc_cb/status.h>                                  // for Status
+#include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
+#include <grpc_cb/status.h>                                 // for Status
 
 namespace grpc_cb {
 
@@ -75,7 +75,7 @@ Status ClientSyncWriter<Request>::Close(
 
   Status& status = data.status;
   if (!status.ok()) return status;
-  ClientWriterFinishCqTag tag(data.call_sptr);
+  ClientWriterCloseCqTag tag(data.call_sptr);
   if (!tag.Start()) {
     status.SetInternalError("Failed to finish client stream.");
     return status;
