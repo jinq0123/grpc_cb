@@ -47,8 +47,8 @@ class Call GRPC_FINAL {
 };
 
 // Owns c_call.
-Call::Call(grpc_call* c_call) :
-    c_call_uptr_(c_call, grpc_call_destroy),
+Call::Call(grpc_call* c_call)
+    : c_call_uptr_(c_call, grpc_call_destroy),
     max_msg_size_(default_max_msg_size_) {
   assert(c_call);
 }

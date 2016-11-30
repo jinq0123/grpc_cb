@@ -10,6 +10,7 @@
 
 #include <grpc_cb/impl/call_sptr.h>     // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
+#include <grpc_cb/impl/client/client_async_writer_impl_sptr.h>
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/status.h>                      // for Status
@@ -32,6 +33,7 @@ class ClientAsyncWriterImpl GRPC_FINAL
 
   using CloseHandlerSptr = std::shared_ptr<ClientAsyncWriterCloseHandler>;
   void Close(const CloseHandlerSptr& handler_sptr);
+  void OnClosed(ClientAsyncWriterCloseCqTag& tag);
 
   // Todo: Force to close, cancel all writing.
   // Todo: get queue size
@@ -42,7 +44,6 @@ class ClientAsyncWriterImpl GRPC_FINAL
   void InternalNext();
   void CloseNow();
   void CallCloseHandler();
-  void OnClose(ClientAsyncWriterCloseCqTag& tag);
 
  private:
   // The callback may lock the mutex recursively.

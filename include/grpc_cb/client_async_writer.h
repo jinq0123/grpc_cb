@@ -66,7 +66,7 @@ class ClientAsyncWriter GRPC_FINAL {
 
  private:
   // Use non_template class as the implement.
-  std::shared_ptr<ClientAsyncWriterImpl> impl_sptr_;  // Easy to copy.
+  ClientAsyncWriterImplSptr impl_sptr_;  // Easy to copy.
 };  // class ClientAsyncWriter<>
 
 }  // namespace grpc_cb

@@ -12,8 +12,8 @@ namespace grpc_cb {
 
 ErrorCallback ServiceStub::default_error_callback_(&ServiceStub::IgnoreError);
 
-ServiceStub::ServiceStub(const ChannelSptr& channel_sptr) :
-    channel_sptr_(channel_sptr),  // copy shared_ptr
+ServiceStub::ServiceStub(const ChannelSptr& channel_sptr)
+    : channel_sptr_(channel_sptr),  // copy shared_ptr
     error_callback_(default_error_callback_),
     cq_sptr_(new CompletionQueue) {
   assert(channel_sptr);

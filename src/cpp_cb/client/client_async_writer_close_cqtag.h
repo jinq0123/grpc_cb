@@ -6,6 +6,7 @@
 
 #include <functional>  // for std::function
 
+#include <grpc_cb/impl/client/client_async_writer_impl_sptr.h>  // for ClientAsyncWriterImplSptr
 #include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
 #include <grpc_cb/support/config.h>                         // for GRPC_FINAL
 
@@ -13,15 +14,13 @@ namespace grpc_cb {
 
 class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
-  using OnComplete = std::function<void(ClientAsyncWriterCloseCqTag& tag)>;
   ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr,
-                              const OnComplete& on_complete);
-  // XXX Use ClientAsyncWriterImpl sptr instead of OnComplete
+      const ClientAsyncWriterImplSptr& writer_impl_sptr);
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
-  const OnComplete on_complete_;
+  const ClientAsyncWriterImplSptr writer_impl_sptr_;
 };  // class ClientAsyncWriterCloseCqTag
 
 }  // namespace grpc_cb

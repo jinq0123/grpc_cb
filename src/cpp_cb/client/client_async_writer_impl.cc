@@ -16,8 +16,6 @@
 
 namespace grpc_cb {
 
-using Sptr = std::shared_ptr<ClientAsyncWriterImpl>;
-
 ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
                                              const std::string& method,
                                              const CompletionQueueSptr& cq_sptr)
@@ -42,7 +40,7 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
     return false;
 
   if (!writer_uptr_) {
-    Sptr sptr = shared_from_this();
+    auto sptr = shared_from_this();
     writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
         [sptr]() {
             sptr->WriteNext();
@@ -75,11 +73,8 @@ void ClientAsyncWriterImpl::CloseNow() {
     return;
   }
 
-  Sptr sptr = shared_from_this();
-  ClientAsyncWriterCloseCqTag tag(call_sptr_,
-      [sptr](ClientAsyncWriterCloseCqTag& tag) {
-        sptr->OnClose(tag);
-      });
+  auto sptr = shared_from_this();
+  ClientAsyncWriterCloseCqTag tag(call_sptr_, sptr);
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
     CallCloseHandler();
@@ -117,7 +112,9 @@ void ClientAsyncWriterImpl::CallCloseHandler() {
   close_handler_sptr_->OnClose(status_);
 }
 
-void ClientAsyncWriterImpl::OnClose(ClientAsyncWriterCloseCqTag& tag) {
+void ClientAsyncWriterImpl::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
+  Guard g(mtx_);
+
   // Todo: Get trailing metadata.
   if (tag.IsStatusOk()) {
     if (close_handler_sptr_) {
