@@ -12,6 +12,9 @@
 
 namespace grpc_cb {
 
+using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl>;
+using Wptr = std::weak_ptr<ClientAsyncReaderWriterImpl>;
+
 // Todo: BlockingGetInitMd();
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
@@ -32,13 +35,18 @@ ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
 
 bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
   assert(call_sptr_);
+  Guard g(mtx_);
+
   if (!status_.ok())
     return false;
 
   if (!writer_uptr_) {
-    auto sptr = shared_from_this();
+    Wptr wptr = shared_from_this();
     writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
-      [sptr]() { sptr->WriteNext(); }));
+        [wptr]() {
+          Sptr sptr = wptr.lock();
+          if (sptr) sptr->WriteNext();
+        }));
   }
 
   writer_uptr_->Write(msg_sptr);
@@ -46,14 +54,16 @@ bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
 }
 
 void ClientAsyncReaderWriterImpl::CloseWriting() {
+  Guard g(mtx_);
   // Set to send close when all messages are written.
   can_close_writing_ = true;
 }
 
+// private
 void ClientAsyncReaderWriterImpl::CloseWritingNow() {
-  if (writing_closed_) return;
-  writing_closed_ = true;
   if (!status_.ok()) return;
+  if (writer_uptr_->IsWritingClosed()) return;
+  writer_uptr_->SetWritingClosed();
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
@@ -66,6 +76,8 @@ void ClientAsyncReaderWriterImpl::CloseWritingNow() {
 
 void ClientAsyncReaderWriterImpl::SetReadHandler(
     const ReadHandlerSptr& handler_sptr) {
+  Guard g(mtx_);
+
   read_handler_sptr_ = handler_sptr;
   if (is_reading_) return;
   is_reading_ = true;

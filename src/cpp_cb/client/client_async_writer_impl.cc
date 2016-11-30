@@ -16,7 +16,7 @@
 
 namespace grpc_cb {
 
-using Sptr = ClientAsyncWriterImplSptr;
+using Sptr = std::shared_ptr<ClientAsyncWriterImpl>;
 using Wptr = std::weak_ptr<ClientAsyncWriterImpl>;
 
 ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,

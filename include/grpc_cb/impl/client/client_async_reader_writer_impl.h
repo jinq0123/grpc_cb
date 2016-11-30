@@ -21,7 +21,6 @@ namespace grpc_cb {
 
 class ClientAsyncWriterHelper;
 
-// Todo: make it thread-safe
 class ClientAsyncReaderWriterImpl GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderWriterImpl> {
  public:
@@ -38,6 +37,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   using ReadHandlerSptr = ClientAsyncReadHandlerSptr;
   void SetReadHandler(const ReadHandlerSptr& handler_sptr);
   void SetOnEnd(const StatusCallback& on_status) {
+    Guard g(mtx_);
     on_status_ = on_status;
   }
 
@@ -60,7 +60,6 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
 
   bool is_reading_ = false;  // SetReadHandler() to trigger reading.
   bool can_close_writing_ = false;  // Waiting to close?
-  bool writing_closed_ = false;  // Is close sent?
 
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncReaderWriterImpl<>
