@@ -27,6 +27,8 @@ class ClientAsyncWriterHelper GRPC_FINAL {
   bool Write(const MessageSptr& msg_sptr);
   bool IsWriting() const { return is_writing_; }
   bool WriteNext();
+  bool IsWritingClosed() const { return is_writing_closed_; }
+  void SetWritingClosed() { is_writing_closed_ = true; }
 
  private:
   const CallSptr call_sptr_;
@@ -34,6 +36,7 @@ class ClientAsyncWriterHelper GRPC_FINAL {
   const OnWritten on_written_;
   MessageQueue msg_queue_;  // cache messages to write
   bool is_writing_ = false;  // grpc only allows to write one by one
+  bool is_writing_closed_ = false;
 };  // class ClientAsyncWriterHelper
 
 }  // namespace grpc_cb

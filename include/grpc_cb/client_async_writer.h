@@ -62,7 +62,7 @@ class ClientAsyncWriter GRPC_FINAL {
     impl_sptr_->Close(handler);
   }  // Close()
 
-  // XXX Use a default CloseHandler if no Close().
+  // Todo: Use a default CloseHandler if no Close()?
 
  private:
   // Use non_template class as the implement.

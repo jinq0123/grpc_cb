@@ -112,10 +112,11 @@ void ClientAsyncWriterImpl::InternalNext() {
 void ClientAsyncWriterImpl::CallCloseHandler() {
   if (!close_handler_sptr_)
     return;
-  close_handler_sptr_->OnClose(status_);
+  if (writer_uptr_->IsWritingClosed())
+    return;
+  writer_uptr_->SetWritingClosed();
 
-  // XXX use writing_closed_ instead
-  close_handler_sptr_.reset();  // call once
+  close_handler_sptr_->OnClose(status_);
 }
 
 void ClientAsyncWriterImpl::OnClose(ClientAsyncWriterCloseCqTag& tag) {
