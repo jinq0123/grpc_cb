@@ -34,6 +34,8 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   // CloseWriting() is optional. Auto closed on dtr().
   void CloseWriting();
 
+  // Todo: Force to close reading/writing. Cancel all reading/writing.
+
   using ReadHandlerSptr = ClientAsyncReadHandlerSptr;
   void SetReadHandler(const ReadHandlerSptr& handler_sptr);
   void SetOnEnd(const StatusCallback& on_status) {

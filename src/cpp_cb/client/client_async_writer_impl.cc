@@ -17,7 +17,6 @@
 namespace grpc_cb {
 
 using Sptr = std::shared_ptr<ClientAsyncWriterImpl>;
-using Wptr = std::weak_ptr<ClientAsyncWriterImpl>;
 
 ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
                                              const std::string& method,
@@ -42,11 +41,10 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
     return false;
 
   if (!writer_uptr_) {
-    Wptr wptr = shared_from_this();
+    Sptr sptr = shared_from_this();
     writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
-        [wptr]() {
-            Sptr sptr = wptr.lock();
-            if (sptr) sptr->WriteNext();
+        [sptr]() {
+            sptr->WriteNext();
         }));
   }
 
@@ -76,12 +74,11 @@ void ClientAsyncWriterImpl::CloseNow() {
     return;
   }
 
-  Wptr wptr = shared_from_this();
+  Sptr sptr = shared_from_this();
   ClientAsyncWriterCloseCqTag tag(call_sptr_,
-    [wptr](ClientAsyncWriterCloseCqTag& tag) {
-      Sptr sptr = wptr.lock();
-      if (sptr) sptr->OnClose(tag);
-    });
+      [sptr](ClientAsyncWriterCloseCqTag& tag) {
+        sptr->OnClose(tag);
+      });
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
     CallCloseHandler();

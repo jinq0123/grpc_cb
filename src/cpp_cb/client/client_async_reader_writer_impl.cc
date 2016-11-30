@@ -13,7 +13,6 @@
 namespace grpc_cb {
 
 using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl>;
-using Wptr = std::weak_ptr<ClientAsyncReaderWriterImpl>;
 
 // Todo: BlockingGetInitMd();
 
@@ -41,11 +40,10 @@ bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
     return false;
 
   if (!writer_uptr_) {
-    Wptr wptr = shared_from_this();
+    Sptr sptr = shared_from_this();
     writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
-        [wptr]() {
-          Sptr sptr = wptr.lock();
-          if (sptr) sptr->WriteNext();
+        [sptr]() {
+          sptr->WriteNext();
         }));
   }
 
