@@ -29,7 +29,7 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
 }
 
 ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
-  CloseWritingNow();  // XXX
+  CloseWritingNow();
 }
 
 bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {

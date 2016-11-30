@@ -32,7 +32,8 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
 }
 
 ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
-  CloseNow();  // XXX auto close if not. necessary?
+  // Have done CallCloseHandler().
+  assert(writer_uptr_->IsWritingClosed());
 }
 
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {

@@ -33,6 +33,7 @@ class ClientAsyncWriterImpl GRPC_FINAL
   using CloseHandlerSptr = std::shared_ptr<ClientAsyncWriterCloseHandler>;
   void Close(const CloseHandlerSptr& handler_sptr);
 
+  // Todo: Force to close, cancel all writing.
   // Todo: get queue size
 
  private:
