@@ -44,15 +44,15 @@ class ClientAsyncReaderWriter GRPC_FINAL {
      private:
       OnRead on_read_;
       Response msg_;
-      // XXX
+      // XXX Handle()
     };
 
     auto handler_sptr = std::make_shared<ReadHandler>(on_read);
     impl_sptr_->SetReadHandler(handler_sptr);
   }
 
-  void SetOnEnd(const StatusCallback& on_status) {
-    impl_sptr_->SetOnEnd(on_status);
+  void SetOnStatus(const StatusCallback& on_status) {
+    impl_sptr_->SetOnStatus(on_status);
   }
 
  private:

@@ -81,6 +81,7 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   is_reading_ = true;
 
   auto sptr = shared_from_this();
+  // XXX helper_uptr_->AsyncReadNext()
   // XXX ClientAsyncReaderHelper::AsyncReadNext(on_read, on_end)
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
 }

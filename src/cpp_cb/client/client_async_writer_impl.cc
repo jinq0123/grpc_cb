@@ -5,8 +5,6 @@
 
 #include <cassert>  // for assert()
 
-#include <google/protobuf/message.h>  // for Message
-
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag

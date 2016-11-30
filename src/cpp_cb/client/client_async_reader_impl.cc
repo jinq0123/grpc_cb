@@ -42,4 +42,10 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
   on_status_ = on_status;
 }
 
+void ClientAsyncReaderImpl::Start() {
+  //ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
+  // XXX
+}
+
+
 }  // namespace grpc_cb

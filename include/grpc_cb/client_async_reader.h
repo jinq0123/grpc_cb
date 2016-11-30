@@ -42,8 +42,7 @@ class ClientAsyncReader GRPC_FINAL {
     auto handler_sptr = std::make_shared<ReadHandler>(on_msg);
     impl_sptr_->SetReadHandler(handler_sptr);
     impl_sptr_->SetOnStatus(on_status);
-    // XXX  impl_sptr_->Start()...
-    //ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
+    impl_sptr_->Start();
   }
 
  private:

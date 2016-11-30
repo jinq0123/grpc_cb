@@ -30,7 +30,7 @@ class ClientAsyncReaderImpl GRPC_FINAL {
  public:
   void SetReadHandler(const ClientAsyncReadHandlerSptr& handler);
   void SetOnStatus(const StatusCallback& on_status);
-  // Todo: void GetStatus(on_status), OnEnd(on_end_status)
+  void Start();
 
  private:
   std::mutex mtx_;
@@ -42,9 +42,10 @@ class ClientAsyncReaderImpl GRPC_FINAL {
 
   ClientAsyncReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
+
+  // XXXX XXX std::unique_ptr<ClientAsyncReaderHelper> reader_uptr_;
 };  // class ClientAsyncReaderImpl
 
-// XXXX XXX Add ClientAsyncReaderImpl non-template class.
 // XXXX Add ClientAsyncReaderHelper class
 
 }  // namespace grpc_cb

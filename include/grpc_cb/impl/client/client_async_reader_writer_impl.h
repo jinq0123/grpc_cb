@@ -38,7 +38,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
 
   using ReadHandlerSptr = ClientAsyncReadHandlerSptr;
   void SetReadHandler(const ReadHandlerSptr& handler_sptr);
-  void SetOnEnd(const StatusCallback& on_status) {
+  void SetOnStatus(const StatusCallback& on_status) {
     Guard g(mtx_);
     on_status_ = on_status;
   }
