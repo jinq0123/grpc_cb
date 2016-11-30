@@ -16,7 +16,7 @@
 
 namespace grpc_cb {
 
-// Copyable.
+// Copyable. Thread-safe.
 template <class Response>
 class ClientAsyncReader GRPC_FINAL {
  public:
@@ -28,8 +28,7 @@ class ClientAsyncReader GRPC_FINAL {
 
  public:
   using OnMsg = std::function<void(const Response&)>;
-  void ReadEach(
-      const OnMsg& on_msg,
+  void ReadEach(const OnMsg& on_msg,
       const StatusCallback& on_status = StatusCallback()) const {
     class ReadHandler : public ClientAsyncReadHandler {
      public:
