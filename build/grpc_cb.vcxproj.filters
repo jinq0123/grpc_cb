@@ -99,6 +99,9 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_helper.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_impl.h">
+      <Filter>include\grpc_cb\impl\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_writer_impl.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
@@ -255,6 +258,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\cpp_cb\client\channel.cc">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_impl.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc">

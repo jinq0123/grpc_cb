@@ -66,6 +66,7 @@ endif
 
 OBJECTS := \
 	$(OBJDIR)/channel.o \
+	$(OBJDIR)/client_async_reader_impl.o \
 	$(OBJDIR)/client_async_reader_writer_impl.o \
 	$(OBJDIR)/client_async_send_msg_cqtag.o \
 	$(OBJDIR)/client_async_writer_close_cqtag.o \
@@ -147,6 +148,9 @@ $(GCH): $(PCH)
 endif
 
 $(OBJDIR)/channel.o: ../src/cpp_cb/client/channel.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/client_async_reader_impl.o: ../src/cpp_cb/client/client_async_reader_impl.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/client_async_reader_writer_impl.o: ../src/cpp_cb/client/client_async_reader_writer_impl.cc

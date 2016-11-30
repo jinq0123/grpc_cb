@@ -105,6 +105,7 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_read_handler.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_read_handler_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_helper.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_impl.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_writer_impl.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\src\cpp_cb\client\channel.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.cc" />
