@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_SYNC_READER_H
-#define GRPC_CB_CLIENT_CLIENT_SYNC_READER_H
+#ifndef GRPC_CB_CLIENT_SYNC_READER_H
+#define GRPC_CB_CLIENT_SYNC_READER_H
 
 #include <cassert>     // for assert()
 
@@ -66,4 +66,4 @@ ClientSyncReader<Response>::ClientSyncReader(
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_SYNC_READER_H
+#endif  // GRPC_CB_CLIENT_SYNC_READER_H

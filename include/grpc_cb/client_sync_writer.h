@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_WRITER_SYNC_
-#define GRPC_CB_CLIENT_WRITER_SYNC_
+#ifndef GRPC_CB_CLIENT_SYNC_WRITER_H
+#define GRPC_CB_CLIENT_SYNC_WRITER_H
 
 #include <cassert>     // for assert()
 
@@ -94,4 +94,4 @@ Status ClientSyncWriter<Request>::Close(
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_WRITER_SYNC_
+#endif  // GRPC_CB_CLIENT_SYNC_WRITER_H

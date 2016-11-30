@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_H
-#define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_H
+#ifndef GRPC_CB_CLIENT_ASYNC_READER_H
+#define GRPC_CB_CLIENT_ASYNC_READER_H
 
 #include <cassert>     // for assert()
 #include <functional>  // for std::function
@@ -44,6 +44,8 @@ class ClientAsyncReader GRPC_FINAL {
 };  // class ClientAsyncReader<>
 
 // XXX Delete ClientAsyncReader. Only need DataSptr.
+// XXXX XXX Add ClientAsyncReaderImpl non-template class.
+// XXXX Add ClientAsyncReaderHelper class
 
 template <class Response>
 ClientAsyncReader<Response>::ClientAsyncReader(
@@ -62,4 +64,4 @@ ClientAsyncReader<Response>::ClientAsyncReader(
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_H
+#endif  // GRPC_CB_CLIENT_ASYNC_READER_H
