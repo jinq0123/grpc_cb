@@ -16,7 +16,13 @@
 
 namespace grpc_cb {
 
-ClientAsyncReaderHelper::ClientAsyncReaderHelper() {}
+ClientAsyncReaderHelper::ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr,
+                                                 CallSptr call_sptr,
+                                                 Status& status)
+    : cq_sptr_(cq_sptr), call_sptr_(call_sptr), status_(status) {
+  assert(cq_sptr);
+  assert(call_sptr);
+}
 
 ClientAsyncReaderHelper::~ClientAsyncReaderHelper() {}
 

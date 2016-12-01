@@ -80,9 +80,11 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   if (is_reading_) return;
   is_reading_ = true;
 
+  if (!reader_uptr_) {
+    reader_uptr_.reset(
+        new ClientAsyncReaderHelper(cq_sptr_, call_sptr_, status_));
+  }
   auto sptr = shared_from_this();
-  if (!reader_uptr_)
-    reader_uptr_.reset(new ClientAsyncReaderHelper);
   // XXX reader_uptr_->AsyncReadNext();
   // XXX ClientAsyncReaderHelper::AsyncReadNext(on_read, on_end)
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX

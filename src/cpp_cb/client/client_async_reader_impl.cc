@@ -46,12 +46,13 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
 
 void ClientAsyncReaderImpl::Start() {
   Guard g(mtx_);
-  if (!reader_uptr_)
-    reader_uptr_.reset(new ClientAsyncReaderHelper);
-  // XXX reader_uptr_->AsyncReadNext();
-  //ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
+  if (!reader_uptr_) {
+    reader_uptr_.reset(
+        new ClientAsyncReaderHelper(cq_sptr_, call_sptr_, status_));
+  }
+  reader_uptr_->AsyncReadNext();
+  // ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
   // XXX
 }
-
 
 }  // namespace grpc_cb

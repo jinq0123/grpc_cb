@@ -19,9 +19,13 @@ namespace grpc_cb {
 
 // ClientAsyncReaderHelper is used in ClientAsyncReader and ClientAsyncReaderWriter.
 class ClientAsyncReaderHelper GRPC_FINAL {
-public:
-  ClientAsyncReaderHelper();
+ public:
+  ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
+                          Status& status);
   ~ClientAsyncReaderHelper();
+
+ public:
+  void AsyncReadNext() {};  // XXXX
 
 #if 0
 // Callback on each message.
@@ -104,6 +108,15 @@ inline void OnEnd(const Status& status,
 }
 #endif
 
+ private:
+  CompletionQueueSptr cq_sptr_;
+  CallSptr call_sptr_;
+  Status& status_;
+
+  // XXX Use ReadHandler...
+  //using MsgCallback = std::function<void(const Response&)>;
+  //MsgCallback on_msg;
+  //StatusCallback on_status;
 };  // ClientAsyncReaderHelper
 
 }  // namespace grpc_cb

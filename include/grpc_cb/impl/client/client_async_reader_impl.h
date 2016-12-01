@@ -34,6 +34,8 @@ class ClientAsyncReaderImpl GRPC_FINAL {
   void SetOnStatus(const StatusCallback& on_status);
   void Start();
 
+  // Todo: Stop reading any more...
+
  private:
   std::mutex mtx_;
   using Guard = std::lock_guard<std::mutex>;
