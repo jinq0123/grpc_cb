@@ -4,10 +4,10 @@
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>
 
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
-#include <grpc_cb/impl/client/client_async_reader_helper.h>  // for ClientAsyncReaderHelper
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 
+#include "client_async_reader_helper.h"  // for ClientAsyncReaderHelper
 #include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
 
 namespace grpc_cb {
@@ -81,7 +81,9 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   is_reading_ = true;
 
   auto sptr = shared_from_this();
-  // XXX helper_uptr_->AsyncReadNext()
+  if (!reader_uptr_)
+    reader_uptr_.reset(new ClientAsyncReaderHelper);
+  // XXX reader_uptr_->AsyncReadNext();
   // XXX ClientAsyncReaderHelper::AsyncReadNext(on_read, on_end)
   // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
 }
@@ -102,7 +104,7 @@ void ClientAsyncReaderWriterImpl::InternalNext() {
     return;
 
   if (can_close_writing_)
-     CloseWritingNow();
+    CloseWritingNow();
 }
 
 }  // namespace grpc_cb

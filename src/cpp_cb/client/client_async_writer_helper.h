@@ -19,8 +19,8 @@ class Status;
 class ClientAsyncWriterHelper GRPC_FINAL {
  public:
   using OnWritten = std::function<void()>;
-  explicit ClientAsyncWriterHelper(const CallSptr& call_sptr, Status& status,
-                                   const OnWritten& on_written);
+  ClientAsyncWriterHelper(const CallSptr& call_sptr, Status& status,
+                          const OnWritten& on_written);
   ~ClientAsyncWriterHelper();
 
  public:

@@ -19,6 +19,7 @@
 
 namespace grpc_cb {
 
+class ClientAsyncReaderHelper;
 class ClientAsyncWriterHelper;
 
 class ClientAsyncReaderWriterImpl GRPC_FINAL
@@ -63,6 +64,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   bool is_reading_ = false;  // SetReadHandler() to trigger reading.
   bool can_close_writing_ = false;  // Waiting to close?
 
+  std::unique_ptr<ClientAsyncReaderHelper> reader_uptr_;
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncReaderWriterImpl<>
 

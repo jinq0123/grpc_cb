@@ -18,6 +18,8 @@
 
 namespace grpc_cb {
 
+class ClientAsyncReaderHelper;
+
 // Thread-safe.
 class ClientAsyncReaderImpl GRPC_FINAL {
  public:
@@ -43,10 +45,8 @@ class ClientAsyncReaderImpl GRPC_FINAL {
   ClientAsyncReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
 
-  // XXXX XXX std::unique_ptr<ClientAsyncReaderHelper> reader_uptr_;
+  std::unique_ptr<ClientAsyncReaderHelper> reader_uptr_;
 };  // class ClientAsyncReaderImpl
-
-// XXXX Add ClientAsyncReaderHelper class
 
 }  // namespace grpc_cb
 #endif  // GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_IMPL_H

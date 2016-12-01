@@ -8,6 +8,8 @@
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
 
+#include "client_async_reader_helper.h"
+
 namespace grpc_cb {
 
 ClientAsyncReaderImpl::ClientAsyncReaderImpl(
@@ -43,6 +45,10 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
 }
 
 void ClientAsyncReaderImpl::Start() {
+  Guard g(mtx_);
+  if (!reader_uptr_)
+    reader_uptr_.reset(new ClientAsyncReaderHelper);
+  // XXX reader_uptr_->AsyncReadNext();
   //ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);
   // XXX
 }

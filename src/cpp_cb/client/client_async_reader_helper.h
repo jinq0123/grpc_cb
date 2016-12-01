@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_HELPER_H
-#define GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_HELPER_H
+#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
+#define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 
 #include <cassert>     // for assert()
 #include <functional>  // for std::function
@@ -13,11 +13,17 @@
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 #include <grpc_cb/status.h>                 // for Status
 #include <grpc_cb/status_callback.h>        // for StatusCallback
+#include <grpc_cb/support/config.h>      // for GRPC_FINAL
 
 namespace grpc_cb {
-namespace ClientAsyncReaderHelper {
-// ClientAsyncReaderHelper is used in ClientAsyncReader and ClientAsyncReaderWriter.
 
+// ClientAsyncReaderHelper is used in ClientAsyncReader and ClientAsyncReaderWriter.
+class ClientAsyncReaderHelper GRPC_FINAL {
+public:
+  ClientAsyncReaderHelper();
+  ~ClientAsyncReaderHelper();
+
+#if 0
 // Callback on each message.
 template <class Response>
 inline void OnReadEach(const Response& msg,
@@ -96,8 +102,9 @@ inline void OnEnd(const Status& status,
 
   if (on_status) on_status(status);
 }
+#endif
 
-}  // namespace ClientAsyncReaderHelper
+};  // ClientAsyncReaderHelper
+
 }  // namespace grpc_cb
-
-#endif  // GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_HELPER_H
+#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
