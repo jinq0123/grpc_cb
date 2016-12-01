@@ -38,14 +38,14 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
     return false;
 
   if (!writer_uptr_) {
-    auto sptr = shared_from_this();
-    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_,
-        [sptr]() {
-            sptr->WriteNext();
-        }));
+    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_));
   }
 
-  writer_uptr_->Write(request_sptr);
+  // sptr will live until written.
+  auto sptr = shared_from_this();
+  writer_uptr_->Write(request_sptr, [sptr]() {
+    sptr->WriteNext();
+  });
   return true;
 }
 

@@ -5,9 +5,9 @@
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 
 #include <functional>  // for function
+#include <queue>
 
 #include <grpc_cb/impl/call_sptr.h>      // for CallSptr
-#include <grpc_cb/impl/message_queue.h>  // for MessageQueue
 #include <grpc_cb/impl/message_sptr.h>   // for MessageSptr
 #include <grpc_cb/support/config.h>      // for GRPC_FINAL
 
@@ -18,13 +18,12 @@ class Status;
 // Cache messages and write one by one.
 class ClientAsyncWriterHelper GRPC_FINAL {
  public:
-  using OnWritten = std::function<void()>;
-  ClientAsyncWriterHelper(const CallSptr& call_sptr, Status& status,
-                          const OnWritten& on_written);
+  ClientAsyncWriterHelper(const CallSptr& call_sptr, Status& status);
   ~ClientAsyncWriterHelper();
 
  public:
-  bool Write(const MessageSptr& msg_sptr);
+  using OnWritten = std::function<void()>;
+  bool Write(const MessageSptr& msg_sptr, const OnWritten& on_written);
   bool IsWriting() const { return is_writing_; }
   bool WriteNext();
   bool IsWritingClosed() const { return is_writing_closed_; }
@@ -33,8 +32,16 @@ class ClientAsyncWriterHelper GRPC_FINAL {
  private:
   const CallSptr call_sptr_;
   Status& status_;
-  const OnWritten on_written_;
-  MessageQueue msg_queue_;  // cache messages to write
+
+  // Do not store on_written as a member variable,
+  //   because on_written has a shared pointer of
+  //   ClientAsyncWriterImpl/ClientAsyncReaderWriterImpl.
+  struct WritingTask {
+    MessageSptr msg_sptr;
+    OnWritten on_written;
+  };
+  std::queue<WritingTask> queue_;  // cache messages to write
+
   bool is_writing_ = false;  // grpc only allows to write one by one
   bool is_writing_closed_ = false;
 };  // class ClientAsyncWriterHelper
