@@ -69,7 +69,7 @@ class Stub : public ::grpc_cb::ServiceStub {
   ::grpc_cb::ClientAsyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>
-  AsyncRouteChat();
+  AsyncRouteChat(const ::grpc_cb::StatusCallback& on_status);
 
 };  // class Stub
 

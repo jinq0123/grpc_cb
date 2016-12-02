@@ -30,6 +30,7 @@ class ClientAsyncReaderImpl GRPC_FINAL {
   ~ClientAsyncReaderImpl();
 
  public:
+  // ReadHandler and OnStatus must be set before Start().
   void SetReadHandler(const ClientAsyncReadHandlerSptr& handler);
   void SetOnStatus(const StatusCallback& on_status);
   void Start();

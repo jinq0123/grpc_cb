@@ -27,7 +27,8 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
  public:
   ClientAsyncReaderWriterImpl(const ChannelSptr& channel,
                               const std::string& method,
-                              const CompletionQueueSptr& cq_sptr);
+                              const CompletionQueueSptr& cq_sptr,
+                              const StatusCallback& on_status);
   ~ClientAsyncReaderWriterImpl();
 
  public:
@@ -38,11 +39,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   // Todo: Force to close reading/writing. Cancel all reading/writing.
 
   using ReadHandlerSptr = ClientAsyncReadHandlerSptr;
-  void SetReadHandler(const ReadHandlerSptr& handler_sptr);
-  void SetOnStatus(const StatusCallback& on_status) {
-    Guard g(mtx_);
-    on_status_ = on_status;
-  }
+  void ReadEach(const ReadHandlerSptr& handler_sptr);
 
  private:
   // Write next message and close.

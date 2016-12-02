@@ -8,12 +8,12 @@
 #include <functional>  // for std::function
 
 #include <grpc_cb/impl/call_sptr.h>                              // for CallSptr
-#include <grpc_cb/impl/client/client_reader_async_read_cqtag.h>  // for ClientReaderAsyncReadCqTag
+#include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
-#include <grpc_cb/status.h>                 // for Status
-#include <grpc_cb/status_callback.h>        // for StatusCallback
-#include <grpc_cb/support/config.h>      // for GRPC_FINAL
+#include <grpc_cb/status.h>                          // for Status
+#include <grpc_cb/status_callback.h>                 // for StatusCallback
+#include <grpc_cb/support/config.h>                  // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -21,11 +21,13 @@ namespace grpc_cb {
 class ClientAsyncReaderHelper GRPC_FINAL {
  public:
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
-                          Status& status);
+                          Status& status,
+                          const ClientAsyncReadHandlerSptr& read_handler_sptr,
+                          const StatusCallback& on_status);
   ~ClientAsyncReaderHelper();
 
  public:
-  void AsyncReadNext() {};  // XXXX
+  void AsyncReadNext();
 
 #if 0
 // Callback on each message.
@@ -116,7 +118,7 @@ inline void OnEnd(const Status& status,
   // XXX Use ReadHandler...
   //using MsgCallback = std::function<void(const Response&)>;
   //MsgCallback on_msg;
-  //StatusCallback on_status;
+  StatusCallback on_status_;
 };  // ClientAsyncReaderHelper
 
 }  // namespace grpc_cb

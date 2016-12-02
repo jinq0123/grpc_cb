@@ -6,7 +6,8 @@
 
 #include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
-#include <grpc_cb/support/config.h>  // for GRPC_FINAL
+#include <grpc_cb/status_callback.h>  // for StatusCallback
+#include <grpc_cb/support/config.h>   // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -14,10 +15,10 @@ namespace grpc_cb {
 template <class Request, class Response>
 class ClientAsyncReaderWriter GRPC_FINAL {
  public:
-  ClientAsyncReaderWriter(const ChannelSptr& channel,
-                            const std::string& method,
-                            const CompletionQueueSptr& cq_sptr)
-      : impl_sptr_(new Impl(channel, method, cq_sptr)) {
+  ClientAsyncReaderWriter(const ChannelSptr& channel, const std::string& method,
+                          const CompletionQueueSptr& cq_sptr,
+                          const StatusCallback& on_status = StatusCallback())
+      : impl_sptr_(new Impl(channel, method, cq_sptr, on_status)) {
     assert(cq_sptr);
     assert(channel);
   }
@@ -35,7 +36,7 @@ class ClientAsyncReaderWriter GRPC_FINAL {
   }
 
   using OnRead = std::function<void(const Response&)>;
-  void SetOnRead(const OnRead& on_read) {
+  void ReadEach(const OnRead& on_read) {
 
     class ReadHandler : public ClientAsyncReadHandler {
      public:
@@ -48,11 +49,7 @@ class ClientAsyncReaderWriter GRPC_FINAL {
     };
 
     auto handler_sptr = std::make_shared<ReadHandler>(on_read);
-    impl_sptr_->SetReadHandler(handler_sptr);
-  }
-
-  void SetOnStatus(const StatusCallback& on_status) {
-    impl_sptr_->SetOnStatus(on_status);
+    impl_sptr_->ReadEach(handler_sptr);
   }
 
  private:

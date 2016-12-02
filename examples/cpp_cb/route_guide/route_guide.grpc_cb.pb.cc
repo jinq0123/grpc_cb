@@ -140,11 +140,12 @@ Stub::SyncRouteChat() {
 ::grpc_cb::ClientAsyncReaderWriter<
   ::routeguide::RouteNote,
   ::routeguide::RouteNote>
-Stub::AsyncRouteChat() {
+Stub::AsyncRouteChat(
+    const ::grpc_cb::StatusCallback& on_status) {
   return ::grpc_cb::ClientAsyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>(
-        GetChannelSptr(), method_names[3], GetCqSptr());
+        GetChannelSptr(), method_names[3], GetCqSptr(), on_status);
 }
 
 Service::Service() {}

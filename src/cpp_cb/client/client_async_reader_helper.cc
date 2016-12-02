@@ -7,7 +7,7 @@
 //#include <functional>  // for std::function
 //
 //#include <grpc_cb/impl/call_sptr.h>                              // for CallSptr
-//#include <grpc_cb/impl/client/client_reader_async_read_cqtag.h>  // for ClientReaderAsyncReadCqTag
+#include "client_reader_async_read_cqtag.h"  // for ClientReaderAsyncReadCqTag
 //#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
 //#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 //#include <grpc_cb/status.h>                 // for Status
@@ -16,12 +16,14 @@
 
 namespace grpc_cb {
 
-ClientAsyncReaderHelper::ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr,
-                                                 CallSptr call_sptr,
-                                                 Status& status)
+ClientAsyncReaderHelper::ClientAsyncReaderHelper(
+    CompletionQueueSptr cq_sptr, CallSptr call_sptr, Status& status,
+    const ClientAsyncReadHandlerSptr& read_handler_sptr,
+    const StatusCallback& on_status)
     : cq_sptr_(cq_sptr), call_sptr_(call_sptr), status_(status) {
   assert(cq_sptr);
   assert(call_sptr);
+  // XXXX store handler and on_status
 }
 
 ClientAsyncReaderHelper::~ClientAsyncReaderHelper() {}
@@ -37,35 +39,30 @@ template <class Response>
 inline void OnEnd(const Status& status,
     const ClientReaderDataSptr<Response>& data_sptr);
 
-// Setup next async read.
-template <class Response>
-inline void AsyncReadNext(const ClientReaderDataSptr<Response>& data_sptr);
-
 inline void AsyncRecvStatus(
     const CallSptr& call_sptr,
     Status& status,
     const StatusCallback& on_status);
+#endif
 
-// Todo: move to cpp file.
+// Setup next async read.
+void ClientAsyncReaderHelper::AsyncReadNext() {
+  // const ClientReaderDataSptr<Response>& data_sptr
+  // assert(data_sptr);
+  if (!status_.ok()) return;
 
-template <class Response>
-inline void AsyncReadNext(const ClientReaderDataSptr<Response>& data_sptr) {
-  assert(data_sptr);
-  Status& status = data_sptr->status;
-  if (!status.ok()) return;
-
-  auto* tag = new ClientReaderAsyncReadCqTag<Response>(
-      data_sptr->call_sptr,
-      [data_sptr](const Response& msg) { OnReadEach(msg, data_sptr); },
-      [data_sptr](const Status& status) { OnEnd(status, data_sptr); });
+  auto* tag = new ClientReaderAsyncReadCqTag(
+      call_sptr_,
+      // XXX [data_sptr](const Response& msg) { OnReadEach(msg, data_sptr); },
+      [](const Status& status) { /* XXX OnEnd(status, data_sptr);*/});
   if (tag->Start()) return;
 
   delete tag;
-  status.SetInternalError("Failed to async read server stream.");
-  StatusCallback& on_status = data_sptr->on_status;
-  if (on_status) on_status(status);
+  status_.SetInternalError("Failed to async read server stream.");
+  if (on_status_) on_status_(status_);
 }
 
+#if 0
 inline void AsyncRecvStatus(
     const CallSptr& call_sptr,
     Status& status,

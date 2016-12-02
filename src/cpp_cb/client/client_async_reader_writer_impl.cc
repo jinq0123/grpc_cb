@@ -18,7 +18,8 @@ using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl>;
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,
-    const CompletionQueueSptr& cq_sptr)
+    const CompletionQueueSptr& cq_sptr,
+    const StatusCallback& on_status)
     : cq_sptr_(cq_sptr), 
     call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
@@ -72,7 +73,7 @@ void ClientAsyncReaderWriterImpl::CloseWritingNow() {
 
 // Todo: same as ClientReader?
 
-void ClientAsyncReaderWriterImpl::SetReadHandler(
+void ClientAsyncReaderWriterImpl::ReadEach(
     const ReadHandlerSptr& handler_sptr) {
   Guard g(mtx_);
 
@@ -81,8 +82,8 @@ void ClientAsyncReaderWriterImpl::SetReadHandler(
   is_reading_ = true;
 
   if (!reader_uptr_) {
-    reader_uptr_.reset(
-        new ClientAsyncReaderHelper(cq_sptr_, call_sptr_, status_));
+    reader_uptr_.reset(new ClientAsyncReaderHelper(
+        cq_sptr_, call_sptr_, status_, read_handler_sptr_, on_status_));
   }
   auto sptr = shared_from_this();
   // XXX reader_uptr_->AsyncReadNext();
