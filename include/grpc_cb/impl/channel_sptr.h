@@ -8,7 +8,7 @@
 
 namespace grpc_cb {
 class Channel;
-typedef std::shared_ptr<Channel> ChannelSptr;
+using ChannelSptr = std::shared_ptr<Channel>;
 }  // namespace grpc_cb
 
 #endif  // GRPC_CB_CHANNEL_SPTR_H

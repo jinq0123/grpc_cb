@@ -80,7 +80,7 @@ class Server GRPC_FINAL : public GrpcLibrary {
   void RequestServiceMethodsCalls(const RegisteredService& rs) const;
 
  private:
-  typedef std::unique_ptr<grpc_server, void (*)(grpc_server*)> GrpcServerUptr;
+  using GrpcServerUptr = std::unique_ptr<grpc_server, void (*)(grpc_server*)>;
   static GrpcServerUptr MakeUniqueGrpcServer();
 
  private:

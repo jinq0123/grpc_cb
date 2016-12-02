@@ -11,7 +11,7 @@
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/status.h>                      // for Status
+#include <grpc_cb/impl/status_sptr.h>            // for StatusSptr
 #include <grpc_cb/status_callback.h>             // for StatusCallback
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 #include <grpc_cb/support/protobuf_fwd.h>        // for Message
@@ -43,12 +43,12 @@ class ClientAsyncReaderImpl GRPC_FINAL {
 
   CompletionQueueSptr cq_sptr_;
   CallSptr call_sptr_;
-  Status status_;
+  StatusSptr status_sptr_;  // Shared in ReaderHelper.
 
   ClientAsyncReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
 
-  std::unique_ptr<ClientAsyncReaderHelper> reader_uptr_;
+  std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;
 };  // class ClientAsyncReaderImpl
 
 }  // namespace grpc_cb

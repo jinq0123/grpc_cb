@@ -16,14 +16,20 @@
 
 namespace grpc_cb {
 
+using Sptr = ClientAsyncReaderHelperSptr;
+
 ClientAsyncReaderHelper::ClientAsyncReaderHelper(
-    CompletionQueueSptr cq_sptr, CallSptr call_sptr, Status& status,
+    CompletionQueueSptr cq_sptr, CallSptr call_sptr, const StatusSptr& status_sptr,
     const ClientAsyncReadHandlerSptr& read_handler_sptr,
     const StatusCallback& on_status)
-    : cq_sptr_(cq_sptr), call_sptr_(call_sptr), status_(status) {
+    : cq_sptr_(cq_sptr),
+      call_sptr_(call_sptr),
+      status_sptr_(status_sptr),
+      read_handler_sptr_(read_handler_sptr),
+      on_status_(on_status) {
   assert(cq_sptr);
   assert(call_sptr);
-  // XXXX store handler and on_status
+  assert(status_sptr);
 }
 
 ClientAsyncReaderHelper::~ClientAsyncReaderHelper() {}
@@ -47,20 +53,21 @@ inline void AsyncRecvStatus(
 
 // Setup next async read.
 void ClientAsyncReaderHelper::AsyncReadNext() {
-  // const ClientReaderDataSptr<Response>& data_sptr
-  // assert(data_sptr);
-  if (!status_.ok()) return;
+  if (!status_sptr_->ok()) return;
 
-  auto* tag = new ClientReaderAsyncReadCqTag(
-      call_sptr_,
-      // XXX [data_sptr](const Response& msg) { OnReadEach(msg, data_sptr); },
-      [](const Status& status) { /* XXX OnEnd(status, data_sptr);*/});
+  Sptr sptr = shared_from_this();
+  auto* tag = new ClientReaderAsyncReadCqTag(sptr);
   if (tag->Start()) return;
 
   delete tag;
-  status_.SetInternalError("Failed to async read server stream.");
-  if (on_status_) on_status_(status_);
+  status_sptr_->SetInternalError("Failed to async read server stream.");
+  if (on_status_) on_status_(*status_sptr_);
 }
+
+void ClientAsyncReaderHelper::OnRead(const ClientReaderAsyncReadCqTag& tag) {
+  // XXXX
+}
+
 
 #if 0
 inline void AsyncRecvStatus(

@@ -4,24 +4,27 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 
-#include <cassert>     // for assert()
-#include <functional>  // for std::function
+#include <memory>  // for enable_shared_from_this<>
 
 #include <grpc_cb/impl/call_sptr.h>                              // for CallSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
-#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
-#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
-#include <grpc_cb/status.h>                          // for Status
-#include <grpc_cb/status_callback.h>                 // for StatusCallback
-#include <grpc_cb/support/config.h>                  // for GRPC_FINAL
+#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/impl/status_sptr.h>            // for StatusSptr
+#include <grpc_cb/status_callback.h>             // for StatusCallback
+#include <grpc_cb/support/config.h>              // for GRPC_FINAL
+
+#include "client_async_reader_helper_sptr.h"
 
 namespace grpc_cb {
 
+class ClientReaderAsyncReadCqTag;
+
 // ClientAsyncReaderHelper is used in ClientAsyncReader and ClientAsyncReaderWriter.
-class ClientAsyncReaderHelper GRPC_FINAL {
+class ClientAsyncReaderHelper GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
-                          Status& status,
+                          const StatusSptr& status_sptr,
                           const ClientAsyncReadHandlerSptr& read_handler_sptr,
                           const StatusCallback& on_status);
   ~ClientAsyncReaderHelper();
@@ -29,6 +32,8 @@ class ClientAsyncReaderHelper GRPC_FINAL {
  public:
   void AsyncReadNext();
 
+ public:
+  void OnRead(const ClientReaderAsyncReadCqTag& tag);
 #if 0
 // Callback on each message.
 template <class Response>
@@ -50,24 +55,6 @@ inline void AsyncRecvStatus(
     const StatusCallback& on_status);
 
 // Todo: move to cpp file.
-
-template <class Response>
-inline void AsyncReadNext(const ClientReaderDataSptr<Response>& data_sptr) {
-  assert(data_sptr);
-  Status& status = data_sptr->status;
-  if (!status.ok()) return;
-
-  auto* tag = new ClientReaderAsyncReadCqTag<Response>(
-      data_sptr->call_sptr,
-      [data_sptr](const Response& msg) { OnReadEach(msg, data_sptr); },
-      [data_sptr](const Status& status) { OnEnd(status, data_sptr); });
-  if (tag->Start()) return;
-
-  delete tag;
-  status.SetInternalError("Failed to async read server stream.");
-  StatusCallback& on_status = data_sptr->on_status;
-  if (on_status) on_status(status);
-}
 
 inline void AsyncRecvStatus(
     const CallSptr& call_sptr,
@@ -110,15 +97,16 @@ inline void OnEnd(const Status& status,
 }
 #endif
 
- private:
-  CompletionQueueSptr cq_sptr_;
-  CallSptr call_sptr_;
-  Status& status_;
+ public:
+  CallSptr GetCallSptr() const { return call_sptr_; }
 
-  // XXX Use ReadHandler...
-  //using MsgCallback = std::function<void(const Response&)>;
-  //MsgCallback on_msg;
-  StatusCallback on_status_;
+ private:
+  const CompletionQueueSptr cq_sptr_;
+  const CallSptr call_sptr_;
+  const StatusSptr status_sptr_;
+
+  const ClientAsyncReadHandlerSptr read_handler_sptr_;
+  const StatusCallback on_status_;
 };  // ClientAsyncReaderHelper
 
 }  // namespace grpc_cb

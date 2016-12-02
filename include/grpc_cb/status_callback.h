@@ -7,11 +7,9 @@
 #include <functional>  // for std::function()
 
 namespace grpc_cb {
-
 class Status;
 using StatusCallback = std::function<void (const Status& status)>;
 using ErrorCallback = StatusCallback;
-
 }  // namespace grpc_cb
 
 #endif  // GRPC_CB_STATUS_CALLBACK_H

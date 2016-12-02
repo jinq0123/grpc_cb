@@ -3,9 +3,10 @@
 
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>
 
-#include <grpc_cb/channel.h>  // for MakeSharedCall()
+#include <grpc_cb/channel.h>                           // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
+#include <grpc_cb/status.h>                               // for Status
 
 #include "client_async_reader_helper.h"  // for ClientAsyncReaderHelper
 #include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
@@ -18,16 +19,18 @@ using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl>;
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,
-    const CompletionQueueSptr& cq_sptr,
-    const StatusCallback& on_status)
-    : cq_sptr_(cq_sptr), 
-    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-    on_status_(on_status) {
+    const CompletionQueueSptr& cq_sptr, const StatusCallback& on_status)
+    : cq_sptr_(cq_sptr),
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+      status_sptr_(new Status),
+      on_status_(on_status) {
   assert(cq_sptr);
+  assert(call_sptr_);
+
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
-  status_.SetInternalError("Failed to init stream.");
+  status_sptr_->SetInternalError("Failed to init stream.");
 }
 
 ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
@@ -35,14 +38,13 @@ ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
 }
 
 bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
-  assert(call_sptr_);
   Guard g(mtx_);
 
-  if (!status_.ok())
+  if (!status_sptr_->ok())
     return false;
 
   if (!writer_uptr_) {
-    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_));
+    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, *status_sptr_));
   }
 
   // sptr will live until written.
@@ -61,7 +63,7 @@ void ClientAsyncReaderWriterImpl::CloseWriting() {
 
 // private
 void ClientAsyncReaderWriterImpl::CloseWritingNow() {
-  if (!status_.ok()) return;
+  if (!status_sptr_->ok()) return;
   if (writer_uptr_->IsWritingClosed()) return;
   writer_uptr_->SetWritingClosed();
 
@@ -69,7 +71,7 @@ void ClientAsyncReaderWriterImpl::CloseWritingNow() {
   if (tag->Start()) return;
 
   delete tag;
-  status_.SetInternalError("Failed to set stream writes done.");
+  status_sptr_->SetInternalError("Failed to close writing.");
 }
 
 // Todo: same as ClientReader?
@@ -82,9 +84,9 @@ void ClientAsyncReaderWriterImpl::ReadEach(
   if (is_reading_) return;
   is_reading_ = true;
 
-  if (!reader_uptr_) {
-    reader_uptr_.reset(new ClientAsyncReaderHelper(
-        cq_sptr_, call_sptr_, status_, read_handler_sptr_, on_status_));
+  if (!reader_sptr_) {
+    reader_sptr_.reset(new ClientAsyncReaderHelper(
+        cq_sptr_, call_sptr_, status_sptr_, read_handler_sptr_, on_status_));
   }
   auto sptr = shared_from_this();
   // XXX reader_uptr_->AsyncReadNext();

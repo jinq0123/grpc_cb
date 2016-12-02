@@ -7,6 +7,7 @@
 
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
+#include <grpc_cb/status.h>                                // for Status
 
 #include "client_async_reader_helper.h"
 
@@ -17,7 +18,8 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
     const ::google::protobuf::Message& request,
     const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
-    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+      status_sptr_(new Status) {
   assert(cq_sptr);
   assert(channel);
   assert(call_sptr_);
@@ -28,7 +30,7 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
     return;
 
   delete tag;
-  status_.SetInternalError("Failed to start async client reader.");
+  status_sptr_->SetInternalError("Failed to start async client reader.");
 }
 
 ClientAsyncReaderImpl::~ClientAsyncReaderImpl() {}
@@ -46,12 +48,12 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
 
 void ClientAsyncReaderImpl::Start() {
   Guard g(mtx_);
-  if (reader_uptr_)
+  if (reader_sptr_)
     return;  // Already started.
 
-  reader_uptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, status_, read_handler_sptr_, on_status_));
-  reader_uptr_->AsyncReadNext();
+  reader_sptr_.reset(new ClientAsyncReaderHelper(
+      cq_sptr_, call_sptr_, status_sptr_, read_handler_sptr_, on_status_));
+  reader_sptr_->AsyncReadNext();
 }
 
 }  // namespace grpc_cb

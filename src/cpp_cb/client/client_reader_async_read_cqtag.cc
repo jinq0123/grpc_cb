@@ -3,25 +3,29 @@
 
 #include "client_reader_async_read_cqtag.h"
 
+#include "client_async_reader_helper.h"  // for GetCallSptr()
+
 namespace grpc_cb {
 
 ClientReaderAsyncReadCqTag::ClientReaderAsyncReadCqTag(
-    const CallSptr& call_sptr,
-    // XXX const MsgCallback& on_msg = MsgCallback(),
-    const StatusCallback& on_end)
-    : ClientReaderReadCqTag(call_sptr), on_end_(on_end) {}
+    const ClientAsyncReaderHelperSptr& reader_sptr)
+    : ClientReaderReadCqTag(reader_sptr->GetCallSptr()),
+      reader_sptr_(reader_sptr) {
+  assert(reader_sptr);
+}
 
-void ClientReaderAsyncReadCqTag::CallOnEnd(const Status& status) {
-  if (on_end_) on_end_(status);
-};
+//void ClientReaderAsyncReadCqTag::CallOnEnd(const Status& status) {
+//  if (on_end_) on_end_(status);
+//};
 
 void ClientReaderAsyncReadCqTag::DoComplete(bool success) {
   assert(success);
+  reader_sptr_->OnRead(*this);
 
-  if (!HasGotMsg()) {
-    CallOnEnd(Status::OK);
-    return;
-  }
+  //if (!HasGotMsg()) {
+  //  CallOnEnd(Status::OK);
+  //  return;
+  //}
 
   // XXX use reader handler
   //Response resp;

@@ -189,6 +189,9 @@
     <ClInclude Include="..\include\grpc_cb\impl\server\server_writer_impl.h">
       <Filter>include\grpc_cb\impl\server</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\status_sptr.h">
+      <Filter>include\grpc_cb\impl</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\security\server_credentials.h">
       <Filter>include\grpc_cb\security</Filter>
     </ClInclude>
@@ -229,6 +232,9 @@
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper_sptr.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.h">
