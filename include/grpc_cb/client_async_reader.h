@@ -34,6 +34,7 @@ class ClientAsyncReader GRPC_FINAL {
      public:
       explicit ReadHandler(const OnMsg& on_msg) : on_msg_(on_msg) {}
       Message& GetMsg() GRPC_OVERRIDE { return msg_; }
+      void HandleMsg() GRPC_OVERRIDE { if (on_msg_) on_msg_(msg_); }
      private:
       OnMsg on_msg_;
       Response msg_;

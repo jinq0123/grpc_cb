@@ -21,21 +21,6 @@ ClientReaderAsyncReadCqTag::ClientReaderAsyncReadCqTag(
 void ClientReaderAsyncReadCqTag::DoComplete(bool success) {
   assert(success);
   reader_sptr_->OnRead(*this);
-
-  //if (!HasGotMsg()) {
-  //  CallOnEnd(Status::OK);
-  //  return;
-  //}
-
-  // XXX use reader handler
-  //Response resp;
-  //Status status = GetResultMsg(resp);
-  //if (status.ok()) {
-  //  if (on_msg_) on_msg_(resp);
-  //  return;
-  //}
-
-  // XXX CallOnEnd(status);
 }
 
 }  // namespace grpc_cb

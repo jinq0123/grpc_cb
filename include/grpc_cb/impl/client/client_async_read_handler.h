@@ -4,6 +4,8 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READ_HANDLER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READ_HANDLER_H
 
+#include <grpc_cb/support/protobuf_fwd.h>  // for Message
+
 namespace grpc_cb {
 
 // As the base class of handler template class.
@@ -14,8 +16,8 @@ class ClientAsyncReadHandler {
 
   using Message = ::google::protobuf::Message;
   virtual Message& GetMsg() = 0;
+  virtual void HandleMsg() = 0;
 };  // class ClientAsyncReadHandler
 
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READ_HANDLER_H

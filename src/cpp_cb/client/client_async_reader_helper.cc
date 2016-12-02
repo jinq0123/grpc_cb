@@ -3,16 +3,13 @@
 
 #include "client_async_reader_helper.h"
 
-//#include <cassert>     // for assert()
-//#include <functional>  // for std::function
-//
-//#include <grpc_cb/impl/call_sptr.h>                              // for CallSptr
+#include <cassert>  // for assert()
+
+#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
+
 #include "client_reader_async_read_cqtag.h"  // for ClientReaderAsyncReadCqTag
 //#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
-//#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
 //#include <grpc_cb/status.h>                 // for Status
-//#include <grpc_cb/status_callback.h>        // for StatusCallback
-//#include <grpc_cb/support/config.h>      // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -64,8 +61,21 @@ void ClientAsyncReaderHelper::AsyncReadNext() {
   if (on_status_) on_status_(*status_sptr_);
 }
 
-void ClientAsyncReaderHelper::OnRead(const ClientReaderAsyncReadCqTag& tag) {
-  // XXXX
+void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
+  if (!tag.HasGotMsg()) {
+    // XXXX AsyncRecvStatus();
+    // DEL CallOnEnd(Status::OK);  // ? writer?
+    return;
+  }
+
+  Status& status = *status_sptr_;
+  status = tag.GetResultMsg(read_handler_sptr_->GetMsg());
+  if (status.ok()) {
+    read_handler_sptr_->HandleMsg();
+    return;
+  }
+
+  // XXX CallOnEnd(status);
 }
 
 

@@ -42,10 +42,10 @@ class ClientAsyncReaderWriter GRPC_FINAL {
      public:
       explicit ReadHandler(const OnRead& on_read) : on_read_(on_read) {}
       Message& GetMsg() GRPC_OVERRIDE { return msg_; }
+      void HandleMsg() GRPC_OVERRIDE { if (on_read_) on_read_(msg_); }
      private:
       OnRead on_read_;
       Response msg_;
-      // XXX Handle()
     };
 
     auto handler_sptr = std::make_shared<ReadHandler>(on_read);
