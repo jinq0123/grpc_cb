@@ -21,7 +21,8 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const CompletionQueueSptr& cq_sptr,
     const StatusCallback& on_status)
     : cq_sptr_(cq_sptr), 
-    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+    call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+    on_status_(on_status) {
   assert(cq_sptr);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
