@@ -35,6 +35,9 @@ class ClientAsyncReaderHelper GRPC_FINAL
  public:
   void OnRead(ClientReaderAsyncReadCqTag& tag);
 
+ private:
+  void AsyncRecvStatus();
+
 #if 0
 // Callback on each message.
 template <class Response>

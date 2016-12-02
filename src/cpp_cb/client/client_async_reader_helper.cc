@@ -6,10 +6,10 @@
 #include <cassert>  // for assert()
 
 #include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
+#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
+#include <grpc_cb/status.h>  // for Status
 
 #include "client_reader_async_read_cqtag.h"  // for ClientReaderAsyncReadCqTag
-//#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
-//#include <grpc_cb/status.h>                 // for Status
 
 namespace grpc_cb {
 
@@ -31,23 +31,6 @@ ClientAsyncReaderHelper::ClientAsyncReaderHelper(
 
 ClientAsyncReaderHelper::~ClientAsyncReaderHelper() {}
 
-#if 0
-// Callback on each message.
-template <class Response>
-inline void OnReadEach(const Response& msg,
-    const ClientReaderDataSptr<Response>& data_sptr);
-
-// Callback on end of reading or by error.
-template <class Response>
-inline void OnEnd(const Status& status,
-    const ClientReaderDataSptr<Response>& data_sptr);
-
-inline void AsyncRecvStatus(
-    const CallSptr& call_sptr,
-    Status& status,
-    const StatusCallback& on_status);
-#endif
-
 // Setup next async read.
 void ClientAsyncReaderHelper::AsyncReadNext() {
   if (!status_sptr_->ok()) return;
@@ -62,10 +45,11 @@ void ClientAsyncReaderHelper::AsyncReadNext() {
 }
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
+  if (!status_sptr_->ok())
+    return;
   if (!tag.HasGotMsg()) {
     // End of read.
-    // XXXX AsyncRecvStatus();
-    // DEL CallOnEnd(Status::OK);  // ? writer?
+    AsyncRecvStatus();
     return;
   }
 
@@ -79,22 +63,19 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   // XXX CallOnEnd(status);
 }
 
+void ClientAsyncReaderHelper::AsyncRecvStatus() {
+  assert(status_sptr_->ok());
 
-#if 0
-inline void AsyncRecvStatus(
-    const CallSptr& call_sptr,
-    Status& status,
-    const StatusCallback& on_status) {
-  assert(status.ok());
-
-  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr, on_status);
+  // XXX input status_sptr_ to CqTag? To abort writing?
+  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr_, on_status_);
   if (tag->Start()) return;
 
   delete tag;
-  status.SetInternalError("Failed to receive status.");
-  if (on_status) on_status(status);
+  status_sptr_->SetInternalError("Failed to receive status.");
+  if (on_status_) on_status_(*status_sptr_);
 }
 
+#if 0
 template <class Response>
 inline void OnReadEach(const Response& msg,
     const ClientReaderDataSptr<Response>& data_sptr) {
