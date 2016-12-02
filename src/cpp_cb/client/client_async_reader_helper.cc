@@ -50,6 +50,7 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   if (!tag.HasGotMsg()) {
     // End of read.
     AsyncRecvStatus();
+    // XXXX Do not recv status in Reader. Do it after all reading and writing.
     return;
   }
 
