@@ -63,6 +63,7 @@ void ClientAsyncReaderHelper::AsyncReadNext() {
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   if (!tag.HasGotMsg()) {
+    // End of read.
     // XXXX AsyncRecvStatus();
     // DEL CallOnEnd(Status::OK);  // ? writer?
     return;

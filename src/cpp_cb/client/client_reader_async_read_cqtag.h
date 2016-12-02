@@ -5,7 +5,6 @@
 #define GRPC_CB_CLIENT_CLIENT_READER_ASYNC_READ_CQTAG_H
 
 #include <grpc_cb/support/config.h>   // for GRPC_FINAL
-#include <grpc_cb/status_callback.h>  // for StatusCallback
 #include <grpc_cb/impl/client/client_reader_read_cqtag.h>  // for ClientReaderReadCqTag
 
 #include "client_async_reader_helper_sptr.h"  // for ClientAsyncReaderHelperSptr
@@ -20,13 +19,7 @@ class ClientReaderAsyncReadCqTag GRPC_FINAL : public ClientReaderReadCqTag {
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
- //private:
- // void CallOnEnd(const Status& status);
-
  private:
-  // Callback will be triggered on completion in DoComplete().
-  // XXXX MsgCallback on_msg_;
-  // StatusCallback on_end_;
   const ClientAsyncReaderHelperSptr reader_sptr_;
 };  // class ClientReaderAsyncReadCqTag
 
