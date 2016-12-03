@@ -9,6 +9,7 @@
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
 
 #include "client_async_reader_helper.h"
+#include "client_async_reader_recv_status.h"
 
 namespace grpc_cb {
 
@@ -61,7 +62,8 @@ void ClientAsyncReaderImpl::Start() {
 }
 
 void ClientAsyncReaderImpl::OnEndOfReading() {
-  // XXX recv status...
+  // XXX check status...
+  ClientAsyncReader::RecvStatus(call_sptr_, on_status_);
   reader_sptr_.reset();  // Stop circular sharing.
 }
 
