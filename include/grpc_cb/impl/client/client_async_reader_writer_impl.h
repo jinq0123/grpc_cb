@@ -65,7 +65,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   ReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
 
-  bool reading_started_ = false;  // SetReadHandler() to trigger reading.
+  bool reading_started_ = false;  // ReadEach() to trigger reading.
   bool can_close_writing_ = false;  // Waiting to close?
 
   // ReaderHelper will be shared by CqTag.

@@ -89,6 +89,7 @@ void ClientAsyncReaderWriterImpl::ReadEach(
   reading_started_ = true;
 
   assert(!reader_sptr_);
+  // Impl and Helper will share each other.
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
@@ -97,7 +98,8 @@ void ClientAsyncReaderWriterImpl::ReadEach(
 
 void ClientAsyncReaderWriterImpl::OnEndOfReading() {
   Guard g(mtx_);
-  // XXXX
+  // XXXX recv status if writing is closed
+  reader_sptr_.reset();  // Stop circular sharing.
 }
 
 void ClientAsyncReaderWriterImpl::OnWritten() {
