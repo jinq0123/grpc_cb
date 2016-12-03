@@ -85,8 +85,8 @@ void ClientAsyncReaderWriterImpl::ReadEach(
   Guard g(mtx_);
 
   read_handler_sptr_ = handler_sptr;
-  if (is_reading_) return;
-  is_reading_ = true;
+  if (reading_started_) return;
+  reading_started_ = true;
 
   assert(!reader_sptr_);
   auto sptr = shared_from_this();

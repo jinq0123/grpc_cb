@@ -48,14 +48,21 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
 
 void ClientAsyncReaderImpl::Start() {
   Guard g(mtx_);
-  if (reader_sptr_)
-    return;  // Already started.
+  if (reading_started_) return;
+  reading_started_ = true;
+  assert(!reader_sptr_);
 
+  // Impl and Helper will share each other until the end of reading.
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
       [sptr]() { sptr->OnEndOfReading(); }));
   reader_sptr_->Start();
+}
+
+void ClientAsyncReaderImpl::OnEndOfReading() {
+  // XXX recv status...
+  reader_sptr_.reset();  // Stop circular sharing.
 }
 
 }  // namespace grpc_cb

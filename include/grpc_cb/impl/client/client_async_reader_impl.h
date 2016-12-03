@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_IMPL_H
 #define GRPC_CB_IMPL_CLIENT_CLIENT_ASYNC_READER_IMPL_H
 
+#include <memory>  // for enable_shared_from_this<>
 #include <mutex>
 #include <string>
 
@@ -22,7 +23,8 @@ namespace grpc_cb {
 class ClientAsyncReaderHelper;
 
 // Thread-safe.
-class ClientAsyncReaderImpl GRPC_FINAL {
+class ClientAsyncReaderImpl GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncReaderImpl> {
  public:
   ClientAsyncReaderImpl(const ChannelSptr& channel,
                         const std::string& method,
@@ -31,12 +33,15 @@ class ClientAsyncReaderImpl GRPC_FINAL {
   ~ClientAsyncReaderImpl();
 
  public:
-  // ReadHandler and OnStatus must be set before Start().
+  // ReadHandler must be set before Start().
   void SetReadHandler(const ClientAsyncReadHandlerSptr& handler);
   void SetOnStatus(const StatusCallback& on_status);
   void Start();
 
   // Todo: Stop reading any more...
+
+ private:
+  void OnEndOfReading();
 
  private:
   std::mutex mtx_;
@@ -46,6 +51,7 @@ class ClientAsyncReaderImpl GRPC_FINAL {
   const CallSptr call_sptr_;
   const AtomicBoolSptr status_ok_sptr_;  // Shared in ReaderHelper
   Status status_;
+  bool reading_started_{ false };
 
   ClientAsyncReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
