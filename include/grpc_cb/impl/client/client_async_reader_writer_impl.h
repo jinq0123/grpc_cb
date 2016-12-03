@@ -43,9 +43,14 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   void ReadEach(const ReadHandlerSptr& handler_sptr);
 
  private:
+  // Callback of ReaderHelper.
+  void OnEndOfReading();
+  // Callback of WriterHelper.
+  void OnWritten();
+
+ private:
   // Write next message and close.
-  void WriteNext();
-  void InternalNext();
+  void InternalWriteNext();
   void CloseWritingNow();
 
  private:

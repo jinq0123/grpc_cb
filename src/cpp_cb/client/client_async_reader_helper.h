@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 
+#include <functional>
 #include <memory>  // for enable_shared_from_this<>
 
 #include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
@@ -23,37 +24,21 @@ class ClientReaderAsyncReadCqTag;
 class ClientAsyncReaderHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:
+  using OnEnd = std::function<void()>;
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
                           const AtomicBoolSptr& status_ok_sptr,
-                          const ClientAsyncReadHandlerSptr& read_handler_sptr);
+                          const ClientAsyncReadHandlerSptr& read_handler_sptr,
+                          const OnEnd& on_end);
   ~ClientAsyncReaderHelper();
 
  public:
-  void AsyncReadNext();
+  void Start();
 
  public:
   void OnRead(ClientReaderAsyncReadCqTag& tag);
 
-#if 0
-// Callback on each message.
-template <class Response>
-inline void OnReadEach(const Response& msg,
-    const ClientReaderDataSptr<Response>& data_sptr);
-
-// Callback on end of reading or by error.
-template <class Response>
-inline void OnEnd(const Status& status,
-    const ClientReaderDataSptr<Response>& data_sptr);
-
-// Setup next async read.
-template <class Response>
-inline void AsyncReadNext(const ClientReaderDataSptr<Response>& data_sptr);
-
-inline void AsyncRecvStatus(
-    const CallSptr& call_sptr,
-    Status& status,
-    const StatusCallback& on_status);
-#endif
+ private:
+  void Next();
 
  public:
   CallSptr GetCallSptr() const { return call_sptr_; }
@@ -63,8 +48,10 @@ inline void AsyncRecvStatus(
   const CallSptr call_sptr_;
   const AtomicBoolSptr status_ok_sptr_;
   Status status_;
+  bool started_{ false };
 
   const ClientAsyncReadHandlerSptr read_handler_sptr_;
+  const OnEnd on_end;
 };  // ClientAsyncReaderHelper
 
 }  // namespace grpc_cb

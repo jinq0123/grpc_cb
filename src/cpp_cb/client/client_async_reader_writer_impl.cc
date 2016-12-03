@@ -51,7 +51,7 @@ bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
   // sptr will live until written.
   Sptr sptr = shared_from_this();
   writer_uptr_->Write(msg_sptr, [sptr]() {
-    sptr->WriteNext();
+    sptr->OnWritten();
   });
   return true;
 }
@@ -88,27 +88,29 @@ void ClientAsyncReaderWriterImpl::ReadEach(
   if (is_reading_) return;
   is_reading_ = true;
 
-  if (!reader_sptr_) {
-    reader_sptr_.reset(new ClientAsyncReaderHelper(
-        cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_));
-  }
+  assert(!reader_sptr_);
   auto sptr = shared_from_this();
-  // XXX reader_uptr_->AsyncReadNext();
-  // XXX ClientAsyncReaderHelper::AsyncReadNext(on_read, on_end)
-  // XXX ClientAsyncReaderHelper::AsyncReadNext(data_sptr_);  // XXX
+  reader_sptr_.reset(new ClientAsyncReaderHelper(
+      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
+      [sptr]() { sptr->OnEndOfReading(); }));
 }
 
-void ClientAsyncReaderWriterImpl::WriteNext() {
+void ClientAsyncReaderWriterImpl::OnEndOfReading() {
+  Guard g(mtx_);
+  // XXXX
+}
+
+void ClientAsyncReaderWriterImpl::OnWritten() {
   Guard g(mtx_);
 
   // Called from the write completion callback.
   assert(writer_uptr_);
   assert(writer_uptr_->IsWriting());
-  InternalNext();
+  InternalWriteNext();
 }
 
 // Send messages one by one, and finally close.
-void ClientAsyncReaderWriterImpl::InternalNext() {
+void ClientAsyncReaderWriterImpl::InternalWriteNext() {
   assert(writer_uptr_);
   if (writer_uptr_->WriteNext())
     return;  // XXX Get status...

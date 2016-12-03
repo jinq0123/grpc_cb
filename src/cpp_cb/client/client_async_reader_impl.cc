@@ -51,9 +51,11 @@ void ClientAsyncReaderImpl::Start() {
   if (reader_sptr_)
     return;  // Already started.
 
+  auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_));
-  reader_sptr_->AsyncReadNext();  // XXX rename to Start()
+      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
+      [sptr]() { sptr->OnEndOfReading(); }));
+  reader_sptr_->Start();
 }
 
 }  // namespace grpc_cb

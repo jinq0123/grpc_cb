@@ -5,34 +5,43 @@
 
 #include <cassert>  // for assert()
 
-#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
+#include <grpc_cb/impl/client/client_async_read_handler.h>  // for HandleMsg()
 
 #include "client_reader_async_read_cqtag.h"  // for ClientReaderAsyncReadCqTag
 
 namespace grpc_cb {
 
-using Sptr = ClientAsyncReaderHelperSptr;
-
 ClientAsyncReaderHelper::ClientAsyncReaderHelper(
     CompletionQueueSptr cq_sptr, CallSptr call_sptr,
     const AtomicBoolSptr& status_ok_sptr,
-    const ClientAsyncReadHandlerSptr& read_handler_sptr)
+    const ClientAsyncReadHandlerSptr& read_handler_sptr,
+    const OnEnd& on_end)
     : cq_sptr_(cq_sptr),
       call_sptr_(call_sptr),
       status_ok_sptr_(status_ok_sptr),
-      read_handler_sptr_(read_handler_sptr) {
+      read_handler_sptr_(read_handler_sptr),
+      on_end_(on_end) {
   assert(cq_sptr);
   assert(call_sptr);
   assert(status_ok_sptr);
+  assert(on_end);
 }
 
 ClientAsyncReaderHelper::~ClientAsyncReaderHelper() {}
 
+// Setup to read each.
+void ClientAsyncReaderHelper::Start() {
+  if (started_) return;
+  started_ = true;
+  Next();
+}
+
 // Setup next async read.
-void ClientAsyncReaderHelper::AsyncReadNext() {
+void ClientAsyncReaderHelper::Next() {
+  assert(started_);
   if (!(*status_ok_sptr_)) return;
 
-  Sptr sptr = shared_from_this();
+  auto sptr = shared_from_this();
   auto* tag = new ClientReaderAsyncReadCqTag(sptr);
   if (tag->Start()) return;
 
@@ -56,7 +65,7 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   status_ = tag.GetResultMsg(read_handler_sptr_->GetMsg());
   if (status_.ok()) {
     read_handler_sptr_->HandleMsg();
-    AsyncReadNext();  // thread-safe?
+    Next();
     return;
   }
 
