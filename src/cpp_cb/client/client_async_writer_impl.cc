@@ -38,7 +38,7 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
     return false;
 
   if (!writer_uptr_) {
-    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_));
+    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, is_status_ok_));
   }
 
   // sptr will live until written.

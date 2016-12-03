@@ -4,21 +4,22 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 
+#include <atomic>
 #include <functional>  // for function
 #include <queue>
 
-#include <grpc_cb/impl/call_sptr.h>      // for CallSptr
-#include <grpc_cb/impl/message_sptr.h>   // for MessageSptr
-#include <grpc_cb/support/config.h>      // for GRPC_FINAL
+#include <grpc_cb/impl/call_sptr.h>     // for CallSptr
+#include <grpc_cb/impl/message_sptr.h>  // for MessageSptr
+#include <grpc_cb/status.h>             // for Status
+#include <grpc_cb/support/config.h>     // for GRPC_FINAL
 
 namespace grpc_cb {
-
-class Status;
 
 // Cache messages and write one by one.
 class ClientAsyncWriterHelper GRPC_FINAL {
  public:
-  ClientAsyncWriterHelper(const CallSptr& call_sptr, Status& status);
+  ClientAsyncWriterHelper(const CallSptr& call_sptr,
+                          std::atomic_bool& is_status_ok);
   ~ClientAsyncWriterHelper();
 
  public:
@@ -31,7 +32,8 @@ class ClientAsyncWriterHelper GRPC_FINAL {
 
  private:
   const CallSptr call_sptr_;
-  Status& status_;
+  std::atomic_bool& is_status_ok_;
+  Status status_;
 
   // Do not store on_written as a member variable,
   //   because on_written has a shared pointer of

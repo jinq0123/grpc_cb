@@ -189,9 +189,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\server\server_writer_impl.h">
       <Filter>include\grpc_cb\impl\server</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\status_sptr.h">
-      <Filter>include\grpc_cb\impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\security\server_credentials.h">
       <Filter>include\grpc_cb\security</Filter>
     </ClInclude>

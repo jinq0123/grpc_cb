@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
 
+#include <atomic>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -53,6 +54,8 @@ class ClientAsyncWriterImpl GRPC_FINAL
   CompletionQueueSptr cq_sptr_;
   CallSptr call_sptr_;
   Status status_;
+  std::atomic_bool is_status_ok_{ true };
+
   // Close handler hides the Response and on_closed callback.
   CloseHandlerSptr close_handler_sptr_;
 

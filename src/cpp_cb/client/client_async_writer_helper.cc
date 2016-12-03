@@ -12,8 +12,8 @@
 namespace grpc_cb {
 
 ClientAsyncWriterHelper::ClientAsyncWriterHelper(const CallSptr& call_sptr,
-                                                 Status& status)
-    : call_sptr_(call_sptr), status_(status) {
+                                                 std::atomic_bool& is_status_ok)
+    : call_sptr_(call_sptr), is_status_ok_(is_status_ok) {
   assert(call_sptr);
 }
 
@@ -21,7 +21,7 @@ ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
 
 bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr,
                                     const OnWritten& on_written) {
-  if (!status_.ok()) return false;
+  if (!is_status_ok_) return false;
 
   // cache messages
   queue_.emplace(WritingTask{msg_sptr, on_written});
@@ -30,7 +30,7 @@ bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr,
 }
 
 bool ClientAsyncWriterHelper::WriteNext() {
-  if (!status_.ok()) return false;
+  if (!is_status_ok_) return false;
   if (queue_.empty()) return false;
   // Keep a copy of on_written to delay dtr().
   WritingTask task = queue_.front();
@@ -42,7 +42,9 @@ bool ClientAsyncWriterHelper::WriteNext() {
     return true;
 
   delete tag;
+  // XXX Return status to parent...
   status_.SetInternalError("Failed to write client stream.");
+  is_status_ok_ = false;
   return false;
 }
 
