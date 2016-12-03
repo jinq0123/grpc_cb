@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_IMPL_CALL_H
 #define GRPC_CB_IMPL_CALL_H
 
+#include <atomic>
 #include <cassert>
 
 #include <grpc/grpc.h>
@@ -18,6 +19,7 @@ struct grpc_call;
 namespace grpc_cb {
 
 // Straightforward wrapping of the C call object.
+// Thread-safe.
 // Differ from grpc++:
 //  grpc_call is owned by Call instead of ClientContext/ServerContext.
 class Call GRPC_FINAL {
@@ -30,6 +32,8 @@ class Call GRPC_FINAL {
 
   inline int GetMaxMsgSize() const { return max_msg_size_; }
   inline void SetMaxMsgSize(int size) { max_msg_size_ = size; }
+
+ public:
   static void SetDefaultMaxMsgSize(int size) { default_max_msg_size_ = size; }
 
  public:
@@ -37,19 +41,19 @@ class Call GRPC_FINAL {
   inline grpc_call* c_call() const { return c_call_uptr_.get(); }
 
  private:
-  std::unique_ptr<grpc_call, void (*)(grpc_call*)> c_call_uptr_;  // owned
+  const std::unique_ptr<grpc_call, void (*)(grpc_call*)> c_call_uptr_;  // owned
 
  private:
-  int max_msg_size_;  // Todo: necessary? Move to Channel?
+  std::atomic_int max_msg_size_;  // Todo: necessary? Move to Channel?
 
  private:
-  static int default_max_msg_size_;  // = -1;  // for all call
+  static std::atomic_int default_max_msg_size_;  // = -1;  // for all call
 };
 
 // Owns c_call.
 Call::Call(grpc_call* c_call)
     : c_call_uptr_(c_call, grpc_call_destroy),
-    max_msg_size_(default_max_msg_size_) {
+      max_msg_size_(default_max_msg_size_.load()) {
   assert(c_call);
 }
 

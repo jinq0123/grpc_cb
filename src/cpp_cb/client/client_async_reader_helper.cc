@@ -49,8 +49,8 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
     return;
   if (!tag.HasGotMsg()) {
     // End of read.
-    AsyncRecvStatus();
-    // XXXX Do not recv status in Reader. Do it after all reading and writing.
+    // XXX AsyncRecvStatus();
+    // XXX Do not recv status in Reader. Do it after all reading and writing.
     return;
   }
 
@@ -58,23 +58,24 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   status = tag.GetResultMsg(read_handler_sptr_->GetMsg());
   if (status.ok()) {
     read_handler_sptr_->HandleMsg();
+    AsyncReadNext();  // thread-safe?
     return;
   }
 
   // XXX CallOnEnd(status);
 }
 
-void ClientAsyncReaderHelper::AsyncRecvStatus() {
-  assert(status_sptr_->ok());
-
-  // XXX input status_sptr_ to CqTag? To abort writing?
-  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr_, on_status_);
-  if (tag->Start()) return;
-
-  delete tag;
-  status_sptr_->SetInternalError("Failed to receive status.");
-  if (on_status_) on_status_(*status_sptr_);
-}
+//void ClientAsyncReaderHelper::AsyncRecvStatus() {
+//  assert(status_sptr_->ok());
+//
+//  // XXX input status_sptr_ to CqTag? To abort writing?
+//  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr_, on_status_);
+//  if (tag->Start()) return;
+//
+//  delete tag;
+//  status_sptr_->SetInternalError("Failed to receive status.");
+//  if (on_status_) on_status_(*status_sptr_);
+//}
 
 #if 0
 template <class Response>

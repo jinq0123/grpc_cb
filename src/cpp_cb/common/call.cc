@@ -5,6 +5,6 @@
 
 namespace grpc_cb {
 
-int Call::default_max_msg_size_ = -1;
+std::atomic_int Call::default_max_msg_size_{ -1 };
 
 }  // namespace grpc_cb
