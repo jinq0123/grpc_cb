@@ -63,7 +63,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   bool is_reading_ = false;  // SetReadHandler() to trigger reading.
   bool can_close_writing_ = false;  // Waiting to close?
 
-  // Reader will be shared by CqTag.
+  // ReaderHelper will be shared by CqTag.
   std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;
   std::unique_ptr<ClientAsyncWriterHelper> writer_uptr_;
 };  // class ClientAsyncReaderWriterImpl<>

@@ -6,8 +6,6 @@
 #include <cassert>  // for assert()
 
 #include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
-#include <grpc_cb/impl/client/client_reader_async_recv_status_cqtag.h>  // for ClientReaderAsyncRecvStatusCqTag
-#include <grpc_cb/status.h>  // for Status
 
 #include "client_reader_async_read_cqtag.h"  // for ClientReaderAsyncReadCqTag
 
@@ -18,13 +16,11 @@ using Sptr = ClientAsyncReaderHelperSptr;
 ClientAsyncReaderHelper::ClientAsyncReaderHelper(
     CompletionQueueSptr cq_sptr, CallSptr call_sptr,
     const AtomicBoolSptr& status_ok_sptr,
-    const ClientAsyncReadHandlerSptr& read_handler_sptr,
-    const StatusCallback& on_status)
+    const ClientAsyncReadHandlerSptr& read_handler_sptr)
     : cq_sptr_(cq_sptr),
       call_sptr_(call_sptr),
       status_ok_sptr_(status_ok_sptr),
-      read_handler_sptr_(read_handler_sptr),
-      on_status_(on_status) {
+      read_handler_sptr_(read_handler_sptr) {
   assert(cq_sptr);
   assert(call_sptr);
   assert(status_ok_sptr);
@@ -43,7 +39,7 @@ void ClientAsyncReaderHelper::AsyncReadNext() {
   delete tag;
   status_.SetInternalError("Failed to async read server stream.");
   *status_ok_sptr_ = false;  // XXX return status to parent
-  if (on_status_) on_status_(status_);  // XXX no on_status in ReaderHelper
+  // DEL if (on_status_) on_status_(status_);  // XXX no on_status in ReaderHelper
 }
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {

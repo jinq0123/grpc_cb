@@ -90,7 +90,7 @@ void ClientAsyncReaderWriterImpl::ReadEach(
 
   if (!reader_sptr_) {
     reader_sptr_.reset(new ClientAsyncReaderHelper(
-        cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_, on_status_));
+        cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_));
   }
   auto sptr = shared_from_this();
   // XXX reader_uptr_->AsyncReadNext();

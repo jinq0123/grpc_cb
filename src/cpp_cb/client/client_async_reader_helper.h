@@ -11,7 +11,6 @@
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/status.h>                      // for Status
-#include <grpc_cb/status_callback.h>             // for StatusCallback
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 
 #include "client_async_reader_helper_sptr.h"
@@ -26,8 +25,7 @@ class ClientAsyncReaderHelper GRPC_FINAL
  public:
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
                           const AtomicBoolSptr& status_ok_sptr,
-                          const ClientAsyncReadHandlerSptr& read_handler_sptr,
-                          const StatusCallback& on_status);
+                          const ClientAsyncReadHandlerSptr& read_handler_sptr);
   ~ClientAsyncReaderHelper();
 
  public:
@@ -55,48 +53,6 @@ inline void AsyncRecvStatus(
     const CallSptr& call_sptr,
     Status& status,
     const StatusCallback& on_status);
-
-// Todo: move to cpp file.
-
-inline void AsyncRecvStatus(
-    const CallSptr& call_sptr,
-    Status& status,
-    const StatusCallback& on_status) {
-  assert(status.ok());
-
-  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr, on_status);
-  if (tag->Start()) return;
-
-  delete tag;
-  status.SetInternalError("Failed to receive status.");
-  if (on_status) on_status(status);
-}
-
-template <class Response>
-inline void OnReadEach(const Response& msg,
-    const ClientReaderDataSptr<Response>& data_sptr) {
-  Status& status = data_sptr->status;
-  assert(status.ok());
-
-  std::function<void(const Response&)>& on_msg = data_sptr->on_msg;
-  if (on_msg) on_msg(msg);
-
-  AsyncReadNext(data_sptr);
-  // Old tag will be deleted after return in BlockingRun().
-}
-
-template <class Response>
-inline void OnEnd(const Status& status,
-    const ClientReaderDataSptr<Response>& data_sptr) {
-  StatusCallback& on_status = data_sptr->on_status;
-  if (status.ok()) {
-    AsyncRecvStatus(data_sptr->call_sptr,
-        data_sptr->status, on_status);
-    return;
-  }
-
-  if (on_status) on_status(status);
-}
 #endif
 
  public:
@@ -109,7 +65,6 @@ inline void OnEnd(const Status& status,
   Status status_;
 
   const ClientAsyncReadHandlerSptr read_handler_sptr_;
-  const StatusCallback on_status_;
 };  // ClientAsyncReaderHelper
 
 }  // namespace grpc_cb

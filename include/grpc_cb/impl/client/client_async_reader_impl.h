@@ -50,6 +50,7 @@ class ClientAsyncReaderImpl GRPC_FINAL {
   ClientAsyncReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
 
+  // ReaderHelper will be shared by CqTag.
   std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;
 };  // class ClientAsyncReaderImpl
 

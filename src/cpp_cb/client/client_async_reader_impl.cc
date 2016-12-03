@@ -52,7 +52,7 @@ void ClientAsyncReaderImpl::Start() {
     return;  // Already started.
 
   reader_sptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_, on_status_));
+      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_));
   reader_sptr_->AsyncReadNext();  // XXX rename to Start()
 }
 
