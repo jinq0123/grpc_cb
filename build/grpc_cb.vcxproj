@@ -95,6 +95,7 @@
     <ClInclude Include="..\include\grpc_cb\client_sync_reader_writer.h" />
     <ClInclude Include="..\include\grpc_cb\client_sync_writer.h" />
     <ClInclude Include="..\include\grpc_cb\grpc_cb.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\atomic_bool_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\call.h" />
     <ClInclude Include="..\include\grpc_cb\impl\call_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\call_op_data.h" />

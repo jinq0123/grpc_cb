@@ -4,11 +4,11 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 
-#include <atomic>
 #include <memory>
 #include <mutex>
 #include <string>
 
+#include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>     // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
@@ -52,10 +52,10 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
   mutable std::mutex mtx_;
   using Guard = std::lock_guard<std::mutex>;
 
-  CompletionQueueSptr cq_sptr_;
-  CallSptr call_sptr_;
+  const CompletionQueueSptr cq_sptr_;
+  const CallSptr call_sptr_;
+  const AtomicBoolSptr status_ok_sptr_;  // Shared in ReaderHelper.
   Status status_;
-  std::atomic_bool is_status_ok_{ true };
 
   ReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;

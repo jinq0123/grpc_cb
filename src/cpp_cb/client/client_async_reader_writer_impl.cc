@@ -21,6 +21,7 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const CompletionQueueSptr& cq_sptr, const StatusCallback& on_status)
     : cq_sptr_(cq_sptr),
       call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+      status_ok_sptr_(new std::atomic_bool{ true }),
       on_status_(on_status) {
   assert(cq_sptr);
   assert(call_sptr_);
@@ -29,7 +30,7 @@ ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
   if (tag->Start()) return;
   delete tag;
   status_.SetInternalError("Failed to init stream.");
-  is_status_ok_ = false;
+  *status_ok_sptr_ = false;
 }
 
 ClientAsyncReaderWriterImpl::~ClientAsyncReaderWriterImpl() {
@@ -42,9 +43,9 @@ bool ClientAsyncReaderWriterImpl::Write(const MessageSptr& msg_sptr) {
   if (!status_.ok())
     return false;
 
-  assert(is_status_ok_);
+  assert(*status_ok_sptr_);
   if (!writer_uptr_) {
-    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, is_status_ok_));
+    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, *status_ok_sptr_));
   }
 
   // sptr will live until written.
@@ -64,7 +65,7 @@ void ClientAsyncReaderWriterImpl::CloseWriting() {
 // private
 void ClientAsyncReaderWriterImpl::CloseWritingNow() {
   if (!status_.ok()) return;
-  assert(is_status_ok_);
+  assert(*status_ok_sptr_);
   if (writer_uptr_->IsWritingClosed()) return;
   writer_uptr_->SetWritingClosed();
 
@@ -73,7 +74,8 @@ void ClientAsyncReaderWriterImpl::CloseWritingNow() {
 
   delete tag;
   status_.SetInternalError("Failed to close writing.");
-  is_status_ok_ = false;
+  *status_ok_sptr_ = false;
+  // XXX extract SetInternalError()
 }
 
 // Todo: same as ClientReader?
@@ -88,7 +90,7 @@ void ClientAsyncReaderWriterImpl::ReadEach(
 
   if (!reader_sptr_) {
     reader_sptr_.reset(new ClientAsyncReaderHelper(
-        cq_sptr_, call_sptr_, is_status_ok_, read_handler_sptr_, on_status_));
+        cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_, on_status_));
   }
   auto sptr = shared_from_this();
   // XXX reader_uptr_->AsyncReadNext();

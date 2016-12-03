@@ -17,7 +17,8 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
     const ::google::protobuf::Message& request,
     const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+      status_ok_sptr_(new std::atomic_bool{ true }) {
   assert(cq_sptr);
   assert(channel);
   assert(call_sptr_);
@@ -29,7 +30,7 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
 
   delete tag;
   status_.SetInternalError("Failed to start async client reader.");
-  is_status_ok_ = false;
+  *status_ok_sptr_ = false;
 }
 
 ClientAsyncReaderImpl::~ClientAsyncReaderImpl() {}
@@ -51,7 +52,7 @@ void ClientAsyncReaderImpl::Start() {
     return;  // Already started.
 
   reader_sptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, is_status_ok_, read_handler_sptr_, on_status_));
+      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_, on_status_));
   reader_sptr_->AsyncReadNext();  // XXX rename to Start()
 }
 

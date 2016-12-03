@@ -17,23 +17,24 @@ using Sptr = ClientAsyncReaderHelperSptr;
 
 ClientAsyncReaderHelper::ClientAsyncReaderHelper(
     CompletionQueueSptr cq_sptr, CallSptr call_sptr,
-    std::atomic_bool& is_status_ok,
+    const AtomicBoolSptr& status_ok_sptr,
     const ClientAsyncReadHandlerSptr& read_handler_sptr,
     const StatusCallback& on_status)
     : cq_sptr_(cq_sptr),
       call_sptr_(call_sptr),
-      is_status_ok_(is_status_ok),
+      status_ok_sptr_(status_ok_sptr),
       read_handler_sptr_(read_handler_sptr),
       on_status_(on_status) {
   assert(cq_sptr);
   assert(call_sptr);
+  assert(status_ok_sptr);
 }
 
 ClientAsyncReaderHelper::~ClientAsyncReaderHelper() {}
 
 // Setup next async read.
 void ClientAsyncReaderHelper::AsyncReadNext() {
-  if (!is_status_ok_) return;
+  if (!(*status_ok_sptr_)) return;
 
   Sptr sptr = shared_from_this();
   auto* tag = new ClientReaderAsyncReadCqTag(sptr);
@@ -41,12 +42,12 @@ void ClientAsyncReaderHelper::AsyncReadNext() {
 
   delete tag;
   status_.SetInternalError("Failed to async read server stream.");
-  is_status_ok_ = false;  // XXX return status to parent
-  if (on_status_) on_status_(status_);
+  *status_ok_sptr_ = false;  // XXX return status to parent
+  if (on_status_) on_status_(status_);  // XXX no on_status in ReaderHelper
 }
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
-  if (!is_status_ok_)
+  if (!(*status_ok_sptr_))
     return;
   assert(status_.ok());
   if (!tag.HasGotMsg()) {
@@ -63,7 +64,7 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
     return;
   }
 
-  is_status_ok_ = false;
+  *status_ok_sptr_ = false;
   // XXX CallOnEnd(status);
 }
 
