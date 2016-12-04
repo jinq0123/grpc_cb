@@ -18,7 +18,7 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
 }
 
 ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
-  // XXXX impl2_sptr_->Close();
+  // XXXX impl2_sptr_->Close();  // without handler
 }
 
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
