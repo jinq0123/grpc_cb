@@ -39,15 +39,13 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
   if (!status_.ok())
     return false;
 
-  if (!writer_uptr_) {
-    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, is_status_ok_));
+  if (!writer_sptr_) {
+    writer_sptr_.reset(
+        new ClientAsyncWriterHelper(call_sptr_, status_ok_sptr_));
   }
 
-  // sptr will live until written.
-  auto sptr = shared_from_this();
-  writer_uptr_->Write(request_sptr, [sptr]() {
-    sptr->WriteNext();  // XXX no need?
-  });
+  writer_sptr_->Write(request_sptr);
+  // XXX  sptr->WriteNext();  // XXX no need?
   return true;
 }
 
@@ -61,7 +59,7 @@ void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
     return;
   }
 
-  if (writer_uptr_ && writer_uptr_->IsWriting())
+  if (writer_sptr_ && writer_sptr_->IsWriting())
     return;
   CloseNow();
 }
@@ -74,6 +72,7 @@ void ClientAsyncWriterImpl2::CloseNow() {
   }
 
   auto sptr = shared_from_this();
+  // XXX new tag and delete
   ClientAsyncWriterCloseCqTag tag(call_sptr_, sptr);
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
@@ -87,15 +86,15 @@ void ClientAsyncWriterImpl2::WriteNext() {
   Guard g(mtx_);
 
   // Called from the write completion callback.
-  assert(writer_uptr_);
-  assert(writer_uptr_->IsWriting());
+  assert(writer_sptr_);
+  assert(writer_sptr_->IsWriting());
   InternalNext();
 }
 
 // Send messages one by one, and finally close.
 void ClientAsyncWriterImpl2::InternalNext() {
-  assert(writer_uptr_);
-  if (writer_uptr_->WriteNext())
+  assert(writer_sptr_);
+  if (writer_sptr_->WriteNext())
     return;
 
   // Do not close before Close(handler).
@@ -106,9 +105,9 @@ void ClientAsyncWriterImpl2::InternalNext() {
 void ClientAsyncWriterImpl2::CallCloseHandler() {
   if (!close_handler_sptr_)
     return;
-  if (writer_uptr_->IsWritingClosed())
+  if (writer_sptr_->IsWritingClosed())
     return;
-  writer_uptr_->SetWritingClosed();
+  writer_sptr_->SetWritingClosed();
 
   close_handler_sptr_->OnClose(status_);
 }

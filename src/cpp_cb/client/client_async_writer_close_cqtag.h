@@ -4,24 +4,23 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_CLOSE_CQTAG_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_CLOSE_CQTAG_H
 
-#include <functional>  // for std::function
-
-#include <grpc_cb/impl/client/client_async_writer_impl_sptr.h>  // for ClientAsyncWriterImplSptr
 #include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
 #include <grpc_cb/support/config.h>                         // for GRPC_FINAL
+
+#include "client_async_writer_impl2_sptr.h"  // for ClientAsyncWriterImpl2Sptr
 
 namespace grpc_cb {
 
 class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
   ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr,
-      const ClientAsyncWriterImplSptr& writer_impl_sptr);
+      const ClientAsyncWriterImpl2Sptr& writer_impl_sptr);
   // XXX Use ClientAsyncWriterHelperSptr instead
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
-  const ClientAsyncWriterImplSptr writer_impl_sptr_;
+  const ClientAsyncWriterImpl2Sptr writer_impl2_sptr_;
 };  // class ClientAsyncWriterCloseCqTag
 
 }  // namespace grpc_cb

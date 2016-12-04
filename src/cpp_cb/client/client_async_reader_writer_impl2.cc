@@ -1,7 +1,7 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#include <grpc_cb/impl/client/client_async_reader_writer_impl2.h>
+#include "client_async_reader_writer_impl2.h"
 
 #include <grpc_cb/channel.h>                           // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
@@ -44,15 +44,11 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
     return false;
 
   assert(*status_ok_sptr_);
-  if (!writer_uptr_) {
-    writer_uptr_.reset(new ClientAsyncWriterHelper(call_sptr_, *status_ok_sptr_));
+  if (!writer_sptr_) {
+    writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_ok_sptr_));
   }
 
-  // sptr will live until written.
-  Sptr sptr = shared_from_this();
-  writer_uptr_->Write(msg_sptr, [sptr]() {
-    sptr->OnWritten();
-  });
+  writer_sptr_->Write(msg_sptr);
   return true;
 }
 
@@ -66,8 +62,8 @@ void ClientAsyncReaderWriterImpl2::CloseWriting() {
 void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
   if (!status_.ok()) return;
   assert(*status_ok_sptr_);
-  if (writer_uptr_->IsWritingClosed()) return;
-  writer_uptr_->SetWritingClosed();
+  if (writer_sptr_->IsWritingClosed()) return;
+  writer_sptr_->SetWritingClosed();
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
@@ -108,15 +104,15 @@ void ClientAsyncReaderWriterImpl2::OnWritten() {
   Guard g(mtx_);
 
   // Called from the write completion callback.
-  assert(writer_uptr_);
-  assert(writer_uptr_->IsWriting());
+  assert(writer_sptr_);
+  assert(writer_sptr_->IsWriting());
   WriteNext();
 }
 
 // Send messages one by one, and finally close.
 void ClientAsyncReaderWriterImpl2::WriteNext() {
-  assert(writer_uptr_);
-  if (writer_uptr_->WriteNext())
+  assert(writer_sptr_);
+  if (writer_sptr_->WriteNext())
     return;  // XXX Get status...
 
   if (can_close_writing_)

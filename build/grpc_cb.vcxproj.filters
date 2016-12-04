@@ -111,9 +111,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl_sptr.h">
-      <Filter>include\grpc_cb\impl\client</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_call_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
@@ -253,6 +250,9 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2_sptr.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.h">

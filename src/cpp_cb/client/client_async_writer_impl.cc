@@ -5,6 +5,8 @@
 
 #include <cassert>  // for assert()
 
+#include "client_async_writer_impl2.h"  // for ClientAsyncWriterImpl2
+
 namespace grpc_cb {
 
 ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
@@ -16,7 +18,7 @@ ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
 }
 
 ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
-  impl2_sptr_->Close();
+  // XXXX impl2_sptr_->Close();
 }
 
 bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {

@@ -3,6 +3,10 @@
 
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>
 
+#include <cassert>
+
+#include "client_async_reader_writer_impl2.h"  // for ClientAsyncReaderWriterImpl2
+
 namespace grpc_cb {
 
 using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl>;
@@ -30,7 +34,7 @@ void ClientAsyncReaderWriterImpl::CloseWriting() {
 }
 
 void ClientAsyncReaderWriterImpl::ReadEach(
-    const ReadHandlerSptr& handler_sptr) {
+    const ClientAsyncReadHandlerSptr& handler_sptr) {
   impl2_sptr_->ReadEach(handler_sptr);
 }
 

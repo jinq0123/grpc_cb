@@ -4,12 +4,11 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 
-#include <functional>  // for function
 #include <memory>  // for enable_shared_from_this<>
-#include <queue>
 
 #include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>         // for CallSptr
+#include <grpc_cb/impl/message_queue.h>     // for MessageQueue
 #include <grpc_cb/impl/message_sptr.h>      // for MessageSptr
 #include <grpc_cb/status.h>                 // for Status
 #include <grpc_cb/support/config.h>         // for GRPC_FINAL
@@ -25,13 +24,13 @@ namespace grpc_cb {
 class ClientAsyncWriterHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncWriterHelper> {
  public:
+   // XXX add on_end?
   ClientAsyncWriterHelper(const CallSptr& call_sptr,
                           const AtomicBoolSptr& status_ok_sptr);
   ~ClientAsyncWriterHelper();
 
  public:
-  using OnWritten = std::function<void()>;
-  bool Write(const MessageSptr& msg_sptr, const OnWritten& on_written);
+  bool Write(const MessageSptr& msg_sptr);
   bool IsWriting() const { return is_writing_; }
   bool WriteNext();
   bool IsWritingClosed() const { return is_writing_closed_; }
@@ -39,17 +38,10 @@ class ClientAsyncWriterHelper GRPC_FINAL
 
  private:
   const CallSptr call_sptr_;
-  std::atomic_bool& is_status_ok_;
+  const AtomicBoolSptr status_ok_sptr_;
   Status status_;
 
-  // Do not store on_written as a member variable,
-  //   because on_written has a shared pointer of
-  //   ClientAsyncWriterImpl/ClientAsyncReaderWriterImpl.
-  struct WritingTask {
-    MessageSptr msg_sptr;
-    OnWritten on_written;
-  };
-  std::queue<WritingTask> queue_;  // cache messages to write
+  MessageQueue msg_queue_;  // cache messages to write
 
   bool is_writing_ = false;  // grpc only allows to write one by one
   bool is_writing_closed_ = false;

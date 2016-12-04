@@ -4,17 +4,19 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H
 #define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H
 
+#include <memory>  // for enable_shared_from_this<>
 #include <mutex>
 #include <string>
 
 #include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>         // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>      // for ChannelSptr
-#include <grpc_cb/impl/client/client_async_writer_impl_sptr.h>
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/status.h>                      // for Status
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
+
+#include "client_async_writer_impl2_sptr.h"
 
 namespace grpc_cb {
 
@@ -26,7 +28,8 @@ class ClientAsyncWriterCloseCqTag;
 // Impl1 is to make Writer copyable.
 // Impl2 will live longer than the Writer.
 // We need dtr() of Impl1 to close writing.
-class ClientAsyncWriterImpl2 GRPC_FINAL {
+class ClientAsyncWriterImpl2 GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncWriterImpl2> {
  public:
   ClientAsyncWriterImpl2(const ChannelSptr& channel, const std::string& method,
                         const CompletionQueueSptr& cq_sptr);

@@ -12,40 +12,40 @@
 namespace grpc_cb {
 
 ClientAsyncWriterHelper::ClientAsyncWriterHelper(const CallSptr& call_sptr,
-                                                 std::atomic_bool& is_status_ok)
-    : call_sptr_(call_sptr), is_status_ok_(is_status_ok) {
+                                                 const AtomicBoolSptr& status_ok_sptr)
+    : call_sptr_(call_sptr), status_ok_sptr_(status_ok_sptr) {
   assert(call_sptr);
+  assert(status_ok_sptr);
 }
 
 ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
 
-bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr,
-                                    const OnWritten& on_written) {
-  if (!is_status_ok_) return false;
+bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
+  if (!(*status_ok_sptr_))
+    return false;
 
   // cache messages
-  queue_.emplace(WritingTask{msg_sptr, on_written});
+  msg_queue_.emplace(msg_sptr);
   if (is_writing_) return true;
   return WriteNext();
 }
 
 bool ClientAsyncWriterHelper::WriteNext() {
-  if (!is_status_ok_) return false;
-  if (queue_.empty()) return false;
-  // Keep a copy of on_written to delay dtr().
-  WritingTask task = queue_.front();
-  queue_.pop();
+  if (!(*status_ok_sptr_)) return false;
+  if (msg_queue_.empty()) return false;
+  MessageSptr msg_sptr = msg_queue_.front();
+  msg_queue_.pop();
 
   assert(call_sptr_);
   // XXX Use shared from this in CqTag... Rename to ClientAsyncWriterSendMsgCqTag.
-  auto* tag = new ClientAsyncSendMsgCqTag(call_sptr_, task.on_written);
-  if (tag->Start(*task.msg_sptr))
+  auto* tag = new ClientAsyncSendMsgCqTag(call_sptr_, [](){});  // XXX OnWritten
+  if (tag->Start(*msg_sptr))
     return true;
 
   delete tag;
   // XXX Return status to parent... OnWriteError
   status_.SetInternalError("Failed to write client stream.");
-  is_status_ok_ = false;
+  *status_ok_sptr_ = false;
   return false;
 }
 

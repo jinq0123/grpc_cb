@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
 
+#include <memory>  // for enable_shared_from_this<>
 #include <mutex>
 #include <string>
 
@@ -26,13 +27,14 @@ class ClientAsyncWriterHelper;
 // Impl1 is to make Writer copyable.
 // Impl2 will live longer than the Writer.
 // We need dtr() of Impl1 to close writing.
-class ClientAsyncReaderWriterImpl2 GRPC_FINAL {
+class ClientAsyncReaderWriterImpl2 GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncReaderWriterImpl2> {
  public:
   ClientAsyncReaderWriterImpl2(const ChannelSptr& channel,
                               const std::string& method,
                               const CompletionQueueSptr& cq_sptr,
                               const StatusCallback& on_status);
-  ~ClientAsyncReaderWriterImpl();
+  ~ClientAsyncReaderWriterImpl2();
 
  public:
   bool Write(const MessageSptr& msg_sptr);

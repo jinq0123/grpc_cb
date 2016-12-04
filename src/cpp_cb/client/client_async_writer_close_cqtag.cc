@@ -3,22 +3,22 @@
 
 #include "client_async_writer_close_cqtag.h"
 
-#include <grpc_cb/impl/client/client_async_writer_impl.h>  // for OnClose()
+#include "client_async_writer_impl2.h"  // for OnClose()
 
 namespace grpc_cb {
 
 ClientAsyncWriterCloseCqTag::ClientAsyncWriterCloseCqTag(
     const CallSptr& call_sptr,
-    const ClientAsyncWriterImplSptr& writer_impl_sptr)
+    const ClientAsyncWriterImpl2Sptr& writer_impl2_sptr)
     : ClientWriterCloseCqTag(call_sptr),
-    writer_impl_sptr_(writer_impl_sptr) {
-  assert(writer_impl_sptr);
+    writer_impl2_sptr_(writer_impl2_sptr) {
+  assert(writer_impl2_sptr);
 }
 
 void ClientAsyncWriterCloseCqTag::DoComplete(bool success) {
   assert(success);  // Todo
-  assert(writer_impl_sptr_);
-  writer_impl_sptr_->OnClosed(*this);
+  assert(writer_impl2_sptr_);
+  writer_impl2_sptr_->OnClosed(*this);
 
   // Todo: Add async client writer example.
 }
