@@ -38,7 +38,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   bool Write(const MessageSptr& request_sptr);
 
   using CloseHandlerSptr = std::shared_ptr<ClientAsyncWriterCloseHandler>;
-  void Close(const CloseHandlerSptr& handler_sptr);
+  void Close(const CloseHandlerSptr& handler_sptr = CloseHandlerSptr());
   void OnClosed(ClientAsyncWriterCloseCqTag& tag);  // XXXX Move to Helper
 
   // Todo: Force to close, cancel all writing.

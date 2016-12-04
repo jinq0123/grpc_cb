@@ -52,6 +52,7 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
 void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
 
+  if (close_handler_sptr_) return;  // already done
   close_handler_sptr_ = handler_sptr;
 
   if (!status_.ok()) {
