@@ -23,6 +23,8 @@ class ClientAsyncWriterHelper;
 class ClientAsyncWriterCloseCqTag;
 
 // Impl of impl.
+// Impl1 is to make Writer copyable.
+// Impl2 will live longer than the Writer.
 // We need dtr() of Impl1 to close writing.
 class ClientAsyncWriterImpl2 GRPC_FINAL {
  public:

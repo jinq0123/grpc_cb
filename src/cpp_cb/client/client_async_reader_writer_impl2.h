@@ -23,6 +23,8 @@ class ClientAsyncReaderHelper;
 class ClientAsyncWriterHelper;
 
 // Impl of impl.
+// Impl1 is to make Writer copyable.
+// Impl2 will live longer than the Writer.
 // We need dtr() of Impl1 to close writing.
 class ClientAsyncReaderWriterImpl2 GRPC_FINAL {
  public:

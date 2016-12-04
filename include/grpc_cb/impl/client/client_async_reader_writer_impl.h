@@ -4,23 +4,18 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
 
-#include <mutex>
 #include <string>
 
-#include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
-#include <grpc_cb/impl/call_sptr.h>     // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
-#include <grpc_cb/status.h>                      // for Status
 #include <grpc_cb/status_callback.h>             // for StatusCallback
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 
 namespace grpc_cb {
 
-class ClientAsyncReaderHelper;
-class ClientAsyncWriterHelper;
+class ClientAsyncReaderWriterImpl2;
 
 // Only shared in ClientAsyncReaderWriter, because we need dtr() to close writing.
 class ClientAsyncReaderWriterImpl GRPC_FINAL {
@@ -38,42 +33,14 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
 
   // Todo: Force to close reading/writing. Cancel all reading/writing.
 
-  using ReadHandlerSptr = ClientAsyncReadHandlerSptr;
-  void ReadEach(const ReadHandlerSptr& handler_sptr);
+  void ReadEach(const ClientAsyncReadHandlerSptr& handler_sptr);
 
  private:
-  // Callback of ReaderHelper.
-  void OnEndOfReading();
-  // Callback of WriterHelper.
-  void OnWritten();
-
- private:
-  // Write next message and close.
-  void WriteNext();
-  void CloseWritingNow();
-
- private:
-  mutable std::mutex mtx_;
-  using Guard = std::lock_guard<std::mutex>;
-
-  const CompletionQueueSptr cq_sptr_;
-  const CallSptr call_sptr_;
-  const AtomicBoolSptr status_ok_sptr_;  // Shared in ReaderHelper.
-  Status status_;
-
-  ReadHandlerSptr read_handler_sptr_;
-  StatusCallback on_status_;
-
-  bool reading_started_ = false;  // ReadEach() to trigger reading.
-  bool can_close_writing_ = false;  // Waiting to close?
-
-  // Helper will be shared by CqTag.
-  std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;
-  std::shared_ptr<ClientAsyncWriterHelper> writer_sptr_;
-};  // class ClientAsyncReaderWriterImpl<>
+  // Live longer than ClientAsyncReaderWriter.
+  std::shared_ptr<ClientAsyncReaderWriterImpl2> impl2_sptr_;
+};  // class ClientAsyncReaderWriterImpl
 
 // Todo: BlockingGetInitMd();
 
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
