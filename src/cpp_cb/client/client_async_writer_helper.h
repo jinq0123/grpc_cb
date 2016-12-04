@@ -4,22 +4,29 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_HELPER_H
 
-#include <atomic>
 #include <functional>  // for function
+#include <memory>  // for enable_shared_from_this<>
 #include <queue>
 
-#include <grpc_cb/impl/call_sptr.h>     // for CallSptr
-#include <grpc_cb/impl/message_sptr.h>  // for MessageSptr
-#include <grpc_cb/status.h>             // for Status
-#include <grpc_cb/support/config.h>     // for GRPC_FINAL
+#include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
+#include <grpc_cb/impl/call_sptr.h>         // for CallSptr
+#include <grpc_cb/impl/message_sptr.h>      // for MessageSptr
+#include <grpc_cb/status.h>                 // for Status
+#include <grpc_cb/support/config.h>         // for GRPC_FINAL
 
 namespace grpc_cb {
 
 // Cache messages and write one by one.
-class ClientAsyncWriterHelper GRPC_FINAL {
+// Differ from ClientAsyncReaderHelper:
+//  Reader is ended by the peer, while writer is ended by the caller.
+//  When the caller is destructed, WriterHelper must be informed that
+//    there are no more writing.
+//  And WriterHelper must live longer than the caller.
+class ClientAsyncWriterHelper GRPC_FINAL
+    : public std::enable_shared_from_this<ClientAsyncWriterHelper> {
  public:
   ClientAsyncWriterHelper(const CallSptr& call_sptr,
-                          std::atomic_bool& is_status_ok);
+                          const AtomicBoolSptr& status_ok_sptr);
   ~ClientAsyncWriterHelper();
 
  public:

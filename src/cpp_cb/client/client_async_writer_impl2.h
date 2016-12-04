@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
-#define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
+#ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H
+#define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H
 
 #include <mutex>
 #include <string>
@@ -22,12 +22,13 @@ class ClientAsyncWriterCloseHandler;
 class ClientAsyncWriterHelper;
 class ClientAsyncWriterCloseCqTag;
 
-// Only shared in ClientAsyncWriter, because we need dtr() to close writing.
-class ClientAsyncWriterImpl GRPC_FINAL {
+// Impl of impl.
+// We need dtr() of Impl1 to close writing.
+class ClientAsyncWriterImpl2 GRPC_FINAL {
  public:
-  ClientAsyncWriterImpl(const ChannelSptr& channel, const std::string& method,
+  ClientAsyncWriterImpl2(const ChannelSptr& channel, const std::string& method,
                         const CompletionQueueSptr& cq_sptr);
-  ~ClientAsyncWriterImpl();
+  ~ClientAsyncWriterImpl2();
 
   bool Write(const MessageSptr& request_sptr);
 
@@ -60,7 +61,7 @@ class ClientAsyncWriterImpl GRPC_FINAL {
 
   // Will be shared by CqTag.
   std::shared_ptr<ClientAsyncWriterHelper> writer_sptr_;
-};  // class ClientAsyncWriterImpl
+};  // class ClientAsyncWriterImpl2
 
 }  // namespace grpc_cb
-#endif  // GRPC_CB_CLIENT_ASYNC_WRITER_IMPL_H
+#endif  // GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H

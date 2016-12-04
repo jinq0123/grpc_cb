@@ -16,6 +16,7 @@ class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
   ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr,
       const ClientAsyncWriterImplSptr& writer_impl_sptr);
+  // XXX Use ClientAsyncWriterHelperSptr instead
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 

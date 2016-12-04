@@ -1,7 +1,7 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#include <grpc_cb/impl/client/client_async_writer_impl.h>
+#include <grpc_cb/impl/client/client_async_writer_impl2.h>
 
 #include <cassert>  // for assert()
 
@@ -14,25 +14,27 @@
 
 namespace grpc_cb {
 
-ClientAsyncWriterImpl::ClientAsyncWriterImpl(const ChannelSptr& channel,
+ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
                                              const std::string& method,
                                              const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+      status_ok_sptr_(new std::atomic_bool{ true }) {
   assert(cq_sptr);
   assert(channel);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
   status_.SetInternalError("Failed to init client stream.");
+  *status_ok_sptr_ = false;
 }
 
-ClientAsyncWriterImpl::~ClientAsyncWriterImpl() {
-  // Have done CallCloseHandler().
-  assert(writer_uptr_->IsWritingClosed());
+ClientAsyncWriterImpl2::~ClientAsyncWriterImpl2() {
+  // XXX Have done CallCloseHandler().
+  // XXX assert(writer_uptr_->IsWritingClosed());
 }
 
-bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
+bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
   Guard g(mtx_);
   if (!status_.ok())
     return false;
@@ -44,12 +46,12 @@ bool ClientAsyncWriterImpl::Write(const MessageSptr& request_sptr) {
   // sptr will live until written.
   auto sptr = shared_from_this();
   writer_uptr_->Write(request_sptr, [sptr]() {
-    sptr->WriteNext();
+    sptr->WriteNext();  // XXX no need?
   });
   return true;
 }
 
-void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
+void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
 
   close_handler_sptr_ = handler_sptr;
@@ -65,7 +67,7 @@ void ClientAsyncWriterImpl::Close(const CloseHandlerSptr& handler_sptr) {
 }
 
 // Finally close...
-void ClientAsyncWriterImpl::CloseNow() {
+void ClientAsyncWriterImpl2::CloseNow() {
   if (!status_.ok()) {
     CallCloseHandler();
     return;
@@ -75,12 +77,13 @@ void ClientAsyncWriterImpl::CloseNow() {
   ClientAsyncWriterCloseCqTag tag(call_sptr_, sptr);
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
+    *status_ok_sptr_ = false;  // Todo: extract SetInternalError()
     CallCloseHandler();
     return;
   }
 }  // Close()
 
-void ClientAsyncWriterImpl::WriteNext() {
+void ClientAsyncWriterImpl2::WriteNext() {
   Guard g(mtx_);
 
   // Called from the write completion callback.
@@ -90,7 +93,7 @@ void ClientAsyncWriterImpl::WriteNext() {
 }
 
 // Send messages one by one, and finally close.
-void ClientAsyncWriterImpl::InternalNext() {
+void ClientAsyncWriterImpl2::InternalNext() {
   assert(writer_uptr_);
   if (writer_uptr_->WriteNext())
     return;
@@ -100,7 +103,7 @@ void ClientAsyncWriterImpl::InternalNext() {
     CloseNow();
 }
 
-void ClientAsyncWriterImpl::CallCloseHandler() {
+void ClientAsyncWriterImpl2::CallCloseHandler() {
   if (!close_handler_sptr_)
     return;
   if (writer_uptr_->IsWritingClosed())
@@ -110,7 +113,7 @@ void ClientAsyncWriterImpl::CallCloseHandler() {
   close_handler_sptr_->OnClose(status_);
 }
 
-void ClientAsyncWriterImpl::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
+void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
   Guard g(mtx_);
 
   // Todo: Get trailing metadata.
@@ -123,6 +126,9 @@ void ClientAsyncWriterImpl::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
   } else {
     status_ = tag.GetStatus();
   }
+
+  if (!status_.ok())
+    *status_ok_sptr_ = false;
 
   CallCloseHandler();
 }

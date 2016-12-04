@@ -37,12 +37,13 @@ bool ClientAsyncWriterHelper::WriteNext() {
   queue_.pop();
 
   assert(call_sptr_);
+  // XXX Use shared from this in CqTag... Rename to ClientAsyncWriterSendMsgCqTag.
   auto* tag = new ClientAsyncSendMsgCqTag(call_sptr_, task.on_written);
   if (tag->Start(*task.msg_sptr))
     return true;
 
   delete tag;
-  // XXX Return status to parent...
+  // XXX Return status to parent... OnWriteError
   status_.SetInternalError("Failed to write client stream.");
   is_status_ok_ = false;
   return false;

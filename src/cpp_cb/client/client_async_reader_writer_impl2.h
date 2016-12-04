@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
-#define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
+#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
+#define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
 
 #include <mutex>
 #include <string>
@@ -22,10 +22,11 @@ namespace grpc_cb {
 class ClientAsyncReaderHelper;
 class ClientAsyncWriterHelper;
 
-// Only shared in ClientAsyncReaderWriter, because we need dtr() to close writing.
-class ClientAsyncReaderWriterImpl GRPC_FINAL {
+// Impl of impl.
+// We need dtr() of Impl1 to close writing.
+class ClientAsyncReaderWriterImpl2 GRPC_FINAL {
  public:
-  ClientAsyncReaderWriterImpl(const ChannelSptr& channel,
+  ClientAsyncReaderWriterImpl2(const ChannelSptr& channel,
                               const std::string& method,
                               const CompletionQueueSptr& cq_sptr,
                               const StatusCallback& on_status);
@@ -70,10 +71,10 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   // Helper will be shared by CqTag.
   std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;
   std::shared_ptr<ClientAsyncWriterHelper> writer_sptr_;
-};  // class ClientAsyncReaderWriterImpl<>
+};  // class ClientAsyncReaderWriterImpl2
 
 // Todo: BlockingGetInitMd();
 
 }  // namespace grpc_cb
 
-#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL_H
+#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
