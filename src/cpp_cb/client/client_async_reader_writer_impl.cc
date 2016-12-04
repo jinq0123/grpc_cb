@@ -102,17 +102,19 @@ void ClientAsyncReaderWriterImpl::OnEndOfReading() {
   reader_sptr_.reset();  // Stop circular sharing.
 }
 
+// XXX Write Next in WriterHelper. Don't callback on Impl.
+
 void ClientAsyncReaderWriterImpl::OnWritten() {
   Guard g(mtx_);
 
   // Called from the write completion callback.
   assert(writer_uptr_);
   assert(writer_uptr_->IsWriting());
-  InternalWriteNext();
+  WriteNext();
 }
 
 // Send messages one by one, and finally close.
-void ClientAsyncReaderWriterImpl::InternalWriteNext() {
+void ClientAsyncReaderWriterImpl::WriteNext() {
   assert(writer_uptr_);
   if (writer_uptr_->WriteNext())
     return;  // XXX Get status...

@@ -50,7 +50,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL
 
  private:
   // Write next message and close.
-  void InternalWriteNext();
+  void WriteNext();
   void CloseWritingNow();
 
  private:
