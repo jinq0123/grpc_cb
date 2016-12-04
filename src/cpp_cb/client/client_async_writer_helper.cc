@@ -11,9 +11,10 @@
 
 namespace grpc_cb {
 
-ClientAsyncWriterHelper::ClientAsyncWriterHelper(const CallSptr& call_sptr,
-                                                 const AtomicBoolSptr& status_ok_sptr)
-    : call_sptr_(call_sptr), status_ok_sptr_(status_ok_sptr) {
+ClientAsyncWriterHelper::ClientAsyncWriterHelper(
+    const CallSptr& call_sptr, const AtomicBoolSptr& status_ok_sptr,
+    const OnEnd& on_end)
+    : call_sptr_(call_sptr), status_ok_sptr_(status_ok_sptr), on_end_(on_end) {
   assert(call_sptr);
   assert(status_ok_sptr);
 }

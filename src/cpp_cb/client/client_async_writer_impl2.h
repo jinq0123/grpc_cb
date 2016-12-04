@@ -39,17 +39,19 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
 
   using CloseHandlerSptr = std::shared_ptr<ClientAsyncWriterCloseHandler>;
   void Close(const CloseHandlerSptr& handler_sptr = CloseHandlerSptr());
-  void OnClosed(ClientAsyncWriterCloseCqTag& tag);  // XXXX Move to Helper
+  void OnClosed(ClientAsyncWriterCloseCqTag& tag);
 
   // Todo: Force to close, cancel all writing.
   // Todo: get queue size
 
  private:
   // Write next message and close.
-  void WriteNext();
+  void WriteNext();  // XXX Move into Helper
   void InternalNext();
   void CloseNow();
   void CallCloseHandler();
+
+  void OnEndOfWriting();  // Callback from WriterHelper
 
  private:
   // Todo: The callback may lock the mutex recursively?

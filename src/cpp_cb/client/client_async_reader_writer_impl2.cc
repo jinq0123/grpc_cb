@@ -45,7 +45,10 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
 
   assert(*status_ok_sptr_);
   if (!writer_sptr_) {
-    writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_, status_ok_sptr_));
+    // Impl2 and WriterHelper share each other untill OnEndOfWriting().
+    auto sptr = shared_from_this();
+    writer_sptr_.reset(new ClientAsyncWriterHelper(
+        call_sptr_, status_ok_sptr_, [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
   writer_sptr_->Write(msg_sptr);
@@ -117,6 +120,12 @@ void ClientAsyncReaderWriterImpl2::WriteNext() {
 
   if (can_close_writing_)
     CloseWritingNow();
+}
+
+void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
+  // XXX Check status and call on_status...
+  assert(writer_sptr_->IsWritingClosed());
+  writer_sptr_.reset();  // Stop circular sharing.
 }
 
 }  // namespace grpc_cb
