@@ -11,9 +11,11 @@
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 
+// for ClientAsyncWriterCloseHandlerSptr
+#include "client_async_writer_close_handler_sptr.h"
+
 namespace grpc_cb {
 
-class ClientAsyncWriterCloseHandler;
 class ClientAsyncWriterImpl2;
 
 // Only shared in ClientAsyncWriter, because we need dtr() to close writing.
@@ -25,8 +27,7 @@ class ClientAsyncWriterImpl GRPC_FINAL {
 
   bool Write(const MessageSptr& request_sptr);
 
-  // XXX extract it
-  using CloseHandlerSptr = std::shared_ptr<ClientAsyncWriterCloseHandler>;
+  using CloseHandlerSptr = ClientAsyncWriterCloseHandlerSptr;
   void Close(const CloseHandlerSptr& handler_sptr);
 
   // Todo: Force to close, cancel all writing. CloseNow()

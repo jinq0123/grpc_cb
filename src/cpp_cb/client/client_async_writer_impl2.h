@@ -11,6 +11,7 @@
 #include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>         // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>      // for ChannelSptr
+#include <grpc_cb/impl/client/client_async_writer_close_handler_sptr.h>  // for ClientAsyncWriterCloseHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/message_sptr.h>           // for MessageSptr
 #include <grpc_cb/status.h>                      // for Status
@@ -20,7 +21,6 @@
 
 namespace grpc_cb {
 
-class ClientAsyncWriterCloseHandler;
 class ClientAsyncWriterHelper;
 class ClientAsyncWriterCloseCqTag;
 
@@ -37,7 +37,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
 
   bool Write(const MessageSptr& request_sptr);
 
-  using CloseHandlerSptr = std::shared_ptr<ClientAsyncWriterCloseHandler>;
+  using CloseHandlerSptr = ClientAsyncWriterCloseHandlerSptr;
   void Close(const CloseHandlerSptr& handler_sptr = CloseHandlerSptr());
   void OnClosed(ClientAsyncWriterCloseCqTag& tag);
 

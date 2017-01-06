@@ -108,6 +108,9 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler_sptr.h">
+      <Filter>include\grpc_cb\impl\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
