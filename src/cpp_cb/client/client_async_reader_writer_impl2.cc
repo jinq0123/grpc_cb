@@ -29,8 +29,7 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
-  status_.SetInternalError("Failed to init stream.");
-  *status_ok_sptr_ = false;
+  SetInternalError("Failed to init stream.");
 }
 
 ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
@@ -72,9 +71,7 @@ void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
   if (tag->Start()) return;
 
   delete tag;
-  status_.SetInternalError("Failed to close writing.");
-  *status_ok_sptr_ = false;
-  // XXX extract SetInternalError()
+  SetInternalError("Failed to close writing.");
 }
 
 // Todo: same as ClientReader?
@@ -126,6 +123,11 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   // XXX Check status and call on_status...
   assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.
+}
+
+void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {
+  status_.SetInternalError(sError);
+  *status_ok_sptr_ = false;
 }
 
 }  // namespace grpc_cb

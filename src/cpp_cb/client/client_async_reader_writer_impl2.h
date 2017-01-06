@@ -58,6 +58,7 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   // Write next message and close.
   void WriteNext();
   void CloseWritingNow();
+  void SetInternalError(const std::string& sError);
 
  private:
   mutable std::mutex mtx_;

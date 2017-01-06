@@ -9,8 +9,6 @@
 
 namespace grpc_cb {
 
-using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl>;
-
 // Todo: BlockingGetInitMd();
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
