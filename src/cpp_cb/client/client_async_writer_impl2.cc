@@ -71,14 +71,17 @@ void ClientAsyncWriterImpl2::CloseNow() {
   }
 
   auto sptr = shared_from_this();
-  // XXX new tag and delete
-  ClientAsyncWriterCloseCqTag tag(call_sptr_, sptr);
-  if (!tag.Start()) {
-    status_.SetInternalError("Failed to close client stream.");
-    // XXX *status_ok_sptr_ = false;  // Todo: extract SetInternalError()
-    CallCloseHandler();
-    return;
-  }
+  using Tag = ClientAsyncWriterCloseCqTag;
+  Tag* tag = new Tag(call_sptr_, [sptr, tag]() {
+      sptr->OnClosed(*tag);
+  });
+  if (tag->Start())
+      return;
+
+  delete tag;
+  status_.SetInternalError("Failed to close client stream.");
+  // XXX *status_ok_sptr_ = false;  // Todo: extract SetInternalError()
+  CallCloseHandler();
 }  // Close()
 
 // DEL

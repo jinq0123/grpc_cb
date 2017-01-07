@@ -55,7 +55,7 @@ class ClientAsyncWriterHelper GRPC_FINAL
   MessageQueue msg_queue_;  // cache messages to write
 
   bool is_writing_ = false;  // grpc only allows to write one by one
-  bool is_writing_closed_ = false;
+  bool is_writing_closed_ = false;  // close after all written
 };  // class ClientAsyncWriterHelper
 
 }  // namespace grpc_cb

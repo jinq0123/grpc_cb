@@ -16,8 +16,6 @@
 #include <grpc_cb/status.h>                      // for Status
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 
-#include "client_async_writer_impl2_sptr.h"
-
 namespace grpc_cb {
 
 class ClientAsyncWriterHelper;
@@ -38,6 +36,9 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
 
   using CloseHandlerSptr = ClientAsyncWriterCloseHandlerSptr;
   void Close(const CloseHandlerSptr& handler_sptr = CloseHandlerSptr());
+
+ private:
+  // for ClientAsyncWriterCloseCqTag
   void OnClosed(ClientAsyncWriterCloseCqTag& tag);
 
   // Todo: Force to close, cancel all writing.
