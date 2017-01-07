@@ -14,7 +14,6 @@ namespace ClientAsyncReader {
 void RecvStatus(const CallSptr& call_sptr, const StatusCallback& on_status) {
   assert(call_sptr);
 
-  // XXX input status_sptr_ to CqTag? To abort writing?
   auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr, on_status);
   if (tag->Start()) return;
 
