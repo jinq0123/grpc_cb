@@ -11,6 +11,8 @@
 
 namespace grpc_cb {
 
+// Todo: thread-safe
+
 ClientAsyncWriterHelper::ClientAsyncWriterHelper(
     const CallSptr& call_sptr, const OnEnd& on_end)
     : call_sptr_(call_sptr), on_end_(on_end) {
@@ -30,8 +32,11 @@ bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
 }
 
 bool ClientAsyncWriterHelper::WriteNext() {
+  assert(!is_writing_);
+  assert(!msg_queue_.empty());
+
   if (aborted_) return false;  // Maybe reader failed.
-  if (msg_queue_.empty()) return false;
+  is_writing_ = true;
   MessageSptr msg_sptr = msg_queue_.front();
   msg_queue_.pop();
 
@@ -48,7 +53,11 @@ bool ClientAsyncWriterHelper::WriteNext() {
 }
 
 void ClientAsyncWriterHelper::OnWritten() {
-    // XXX
+  assert(status_.ok());
+  assert(is_writing_);
+  is_writing_ = false;
+  if (!msg_queue_.empty())
+    WriteNext();
 }
 
 }  // namespace grpc_cb
