@@ -48,7 +48,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   // Write next message and close.
   // DEL void WriteNext();  // XXX Move into Helper
   // DEL void InternalNext();
-  void CloseNow();
+  void SendCloseIfNot();
   void CallCloseHandler();
 
   void OnEndOfWriting();  // Callback from WriterHelper
@@ -63,10 +63,13 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   const CallSptr call_sptr_;
   Status status_;
 
+  bool writing_started_ = false;  // new writer_sptr once
+  bool has_sent_close_ = false;  // Client send close once.
+
   // Close handler hides the Response and on_closed callback.
   CloseHandlerSptr close_handler_sptr_;
 
-  // Will be shared by CqTag.
+  // Will be shared by CqTag. Reset on ended.
   std::shared_ptr<ClientAsyncWriterHelper> writer_sptr_;
 };  // class ClientAsyncWriterImpl2
 

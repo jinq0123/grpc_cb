@@ -28,22 +28,24 @@ ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
 }
 
 ClientAsyncWriterImpl2::~ClientAsyncWriterImpl2() {
-  // XXX Have done CallCloseHandler().
-  // XXX assert(writer_uptr_->IsWritingClosed());
+  // Have done CallCloseHandler().
 }
 
 bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
   Guard g(mtx_);
   if (!status_.ok())
     return false;
+  if (writer_sptr_)
+    return writer_sptr_->Queue(request_sptr);
 
-  if (!writer_sptr_) {
-    // Impl2 and WriterHelper shared each other untill OnEnd().
-    auto sptr = shared_from_this();
-    writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
-        [sptr]() { sptr->OnEndOfWriting(); }));
-  }
+  if (writing_started_)
+    return false;  // Writer ended
+  writing_started_ = true;
 
+  // Impl2 and WriterHelper shared each other untill OnEnd().
+  auto sptr = shared_from_this();
+  writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
+      [sptr]() { sptr->OnEndOfWriting(); }));
   return writer_sptr_->Queue(request_sptr);
 }
 
@@ -60,20 +62,18 @@ void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
 
   if (writer_sptr_)
       writer_sptr_->QueueEnd();  // May trigger OnEndOfWriting().
-
-  // XXX Just SetWritingClosed()... Delete IsWriting()
-  //if (writer_sptr_ && writer_sptr_->IsWriting())
-  //  return;
-  //CloseNow();
+  else
+      SendCloseIfNot();
 }
 
 // Finally close...
-void ClientAsyncWriterImpl2::CloseNow() {
-  if (!status_.ok()) {
-    CallCloseHandler();
+void ClientAsyncWriterImpl2::SendCloseIfNot() {
+  assert(!writer_sptr_);  // Must be ended.
+  if (!status_.ok())
     return;
-  }
 
+  if (has_sent_close_) return;
+  has_sent_close_ = true;
   auto sptr = shared_from_this();
   using Tag = ClientAsyncWriterCloseCqTag;
   Tag* tag = new Tag(call_sptr_, [sptr, tag]() {
@@ -100,6 +100,7 @@ void ClientAsyncWriterImpl2::CallCloseHandler() {
   close_handler_sptr_->OnClose(status_);
 }
 
+// Callback of ClientAsyncWriterCloseCqTag
 void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
   Guard g(mtx_);
 
@@ -129,6 +130,7 @@ void ClientAsyncWriterImpl2::OnEndOfWriting() {
 
   // XXX to close, call on_status() ...
   writer_sptr_.reset();  // Stop circular sharing.
+  SendCloseIfNot();
 }
 
 }  // namespace grpc_cb
