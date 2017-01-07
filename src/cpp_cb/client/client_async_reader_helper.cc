@@ -39,7 +39,8 @@ void ClientAsyncReaderHelper::Start() {
 // Setup next async read.
 void ClientAsyncReaderHelper::Next() {
   assert(started_);
-  if (!(*status_ok_sptr_)) return;
+  if (!(*status_ok_sptr_))  // Maybe writer failed.
+    return;  // XXX on_end_ ?
 
   auto sptr = shared_from_this();
   auto* tag = new ClientReaderAsyncReadCqTag(sptr);
@@ -52,13 +53,14 @@ void ClientAsyncReaderHelper::Next() {
 }
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
-  if (!(*status_ok_sptr_))
+  if (!(*status_ok_sptr_))  // Maybe writer failed.
     return;
   assert(status_.ok());
   if (!tag.HasGotMsg()) {
     // End of read.
-    // XXX AsyncRecvStatus();
-    // XXX Do not recv status in Reader. Do it after all reading and writing.
+    // Do not recv status in Reader. Do it after all reading and writing.
+    assert(on_end_);
+    on_end_(status_);
     return;
   }
 
@@ -70,7 +72,8 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   }
 
   *status_ok_sptr_ = false;
-  // XXX CallOnEnd(status);
+  assert(on_end_);
+  on_end_(status_);
 }
 
 //void ClientAsyncReaderHelper::AsyncRecvStatus() {

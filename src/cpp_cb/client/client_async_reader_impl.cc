@@ -57,11 +57,11 @@ void ClientAsyncReaderImpl::Start() {
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
-      [sptr]() { sptr->OnEndOfReading(); }));
+      [sptr](const Status& status) { sptr->OnEndOfReading(status); }));
   reader_sptr_->Start();
 }
 
-void ClientAsyncReaderImpl::OnEndOfReading() {
+void ClientAsyncReaderImpl::OnEndOfReading(const Status& status) {
   Guard g(mtx_);
   assert(reading_started_);
   // XXX check status...

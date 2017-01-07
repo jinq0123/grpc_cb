@@ -41,7 +41,8 @@ class ClientAsyncReaderImpl GRPC_FINAL
   // Todo: Stop reading any more...
 
  private:
-  void OnEndOfReading();
+  // Reader callback on end with status.
+  void OnEndOfReading(const Status& status);
 
  private:
   std::mutex mtx_;

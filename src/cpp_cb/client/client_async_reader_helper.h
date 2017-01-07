@@ -24,7 +24,7 @@ class ClientReaderAsyncReadCqTag;
 class ClientAsyncReaderHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:
-  using OnEnd = std::function<void()>;
+  using OnEnd = std::function<void(const Status& status)>;
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
                           const AtomicBoolSptr& status_ok_sptr,
                           const ClientAsyncReadHandlerSptr& read_handler_sptr,

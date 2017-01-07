@@ -89,12 +89,15 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
-      [sptr]() { sptr->OnEndOfReading(); }));
+      [sptr](const Status& status) {
+        sptr->OnEndOfReading(status);
+      }));
   reader_sptr_->Start();
 }
 
-void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
+void ClientAsyncReaderWriterImpl2::OnEndOfReading(const Status& status) {
   Guard g(mtx_);
+  // XXX check status
   // XXXX recv status if writing is closed
   reader_sptr_.reset();  // Stop circular sharing.
 }
