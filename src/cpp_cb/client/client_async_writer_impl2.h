@@ -47,8 +47,8 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
  private:
   void SendCloseIfNot();
   void CallCloseHandler();
-
   void OnEndOfWriting();  // Callback from WriterHelper
+  void SetInternalError(const std::string& sError);
 
  private:
   // The callback may lock the mutex recursively.
@@ -65,6 +65,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
 
   // Close handler hides the Response and on_closed callback.
   CloseHandlerSptr close_handler_sptr_;
+  bool close_handler_set_ = false;  // set handler only once
 
   // Will be shared by CqTag. Reset on ended.
   std::shared_ptr<ClientAsyncWriterHelper> writer_sptr_;

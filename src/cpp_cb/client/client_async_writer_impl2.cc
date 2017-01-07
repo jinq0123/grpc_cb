@@ -24,7 +24,8 @@ ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
-  status_.SetInternalError("Failed to init client stream.");
+  SetInternalError("Failed to init client stream.");
+  // Call close handler when Close(CloseHandler)
 }
 
 ClientAsyncWriterImpl2::~ClientAsyncWriterImpl2() {
@@ -52,8 +53,9 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
 void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
   Guard g(mtx_);
 
-  if (close_handler_sptr_) return;  // already done
-  close_handler_sptr_ = handler_sptr;
+  if (close_handler_set_) return;  // already done
+  close_handler_set_ = true;
+  close_handler_sptr_ = handler_sptr;  // reset after CallCloseHandler()
   writing_started_ = true;  // Maybe without any Write().
 
   if (!status_.ok()) {
@@ -84,13 +86,13 @@ void ClientAsyncWriterImpl2::SendCloseIfNot() {
       return;
 
   delete tag;
-  status_.SetInternalError("Failed to close client stream.");
-  CallCloseHandler();
+  SetInternalError("Failed to close client stream.");  // Calls CallCloseHandler();
 }  // Close()
 
 void ClientAsyncWriterImpl2::CallCloseHandler() {
-  if (close_handler_sptr_)
-      close_handler_sptr_->OnClose(status_);
+  if (!close_handler_sptr_) return;
+  close_handler_sptr_->OnClose(status_);
+  close_handler_sptr_.reset();
 }
 
 // Callback of ClientAsyncWriterCloseCqTag
@@ -102,7 +104,7 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
     if (close_handler_sptr_) {
       status_ = tag.GetResponse(close_handler_sptr_->GetMsg());
     } else {
-      status_.InternalError("Response is ignored.");
+      status_.SetInternalError("Response is ignored.");
     }
   } else {
     status_ = tag.GetStatus();
@@ -120,6 +122,15 @@ void ClientAsyncWriterImpl2::OnEndOfWriting() {
   // XXX to close, call on_status() ...
   writer_sptr_.reset();  // Stop circular sharing.
   SendCloseIfNot();
+}
+
+void ClientAsyncWriterImpl2::SetInternalError(const std::string& sError) {
+  status_.SetInternalError(sError);
+  CallCloseHandler();
+  if (writer_sptr_) {
+    writer_sptr_->Abort();
+    writer_sptr_.reset();
+  }
 }
 
 }  // namespace grpc_cb
