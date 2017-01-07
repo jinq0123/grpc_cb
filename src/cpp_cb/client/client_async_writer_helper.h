@@ -16,6 +16,7 @@
 namespace grpc_cb {
 
 // Cache messages and write one by one.
+// Used by ClientAsyncWriter and ClientAsyncReaderWriter.
 // Differ from ClientAsyncReaderHelper:
 //  ReaderHelper is ended by the peer, while WriterHelper is ended by Writer.
 //  When Writer is destructed, WriterHelper must be informed that
@@ -24,7 +25,7 @@ namespace grpc_cb {
 class ClientAsyncWriterHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncWriterHelper> {
  public:
-  using OnEnd = std::function<void()>;
+  using OnEnd = std::function<void(const Status& status)>;
   ClientAsyncWriterHelper(const CallSptr& call_sptr,
                           const OnEnd& on_end);
   ~ClientAsyncWriterHelper();

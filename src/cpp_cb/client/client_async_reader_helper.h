@@ -19,7 +19,7 @@ namespace grpc_cb {
 
 class ClientReaderAsyncReadCqTag;
 
-// ClientAsyncReaderHelper is used in ClientAsyncReader and ClientAsyncReaderWriter.
+// Used in ClientAsyncReader and ClientAsyncReaderWriter.
 class ClientAsyncReaderHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:

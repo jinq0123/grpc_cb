@@ -46,8 +46,8 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
   if (!writer_sptr_) {
     // Impl2 and WriterHelper share each other untill OnEndOfWriting().
     auto sptr = shared_from_this();
-    writer_sptr_.reset(new ClientAsyncWriterHelper(
-        call_sptr_, [sptr]() { sptr->OnEndOfWriting(); }));
+    writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
+        [sptr](const Status& status) { sptr->OnEndOfWriting(status); }));
   }
 
   writer_sptr_->Write(msg_sptr);
@@ -123,7 +123,7 @@ void ClientAsyncReaderWriterImpl2::WriteNext() {
     CloseWritingNow();
 }
 
-void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
+void ClientAsyncReaderWriterImpl2::OnEndOfWriting(const Status& status) {
   // XXX Check status and call on_status...
   assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.
