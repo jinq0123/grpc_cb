@@ -89,15 +89,8 @@ void ClientAsyncWriterImpl2::SendCloseIfNot() {
 }  // Close()
 
 void ClientAsyncWriterImpl2::CallCloseHandler() {
-  if (!close_handler_sptr_)
-    return;
-  // XXX Not in CallCloseHandler()
-  //if (writer_sptr_->IsWritingClosed())
-  //  return;
-  //writer_sptr_->SetWritingClosed();
-
-  // XXX OnClose() in OnEndOfWriting()?
-  close_handler_sptr_->OnClose(status_);
+  if (close_handler_sptr_)
+      close_handler_sptr_->OnClose(status_);
 }
 
 // Callback of ClientAsyncWriterCloseCqTag
