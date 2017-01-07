@@ -45,9 +45,6 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   // Todo: get queue size
 
  private:
-  // Write next message and close.
-  // DEL void WriteNext();  // XXX Move into Helper
-  // DEL void InternalNext();
   void SendCloseIfNot();
   void CallCloseHandler();
 

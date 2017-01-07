@@ -48,7 +48,6 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
 
 void ClientAsyncReaderImpl::Start() {
   Guard g(mtx_);
-  // XXX check status
   if (reading_started_) return;
   reading_started_ = true;
   assert(!reader_sptr_);
@@ -63,15 +62,19 @@ void ClientAsyncReaderImpl::Start() {
 
 void ClientAsyncReaderImpl::OnEndOfReading() {
   Guard g(mtx_);
-
   assert(reading_started_);
 
   if (!reader_sptr_) return;
-  const Status& status = reader_sptr_->GetStatus();
-
-  // XXX check status...
-  ClientAsyncReader::RecvStatus(call_sptr_, on_status_);
+  const Status status(reader_sptr_->GetStatus());  // Copy
   reader_sptr_.reset();  // Stop circular sharing.
+
+  if (status.ok()) {
+    ClientAsyncReader::RecvStatus(call_sptr_, on_status_);
+    return;
+  }
+
+  if (on_status_)
+    on_status_(status);
 }
 
 }  // namespace grpc_cb
