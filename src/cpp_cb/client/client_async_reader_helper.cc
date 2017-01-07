@@ -15,7 +15,7 @@ ClientAsyncReaderHelper::ClientAsyncReaderHelper(
     CompletionQueueSptr cq_sptr, CallSptr call_sptr,
     const ClientAsyncReadHandlerSptr& read_handler_sptr,
     const OnEnd& on_end)
-    : cq_sptr_(cq_sptr),
+    : cq_sptr_(cq_sptr),  // XXX DEL
       call_sptr_(call_sptr),
       read_handler_sptr_(read_handler_sptr),
       on_end_(on_end) {
@@ -61,19 +61,20 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   }
 
   status_ = tag.GetResultMsg(read_handler_sptr_->GetMsg());
-  if (status_.ok()) {
-    read_handler_sptr_->HandleMsg();
-    Next();
+  if (!status_.ok()) {
+    on_end_();
     return;
   }
 
-  on_end_();
+  read_handler_sptr_->HandleMsg();
+  Next();
 }
 
+// DEL
 //void ClientAsyncReaderHelper::AsyncRecvStatus() {
 //  assert(status_sptr_->ok());
 //
-//  // XXX input status_sptr_ to CqTag? To abort writing?
+//  // input status_sptr_ to CqTag? To abort writing?
 //  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr_, on_status_);
 //  if (tag->Start()) return;
 //

@@ -36,16 +36,19 @@ bool ClientAsyncWriterHelper::WriteNext() {
   msg_queue_.pop();
 
   assert(call_sptr_);
-  // XXX Use shared from this in CqTag... Rename to ClientAsyncWriterSendMsgCqTag.
-  auto* tag = new ClientAsyncSendMsgCqTag(call_sptr_, [](){});  // XXX OnWritten
+  auto sptr = shared_from_this();  // Todo: Rename to ClientAsyncWriterSendMsgCqTag.
+  auto* tag = new ClientAsyncSendMsgCqTag(sptr);
   if (tag->Start(*msg_sptr))
     return true;
 
   delete tag;
-  // XXX Return status to parent... OnWriteError
   status_.SetInternalError("Failed to write client stream.");
   on_end_();
   return false;
+}
+
+void ClientAsyncWriterHelper::OnWritten() {
+    // XXX
 }
 
 }  // namespace grpc_cb

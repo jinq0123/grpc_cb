@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_HELPER_H
 
+#include <atomic>  // for atomic_bool
 #include <functional>
 #include <memory>  // for enable_shared_from_this<>
 
@@ -23,9 +24,6 @@ class ClientReaderAsyncReadCqTag;
 class ClientAsyncReaderHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:
-  // XXX Do not use status paramter, use GetStatus() instead.
-  // XXX Same for WriterHelper.
-
   using OnEnd = std::function<void()>;
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
                           const ClientAsyncReadHandlerSptr& read_handler_sptr,
@@ -38,18 +36,17 @@ class ClientAsyncReaderHelper GRPC_FINAL
   const Status& GetStatus() const { return status_; }
 
  public:
+  // for ClientReaderAsyncReadCqTag
   void OnRead(ClientReaderAsyncReadCqTag& tag);
+  CallSptr GetCallSptr() const { return call_sptr_; }
 
  private:
   void Next();
 
- public:
-  CallSptr GetCallSptr() const { return call_sptr_; }
-
  private:
   const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;
-  bool aborted_ = false;  // abort reader
+  std::atomic_bool aborted_{ false };  // abort reader
   Status status_;
   bool started_{ false };
 

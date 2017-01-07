@@ -249,6 +249,9 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper_sptr.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>

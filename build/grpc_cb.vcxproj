@@ -155,6 +155,7 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.h" />

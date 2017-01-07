@@ -14,10 +14,6 @@ ClientReaderAsyncReadCqTag::ClientReaderAsyncReadCqTag(
   assert(reader_sptr);
 }
 
-//void ClientReaderAsyncReadCqTag::CallOnEnd(const Status& status) {
-//  if (on_end_) on_end_(status);
-//};
-
 void ClientReaderAsyncReadCqTag::DoComplete(bool success) {
   assert(success);
   reader_sptr_->OnRead(*this);

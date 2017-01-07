@@ -39,6 +39,11 @@ class ClientAsyncWriterHelper GRPC_FINAL
   void Abort() { aborted_ = true; }
   const Status& GetStatus() const { return status_; }
 
+ public:
+  // for ClientAsyncSendMsgCqTag
+  CallSptr GetCallSptr() const { return call_sptr_; }
+  void OnWritten();
+
  private:
   const CallSptr call_sptr_;
   bool aborted_ = false;  // to abort writer

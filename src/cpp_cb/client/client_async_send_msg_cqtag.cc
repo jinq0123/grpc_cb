@@ -3,19 +3,21 @@
 
 #include "client_async_send_msg_cqtag.h"
 
+#include "client_async_writer_helper.h"  // for GetCallSptr()
+
 namespace grpc_cb {
 
-ClientAsyncSendMsgCqTag::ClientAsyncSendMsgCqTag(const CallSptr& call_sptr,
-                                                 const OnComplete& on_complete)
-    : ClientSendMsgCqTag(call_sptr), on_complete_(on_complete) {
-  assert(call_sptr);
-  assert(on_complete);
+ClientAsyncSendMsgCqTag::ClientAsyncSendMsgCqTag(
+    const ClientAsyncWriterHelperSptr writer_sptr)
+    : ClientSendMsgCqTag(writer_sptr->GetCallSptr()),
+      writer_sptr_(writer_sptr) {
+  assert(writer_sptr);
 }
 
 void ClientAsyncSendMsgCqTag::DoComplete(bool success) {
-  assert(on_complete_);
+  assert(writer_sptr_);
   assert(success);  // Todo: check it
-  on_complete_();
+  writer_sptr_->OnWritten();
 }
 
 }  // namespace grpc_cb
