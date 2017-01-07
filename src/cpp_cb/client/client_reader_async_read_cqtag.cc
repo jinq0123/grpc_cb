@@ -7,6 +7,8 @@
 
 namespace grpc_cb {
 
+// XXX Use callback instead of reader_sptr. As ClientAsyncWriterCloseCqTag
+
 ClientReaderAsyncReadCqTag::ClientReaderAsyncReadCqTag(
     const ClientAsyncReaderHelperSptr& reader_sptr)
     : ClientReaderReadCqTag(reader_sptr->GetCallSptr()),
