@@ -61,8 +61,6 @@ void ClientAsyncReaderImpl::Start() {
 }
 
 void ClientAsyncReaderImpl::OnEndOfReading() {
-  // There is no double lock,
-  // because OnEnd callback will not run from any ReaderHelper's methods.
   Guard g(mtx_);
 
   assert(reading_started_);

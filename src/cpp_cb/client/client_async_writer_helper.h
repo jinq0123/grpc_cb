@@ -25,7 +25,6 @@ namespace grpc_cb {
 class ClientAsyncWriterHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncWriterHelper> {
  public:
-  // Callbacks will not run in any methods to avoid metux double lock.
   using OnEnd = std::function<void()>;
   ClientAsyncWriterHelper(const CallSptr& call_sptr,
                           const OnEnd& on_end);

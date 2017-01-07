@@ -53,9 +53,10 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   void OnEndOfWriting();  // Callback from WriterHelper
 
  private:
-  // Todo: The callback may lock the mutex recursively?
-  mutable std::mutex mtx_;
-  using Guard = std::lock_guard<std::mutex>;
+  // The callback may lock the mutex recursively.
+  using Mutex = std::mutex;
+  mutable Mutex mtx_;
+  using Guard = std::lock_guard<Mutex>;
 
   const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;

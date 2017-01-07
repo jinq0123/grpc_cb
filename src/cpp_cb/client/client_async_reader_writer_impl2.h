@@ -60,8 +60,10 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   void SetInternalError(const std::string& sError);
 
  private:
-  mutable std::mutex mtx_;
-  using Guard = std::lock_guard<std::mutex>;
+  // Callbacks will lock again.
+  using Mutex = std::recursive_mutex;
+  mutable Mutex mtx_;
+  using Guard = std::lock_guard<Mutex>;
 
   const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;

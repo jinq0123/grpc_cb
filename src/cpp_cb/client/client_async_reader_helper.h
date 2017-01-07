@@ -24,11 +24,8 @@ class ClientAsyncReaderHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:
   // XXX Do not use status paramter, use GetStatus() instead.
-  // XXX Do not callback OnEnd in API to avoid mutex deadlock.
-  // XXX API return false to indicate end (need to OnEnd()).
   // XXX Same for WriterHelper.
 
-  // Callbacks will not run in any methods to avoid metux double lock.
   using OnEnd = std::function<void()>;
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
                           const ClientAsyncReadHandlerSptr& read_handler_sptr,

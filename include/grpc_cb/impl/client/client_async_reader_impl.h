@@ -44,8 +44,10 @@ class ClientAsyncReaderImpl GRPC_FINAL
   void OnEndOfReading();
 
  private:
-  std::mutex mtx_;
-  using Guard = std::lock_guard<std::mutex>;
+  // ReaderHelper callback will lock again.
+  using Mutex = std::recursive_mutex;
+  Mutex mtx_;
+  using Guard = std::lock_guard<Mutex>;
 
   const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;

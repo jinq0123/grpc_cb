@@ -135,8 +135,6 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
 }
 
 void ClientAsyncWriterImpl2::OnEndOfWriting() {
-  // There is no double lock,
-  // because OnEnd callback will not run from any WriterHelper's methods.
   Guard g(mtx_);
 
   if (!writer_sptr_) return;
