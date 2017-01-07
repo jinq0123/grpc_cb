@@ -85,11 +85,12 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
   reading_started_ = true;
 
   assert(!reader_sptr_);
-  // Impl and Helper will share each other.
+  // Impl2 and Helper will share each other.
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
       [sptr]() { sptr->OnEndOfReading(); }));
+  reader_sptr_->Start();
 }
 
 void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
