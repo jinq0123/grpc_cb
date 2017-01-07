@@ -33,8 +33,8 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
 
 ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
   // Reader and Writer helpers share this.
-  assert(reader_sptr_);
-  assert(writer_sptr_);
+  assert(!reader_sptr_);
+  assert(!writer_sptr_);
   CloseWritingNow();  // XXX CloseWriting()?
 }
 
@@ -64,19 +64,17 @@ void ClientAsyncReaderWriterImpl2::CloseWriting() {
   // XXX writer->SetCanClose
 }
 
-// private
+// private. Called in dtr().
 void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
   if (!status_.ok()) return;
-  assert(writer_sptr_);  // XXX assert(!writer_sptr)
-  if (writer_sptr_->IsWritingClosed()) return;
-  writer_sptr_->SetWritingClosed();
+  assert(!writer_sptr_);  // Must be ended.
 
-  // XXX Send close cq tag in OnEndOfWriting()?
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
 
   delete tag;
   SetInternalError("Failed to close writing.");
+  // XXX on status?
 }
 
 // Todo: same as ClientReader?
@@ -138,7 +136,7 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   const Status& status = writer_sptr_->GetStatus();
 
   // XXX Check status and call on_status...
-  assert(writer_sptr_->IsWritingClosed());
+  // assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.
 
   // XXX CloseWritingNow()

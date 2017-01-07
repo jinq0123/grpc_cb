@@ -24,6 +24,8 @@ ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
 bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
   if (aborted_)  // Maybe reader failed.
     return false;
+  if (is_closed_)
+    return true;  // ignore
 
   // cache messages
   msg_queue_.emplace(msg_sptr);
@@ -31,10 +33,10 @@ bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
   return WriteNext();
 }
 
-void ClientAsyncWriterHelper::SetWritingClosed() {
-  if (is_writing_closed_) return;
+void ClientAsyncWriterHelper::Close() {
+  if (is_closed_) return;
   if (aborted_) return;
-  is_writing_closed_ = true;
+  is_closed_ = true;
   if (is_writing_) return;  // call on_end() in OnWritten()
   assert(msg_queue_.empty());
   on_end_();
@@ -47,7 +49,7 @@ bool ClientAsyncWriterHelper::WriteNext() {
   if (aborted_) return false;  // Maybe reader failed.
   is_writing_ = true;
   MessageSptr msg_sptr = msg_queue_.front();
-  msg_queue_.pop();
+  msg_queue_.pop();  // may empty now but is_writing_
 
   assert(call_sptr_);
   auto sptr = shared_from_this();  // Todo: Rename to ClientAsyncWriterSendMsgCqTag.
@@ -70,7 +72,7 @@ void ClientAsyncWriterHelper::OnWritten() {
     return;
   }
 
-  if (is_writing_closed_)
+  if (is_closed_)
     on_end_();  // normal end
 }
 

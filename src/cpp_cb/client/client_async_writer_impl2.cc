@@ -58,10 +58,13 @@ void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
     return;
   }
 
+  if (writer_sptr_)
+      writer_sptr_->Close();  // May trigger OnEndOfWriting().
+
   // XXX Just SetWritingClosed()... Delete IsWriting()
-  if (writer_sptr_ && writer_sptr_->IsWriting())
-    return;
-  CloseNow();
+  //if (writer_sptr_ && writer_sptr_->IsWriting())
+  //  return;
+  //CloseNow();
 }
 
 // Finally close...
@@ -125,7 +128,6 @@ void ClientAsyncWriterImpl2::OnEndOfWriting() {
   const Status& status = writer_sptr_->GetStatus();
 
   // XXX to close, call on_status() ...
-  assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.
 }
 
