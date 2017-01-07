@@ -44,7 +44,7 @@ bool ClientAsyncWriterHelper::WriteNext() {
   delete tag;
   // XXX Return status to parent... OnWriteError
   status_.SetInternalError("Failed to write client stream.");
-  // XXX on_end_(status) or return false?
+  on_end_();
   return false;
 }
 

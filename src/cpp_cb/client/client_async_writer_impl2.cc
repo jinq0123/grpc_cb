@@ -44,9 +44,7 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
         [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
-  writer_sptr_->Write(request_sptr);
-  // XXX  sptr->WriteNext();  // XXX no need?
-  return true;
+  return writer_sptr_->Write(request_sptr);
 }
 
 void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
