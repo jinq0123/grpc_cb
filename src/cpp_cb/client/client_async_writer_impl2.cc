@@ -44,7 +44,7 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
         [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
-  return writer_sptr_->Write(request_sptr);
+  return writer_sptr_->Queue(request_sptr);
 }
 
 void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
@@ -59,7 +59,7 @@ void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
   }
 
   if (writer_sptr_)
-      writer_sptr_->Close();  // May trigger OnEndOfWriting().
+      writer_sptr_->QueueEnd();  // May trigger OnEndOfWriting().
 
   // XXX Just SetWritingClosed()... Delete IsWriting()
   //if (writer_sptr_ && writer_sptr_->IsWriting())

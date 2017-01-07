@@ -53,7 +53,7 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
         [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
-  return writer_sptr_->Write(msg_sptr);
+  return writer_sptr_->Queue(msg_sptr);
 }
 
 void ClientAsyncReaderWriterImpl2::CloseWriting() {

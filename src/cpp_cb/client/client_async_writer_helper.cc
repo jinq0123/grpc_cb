@@ -21,10 +21,10 @@ ClientAsyncWriterHelper::ClientAsyncWriterHelper(
 
 ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
 
-bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
+bool ClientAsyncWriterHelper::Queue(const MessageSptr& msg_sptr) {
   if (aborted_)  // Maybe reader failed.
     return false;
-  if (is_closed_)
+  if (is_queue_ended_)
     return true;  // ignore
 
   // cache messages
@@ -33,10 +33,10 @@ bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
   return WriteNext();
 }
 
-void ClientAsyncWriterHelper::Close() {
-  if (is_closed_) return;
+void ClientAsyncWriterHelper::QueueEnd() {
+  if (is_queue_ended_) return;
   if (aborted_) return;
-  is_closed_ = true;
+  is_queue_ended_ = true;
   if (is_writing_) return;  // call on_end() in OnWritten()
   assert(msg_queue_.empty());
   on_end_();
@@ -72,7 +72,7 @@ void ClientAsyncWriterHelper::OnWritten() {
     return;
   }
 
-  if (is_closed_)
+  if (is_queue_ended_)
     on_end_();  // normal end
 }
 

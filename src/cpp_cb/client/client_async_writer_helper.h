@@ -31,9 +31,12 @@ class ClientAsyncWriterHelper GRPC_FINAL
   ~ClientAsyncWriterHelper();
 
  public:
-  bool Write(const MessageSptr& msg_sptr);
-  // Close writing. Do not queue further. May trigger on_end().
-  void Close();  // XXX Rename to SetEndOfData? WriteEnd()?
+  bool Queue(const MessageSptr& msg_sptr);
+
+  // Set the end of messages. Differ with the close.
+  // Do not queue further. May trigger on_end().
+  void QueueEnd();
+
   void Abort() { aborted_ = true; }  // Abort writing. Stop sending.
   const Status& GetStatus() const { return status_; }
 
@@ -48,14 +51,17 @@ class ClientAsyncWriterHelper GRPC_FINAL
  private:
   const CallSptr call_sptr_;
   bool aborted_ = false;  // to abort writer
-  const OnEnd on_end_;
+  const OnEnd on_end_;  // callback on the end
   Status status_;
 
   MessageQueue msg_queue_;  // Cache messages to write.
+
   // Grpc only allows to write one by one.
   // When the last msg is writing, the queue is empty, so we need it.
   bool is_writing_ = false;
-  bool is_closed_ = false;  // no more data
+
+  // no more msg to queue after QueueEnd()
+  bool is_queue_ended_ = false;
 };  // class ClientAsyncWriterHelper
 
 }  // namespace grpc_cb
