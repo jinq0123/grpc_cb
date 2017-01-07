@@ -13,17 +13,15 @@ namespace grpc_cb {
 
 ClientAsyncReaderHelper::ClientAsyncReaderHelper(
     CompletionQueueSptr cq_sptr, CallSptr call_sptr,
-    const AtomicBoolSptr& status_ok_sptr,
     const ClientAsyncReadHandlerSptr& read_handler_sptr,
     const OnEnd& on_end)
     : cq_sptr_(cq_sptr),
       call_sptr_(call_sptr),
-      status_ok_sptr_(status_ok_sptr),
       read_handler_sptr_(read_handler_sptr),
       on_end_(on_end) {
   assert(cq_sptr);
   assert(call_sptr);
-  assert(status_ok_sptr);
+  assert(read_handler_sptr);
   assert(on_end);
 }
 
@@ -39,8 +37,8 @@ void ClientAsyncReaderHelper::Start() {
 // Setup next async read.
 void ClientAsyncReaderHelper::Next() {
   assert(started_);
-  if (!(*status_ok_sptr_))  // Maybe writer failed.
-    return;  // XXX on_end_ ?
+  if (aborted_)  // Maybe writer failed.
+    return;
 
   auto sptr = shared_from_this();
   auto* tag = new ClientReaderAsyncReadCqTag(sptr);
@@ -48,18 +46,16 @@ void ClientAsyncReaderHelper::Next() {
 
   delete tag;
   status_.SetInternalError("Failed to async read server stream.");
-  *status_ok_sptr_ = false;  // XXX return status to parent
-  // DEL if (on_status_) on_status_(status_);  // XXX no on_status in ReaderHelper
+  on_end_(status_);
 }
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
-  if (!(*status_ok_sptr_))  // Maybe writer failed.
+  if (aborted_)  // Maybe writer failed.
     return;
   assert(status_.ok());
+  assert(on_end_);
   if (!tag.HasGotMsg()) {
-    // End of read.
-    // Do not recv status in Reader. Do it after all reading and writing.
-    assert(on_end_);
+    // End of read. Do not recv status in Reader. Do it after all reading and writing.
     on_end_(status_);
     return;
   }
@@ -71,8 +67,6 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
     return;
   }
 
-  *status_ok_sptr_ = false;
-  assert(on_end_);
   on_end_(status_);
 }
 

@@ -69,9 +69,6 @@
     <ClInclude Include="..\include\grpc_cb\grpc_cb.h">
       <Filter>include\grpc_cb</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\atomic_bool_sptr.h">
-      <Filter>include\grpc_cb\impl</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\call.h">
       <Filter>include\grpc_cb\impl</Filter>
     </ClInclude>

@@ -18,15 +18,13 @@ ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
                                              const std::string& method,
                                              const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-      status_ok_sptr_(new std::atomic_bool{ true }) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   assert(channel);
   ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
   status_.SetInternalError("Failed to init client stream.");
-  *status_ok_sptr_ = false;
 }
 
 ClientAsyncWriterImpl2::~ClientAsyncWriterImpl2() {
@@ -43,7 +41,7 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
     // Impl2 and WriterHelper shared each other untill OnEnd().
     auto sptr = shared_from_this();
     writer_sptr_.reset(new ClientAsyncWriterHelper(
-        call_sptr_, status_ok_sptr_, [sptr]() { sptr->OnEndOfWriting(); }));
+        call_sptr_, [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
   writer_sptr_->Write(request_sptr);
@@ -79,7 +77,7 @@ void ClientAsyncWriterImpl2::CloseNow() {
   ClientAsyncWriterCloseCqTag tag(call_sptr_, sptr);
   if (!tag.Start()) {
     status_.SetInternalError("Failed to close client stream.");
-    *status_ok_sptr_ = false;  // Todo: extract SetInternalError()
+    // XXX *status_ok_sptr_ = false;  // Todo: extract SetInternalError()
     CallCloseHandler();
     return;
   }
@@ -129,8 +127,9 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
     status_ = tag.GetStatus();
   }
 
-  if (!status_.ok())
-    *status_ok_sptr_ = false;
+  // XXX
+  //if (!status_.ok())
+  //  *status_ok_sptr_ = false;
 
   CallCloseHandler();
 }

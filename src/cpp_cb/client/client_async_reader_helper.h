@@ -7,7 +7,6 @@
 #include <functional>
 #include <memory>  // for enable_shared_from_this<>
 
-#include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>         // for CallSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
@@ -26,13 +25,13 @@ class ClientAsyncReaderHelper GRPC_FINAL
  public:
   using OnEnd = std::function<void(const Status& status)>;
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
-                          const AtomicBoolSptr& status_ok_sptr,
                           const ClientAsyncReadHandlerSptr& read_handler_sptr,
                           const OnEnd& on_end);
   ~ClientAsyncReaderHelper();
 
  public:
   void Start();
+  void Abort() { aborted_ = true; }
 
  public:
   void OnRead(ClientReaderAsyncReadCqTag& tag);
@@ -46,7 +45,7 @@ class ClientAsyncReaderHelper GRPC_FINAL
  private:
   const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;
-  const AtomicBoolSptr status_ok_sptr_;
+  bool aborted_ = false;  // abort reader
   Status status_;
   bool started_{ false };
 

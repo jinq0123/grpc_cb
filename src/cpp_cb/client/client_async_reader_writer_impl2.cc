@@ -21,7 +21,6 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
     const CompletionQueueSptr& cq_sptr, const StatusCallback& on_status)
     : cq_sptr_(cq_sptr),
       call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-      status_ok_sptr_(new std::atomic_bool{ true }),
       on_status_(on_status) {
   assert(cq_sptr);
   assert(call_sptr_);
@@ -39,15 +38,16 @@ ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
 bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
   Guard g(mtx_);
 
-  if (!status_.ok())
+  if (!status_.ok()) {
+    assert(!reader_sptr_ && !writer_sptr_);
     return false;
+  }
 
-  assert(*status_ok_sptr_);
   if (!writer_sptr_) {
     // Impl2 and WriterHelper share each other untill OnEndOfWriting().
     auto sptr = shared_from_this();
     writer_sptr_.reset(new ClientAsyncWriterHelper(
-        call_sptr_, status_ok_sptr_, [sptr]() { sptr->OnEndOfWriting(); }));
+        call_sptr_, [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
   writer_sptr_->Write(msg_sptr);
@@ -63,7 +63,7 @@ void ClientAsyncReaderWriterImpl2::CloseWriting() {
 // private
 void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
   if (!status_.ok()) return;
-  assert(*status_ok_sptr_);
+  assert(writer_sptr_);
   if (writer_sptr_->IsWritingClosed()) return;
   writer_sptr_->SetWritingClosed();
 
@@ -88,7 +88,7 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
   // Impl2 and Helper will share each other.
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
+      cq_sptr_, call_sptr_, read_handler_sptr_,
       [sptr](const Status& status) {
         sptr->OnEndOfReading(status);
       }));
@@ -131,7 +131,14 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
 
 void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {
   status_.SetInternalError(sError);
-  *status_ok_sptr_ = false;
+  if (reader_sptr_) {
+    reader_sptr_->Abort();
+    reader_sptr_.reset();
+  }
+  if (writer_sptr_) {
+    writer_sptr_->Abort();
+    writer_sptr_.reset();
+  }
 }
 
 }  // namespace grpc_cb

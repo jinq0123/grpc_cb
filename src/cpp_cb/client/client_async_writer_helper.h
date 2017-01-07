@@ -7,7 +7,6 @@
 #include <functional>  // for function<>
 #include <memory>  // for enable_shared_from_this<>
 
-#include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>         // for CallSptr
 #include <grpc_cb/impl/message_queue.h>     // for MessageQueue
 #include <grpc_cb/impl/message_sptr.h>      // for MessageSptr
@@ -27,7 +26,6 @@ class ClientAsyncWriterHelper GRPC_FINAL
  public:
   using OnEnd = std::function<void()>;
   ClientAsyncWriterHelper(const CallSptr& call_sptr,
-                          const AtomicBoolSptr& status_ok_sptr,
                           const OnEnd& on_end);
   ~ClientAsyncWriterHelper();
 
@@ -37,10 +35,11 @@ class ClientAsyncWriterHelper GRPC_FINAL
   bool WriteNext();
   bool IsWritingClosed() const { return is_writing_closed_; }
   void SetWritingClosed() { is_writing_closed_ = true; }
+  void Abort() { aborted_ = true; }
 
  private:
   const CallSptr call_sptr_;
-  const AtomicBoolSptr status_ok_sptr_;
+  bool aborted_ = false;  // to abort writer
   const OnEnd on_end_;
   Status status_;
 

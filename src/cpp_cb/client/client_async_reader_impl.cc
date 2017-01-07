@@ -18,8 +18,7 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
     const ::google::protobuf::Message& request,
     const CompletionQueueSptr& cq_sptr)
     : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
-      status_ok_sptr_(new std::atomic_bool{ true }) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   assert(channel);
   assert(call_sptr_);
@@ -31,7 +30,6 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
 
   delete tag;
   status_.SetInternalError("Failed to start async client reader.");
-  *status_ok_sptr_ = false;
 }
 
 ClientAsyncReaderImpl::~ClientAsyncReaderImpl() {}
@@ -49,6 +47,7 @@ void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
 
 void ClientAsyncReaderImpl::Start() {
   Guard g(mtx_);
+  // XXX check status
   if (reading_started_) return;
   reading_started_ = true;
   assert(!reader_sptr_);
@@ -56,7 +55,7 @@ void ClientAsyncReaderImpl::Start() {
   // Impl and Helper will share each other until the end of reading.
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, status_ok_sptr_, read_handler_sptr_,
+      cq_sptr_, call_sptr_, read_handler_sptr_,
       [sptr](const Status& status) { sptr->OnEndOfReading(status); }));
   reader_sptr_->Start();
 }

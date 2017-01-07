@@ -8,7 +8,6 @@
 #include <mutex>
 #include <string>
 
-#include <grpc_cb/impl/atomic_bool_sptr.h>  // for AtomicBoolSptr
 #include <grpc_cb/impl/call_sptr.h>     // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/client/client_async_read_handler_sptr.h>  // for ClientAsyncReadHandlerSptr
@@ -66,7 +65,6 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
 
   const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;
-  const AtomicBoolSptr status_ok_sptr_;  // Shared in ReaderHelper.
   Status status_;
 
   ReadHandlerSptr read_handler_sptr_;

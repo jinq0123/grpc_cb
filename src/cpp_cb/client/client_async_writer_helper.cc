@@ -12,17 +12,15 @@
 namespace grpc_cb {
 
 ClientAsyncWriterHelper::ClientAsyncWriterHelper(
-    const CallSptr& call_sptr, const AtomicBoolSptr& status_ok_sptr,
-    const OnEnd& on_end)
-    : call_sptr_(call_sptr), status_ok_sptr_(status_ok_sptr), on_end_(on_end) {
+    const CallSptr& call_sptr, const OnEnd& on_end)
+    : call_sptr_(call_sptr), on_end_(on_end) {
   assert(call_sptr);
-  assert(status_ok_sptr);
 }
 
 ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
 
 bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
-  if (!(*status_ok_sptr_))
+  if (aborted_)  // Maybe reader failed.
     return false;
 
   // cache messages
@@ -32,7 +30,7 @@ bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
 }
 
 bool ClientAsyncWriterHelper::WriteNext() {
-  if (!(*status_ok_sptr_)) return false;
+  if (aborted_) return false;  // Maybe reader failed.
   if (msg_queue_.empty()) return false;
   MessageSptr msg_sptr = msg_queue_.front();
   msg_queue_.pop();
@@ -46,7 +44,7 @@ bool ClientAsyncWriterHelper::WriteNext() {
   delete tag;
   // XXX Return status to parent... OnWriteError
   status_.SetInternalError("Failed to write client stream.");
-  *status_ok_sptr_ = false;
+  // XXX on_end_(status) or return false?
   return false;
 }
 
