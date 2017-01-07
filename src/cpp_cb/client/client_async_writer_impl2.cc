@@ -58,6 +58,7 @@ void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
     return;
   }
 
+  // XXX Just SetWritingClosed()... Delete IsWriting()
   if (writer_sptr_ && writer_sptr_->IsWriting())
     return;
   CloseNow();
@@ -84,35 +85,15 @@ void ClientAsyncWriterImpl2::CloseNow() {
   CallCloseHandler();
 }  // Close()
 
-// DEL
-//void ClientAsyncWriterImpl2::WriteNext() {
-//  Guard g(mtx_);
-//
-//  // Called from the write completion callback.
-//  assert(writer_sptr_);
-//  assert(writer_sptr_->IsWriting());
-//  InternalNext();
-//}
-
-// DEL
-// Send messages one by one, and finally close.
-//void ClientAsyncWriterImpl2::InternalNext() {
-//  assert(writer_sptr_);
-//  if (writer_sptr_->WriteNext())
-//    return;
-//
-//  // Do not close before Close(handler).
-//  if (close_handler_sptr_)
-//    CloseNow();
-//}
-
 void ClientAsyncWriterImpl2::CallCloseHandler() {
   if (!close_handler_sptr_)
     return;
-  if (writer_sptr_->IsWritingClosed())
-    return;
-  writer_sptr_->SetWritingClosed();
+  // XXX Not in CallCloseHandler()
+  //if (writer_sptr_->IsWritingClosed())
+  //  return;
+  //writer_sptr_->SetWritingClosed();
 
+  // XXX OnClose() in OnEndOfWriting()?
   close_handler_sptr_->OnClose(status_);
 }
 

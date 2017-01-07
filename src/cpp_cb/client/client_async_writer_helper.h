@@ -32,9 +32,9 @@ class ClientAsyncWriterHelper GRPC_FINAL
 
  public:
   bool Write(const MessageSptr& msg_sptr);
-  bool IsWriting() const { return is_writing_; }
+  bool IsWriting() const { return is_writing_; }  // DEL
   bool IsWritingClosed() const { return is_writing_closed_; }
-  void SetWritingClosed() { is_writing_closed_ = true; }
+  void SetWritingClosed();
   void Abort() { aborted_ = true; }
   const Status& GetStatus() const { return status_; }
 

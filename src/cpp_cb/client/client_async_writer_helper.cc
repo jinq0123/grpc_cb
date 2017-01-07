@@ -31,6 +31,15 @@ bool ClientAsyncWriterHelper::Write(const MessageSptr& msg_sptr) {
   return WriteNext();
 }
 
+void ClientAsyncWriterHelper::SetWritingClosed() {
+  if (is_writing_closed_) return;
+  if (aborted_) return;
+  is_writing_closed_ = true;
+  if (is_writing_) return;  // call on_end() in OnWritten()
+  assert(msg_queue_.empty());
+  on_end_();
+}
+
 bool ClientAsyncWriterHelper::WriteNext() {
   assert(!is_writing_);
   assert(!msg_queue_.empty());
@@ -48,7 +57,7 @@ bool ClientAsyncWriterHelper::WriteNext() {
 
   delete tag;
   status_.SetInternalError("Failed to write client stream.");
-  on_end_();
+  on_end_();  // error end
   return false;
 }
 
@@ -56,8 +65,13 @@ void ClientAsyncWriterHelper::OnWritten() {
   assert(status_.ok());
   assert(is_writing_);
   is_writing_ = false;
-  if (!msg_queue_.empty())
+  if (!msg_queue_.empty()) {
     WriteNext();
+    return;
+  }
+
+  if (is_writing_closed_)
+    on_end_();  // normal end
 }
 
 }  // namespace grpc_cb

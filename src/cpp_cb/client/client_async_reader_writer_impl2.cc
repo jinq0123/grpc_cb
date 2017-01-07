@@ -59,7 +59,7 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
 void ClientAsyncReaderWriterImpl2::CloseWriting() {
   Guard g(mtx_);
   // Set to send close when all messages are written.
-  can_close_writing_ = true;
+  can_close_writing_ = true;  // XXX DEL just writer_sptr_->Close()
 
   // XXX writer->SetCanClose
 }
@@ -69,8 +69,9 @@ void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
   if (!status_.ok()) return;
   assert(writer_sptr_);  // XXX assert(!writer_sptr)
   if (writer_sptr_->IsWritingClosed()) return;
-  writer_sptr_->SetWritingClosed();  // XXX no use?
+  writer_sptr_->SetWritingClosed();
 
+  // XXX Send close cq tag in OnEndOfWriting()?
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
 
