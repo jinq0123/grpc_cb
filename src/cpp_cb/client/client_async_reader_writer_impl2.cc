@@ -32,7 +32,10 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
 }
 
 ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
-  CloseWritingNow();
+  // Reader and Writer helpers share this.
+  assert(reader_sptr_);
+  assert(writer_sptr_);
+  CloseWritingNow();  // XXX CloseWriting()?
 }
 
 bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
@@ -57,14 +60,16 @@ void ClientAsyncReaderWriterImpl2::CloseWriting() {
   Guard g(mtx_);
   // Set to send close when all messages are written.
   can_close_writing_ = true;
+
+  // XXX writer->SetCanClose
 }
 
 // private
 void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
   if (!status_.ok()) return;
-  assert(writer_sptr_);
+  assert(writer_sptr_);  // XXX assert(!writer_sptr)
   if (writer_sptr_->IsWritingClosed()) return;
-  writer_sptr_->SetWritingClosed();
+  writer_sptr_->SetWritingClosed();  // XXX no use?
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
@@ -104,25 +109,26 @@ void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
 }
 
 // XXX Write Next in WriterHelper. Don't callback on Impl.
+// DEL
+//void ClientAsyncReaderWriterImpl2::OnWritten() {
+//  Guard g(mtx_);
+//
+//  // Called from the write completion callback.
+//  assert(writer_sptr_);
+//  assert(writer_sptr_->IsWriting());
+//  WriteNext();
+//}
 
-void ClientAsyncReaderWriterImpl2::OnWritten() {
-  Guard g(mtx_);
-
-  // Called from the write completion callback.
-  assert(writer_sptr_);
-  assert(writer_sptr_->IsWriting());
-  WriteNext();
-}
-
+// DEL
 // Send messages one by one, and finally close.
-void ClientAsyncReaderWriterImpl2::WriteNext() {
-  assert(writer_sptr_);
-  if (writer_sptr_->WriteNext())
-    return;  // XXX Get status...
-
-  if (can_close_writing_)
-    CloseWritingNow();
-}
+//void ClientAsyncReaderWriterImpl2::WriteNext() {
+//  assert(writer_sptr_);
+//  if (writer_sptr_->WriteNext())
+//    return;  // XXX Get status...
+//
+//  if (can_close_writing_)
+//    CloseWritingNow();
+//}
 
 void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   Guard g(mtx_);
@@ -133,6 +139,8 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   // XXX Check status and call on_status...
   assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.
+
+  // XXX CloseWritingNow()
 }
 
 void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {

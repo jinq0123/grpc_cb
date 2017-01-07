@@ -33,7 +33,6 @@ class ClientAsyncWriterHelper GRPC_FINAL
  public:
   bool Write(const MessageSptr& msg_sptr);
   bool IsWriting() const { return is_writing_; }
-  bool WriteNext();
   bool IsWritingClosed() const { return is_writing_closed_; }
   void SetWritingClosed() { is_writing_closed_ = true; }
   void Abort() { aborted_ = true; }
@@ -43,6 +42,9 @@ class ClientAsyncWriterHelper GRPC_FINAL
   // for ClientAsyncSendMsgCqTag
   CallSptr GetCallSptr() const { return call_sptr_; }
   void OnWritten();
+
+ private:
+  bool WriteNext();
 
  private:
   const CallSptr call_sptr_;

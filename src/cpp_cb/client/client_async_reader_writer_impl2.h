@@ -49,13 +49,13 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   // Callback of ReaderHelper.
   void OnEndOfReading();
   // Callback of WriterHelper.
-  void OnWritten();  // XXX Move into WriterHelper
+  // DEL void OnWritten();  // XXX Move into WriterHelper
   // Callback of WriterHelper.
   void OnEndOfWriting();
 
  private:
   // Write next message and close.
-  void WriteNext();
+  // DEL void WriteNext();
   void CloseWritingNow();
   void SetInternalError(const std::string& sError);
 

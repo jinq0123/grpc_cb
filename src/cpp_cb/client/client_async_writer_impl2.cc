@@ -81,25 +81,27 @@ void ClientAsyncWriterImpl2::CloseNow() {
   }
 }  // Close()
 
-void ClientAsyncWriterImpl2::WriteNext() {
-  Guard g(mtx_);
+// DEL
+//void ClientAsyncWriterImpl2::WriteNext() {
+//  Guard g(mtx_);
+//
+//  // Called from the write completion callback.
+//  assert(writer_sptr_);
+//  assert(writer_sptr_->IsWriting());
+//  InternalNext();
+//}
 
-  // Called from the write completion callback.
-  assert(writer_sptr_);
-  assert(writer_sptr_->IsWriting());
-  InternalNext();
-}
-
+// DEL
 // Send messages one by one, and finally close.
-void ClientAsyncWriterImpl2::InternalNext() {
-  assert(writer_sptr_);
-  if (writer_sptr_->WriteNext())
-    return;
-
-  // Do not close before Close(handler).
-  if (close_handler_sptr_)
-    CloseNow();
-}
+//void ClientAsyncWriterImpl2::InternalNext() {
+//  assert(writer_sptr_);
+//  if (writer_sptr_->WriteNext())
+//    return;
+//
+//  // Do not close before Close(handler).
+//  if (close_handler_sptr_)
+//    CloseNow();
+//}
 
 void ClientAsyncWriterImpl2::CallCloseHandler() {
   if (!close_handler_sptr_)

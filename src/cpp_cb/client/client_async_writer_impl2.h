@@ -45,8 +45,8 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
 
  private:
   // Write next message and close.
-  void WriteNext();  // XXX Move into Helper
-  void InternalNext();
+  // DEL void WriteNext();  // XXX Move into Helper
+  // DEL void InternalNext();
   void CloseNow();
   void CallCloseHandler();
 
@@ -54,7 +54,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
 
  private:
   // The callback may lock the mutex recursively.
-  using Mutex = std::mutex;
+  using Mutex = std::recursive_mutex;
   mutable Mutex mtx_;
   using Guard = std::lock_guard<Mutex>;
 
