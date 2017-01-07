@@ -79,11 +79,13 @@ void ClientAsyncReaderWriterImpl2::SendCloseIfNot() {
     has_sent_close_ = true;
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
-  if (tag->Start()) return;
+  if (tag->Start()) {
+    CallOnStatus();
+    return;
+  }
 
   delete tag;
-  SetInternalError("Failed to close writing.");
-  // XXX on status?
+  SetInternalError("Failed to close writing.");  // calls on_status_
 }
 
 // Todo: same as ClientReader?
@@ -107,13 +109,15 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
 
 void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
   Guard g(mtx_);
-
+  if (!status_.ok()) return;
   if (!reader_sptr_) return;
-  const Status& status = reader_sptr_->GetStatus();
-
-  // XXX check status
-  // XXXX recv status if writing is closed
+  status_ = reader_sptr_->GetStatus();
   reader_sptr_.reset();  // Stop circular sharing.
+  if (!status_.ok()) {
+    CallOnStatus();
+    return;
+  }
+
   assert(IsReadingEnded());
   if (IsWritingEnded())
     SendCloseIfNot();
@@ -121,12 +125,16 @@ void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
 
 void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   Guard g(mtx_);
-
+  if (!status_.ok()) return;
   if (!writer_sptr_) return;
-  const Status& status = writer_sptr_->GetStatus();
-
-  // XXX Check status and call on_status...
+  status_ = writer_sptr_->GetStatus();
   writer_sptr_.reset();  // Stop circular sharing.
+
+  if (!status_.ok()) {
+    CallOnStatus();
+    return;
+  }
+
   assert(IsWritingEnded());
   if (IsReadingEnded())
     SendCloseIfNot();
@@ -134,6 +142,8 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
 
 void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {
   status_.SetInternalError(sError);
+  CallOnStatus();
+
   if (reader_sptr_) {
     reader_sptr_->Abort();
     reader_sptr_.reset();
@@ -150,6 +160,12 @@ bool ClientAsyncReaderWriterImpl2::IsReadingEnded() const {
 
 bool ClientAsyncReaderWriterImpl2::IsWritingEnded() const {
   return writing_started_ && !writer_sptr_;
+}
+
+void ClientAsyncReaderWriterImpl2::CallOnStatus() {
+  if (!on_status_) return;
+  on_status_(status_);
+  on_status_ = StatusCallback();
 }
 
 }  // namespace grpc_cb

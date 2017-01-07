@@ -56,6 +56,7 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   void SetInternalError(const std::string& sError);
   bool IsReadingEnded() const;
   bool IsWritingEnded() const;
+  void CallOnStatus();
 
  private:
   // Callbacks will lock again.
