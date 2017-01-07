@@ -70,45 +70,4 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   Next();
 }
 
-// DEL
-//void ClientAsyncReaderHelper::AsyncRecvStatus() {
-//  assert(status_sptr_->ok());
-//
-//  // input status_sptr_ to CqTag? To abort writing?
-//  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr_, on_status_);
-//  if (tag->Start()) return;
-//
-//  delete tag;
-//  status_sptr_->SetInternalError("Failed to receive status.");
-//  if (on_status_) on_status_(*status_sptr_);
-//}
-
-#if 0
-template <class Response>
-inline void OnReadEach(const Response& msg,
-    const ClientReaderDataSptr<Response>& data_sptr) {
-  Status& status = data_sptr->status;
-  assert(status.ok());
-
-  std::function<void(const Response&)>& on_msg = data_sptr->on_msg;
-  if (on_msg) on_msg(msg);
-
-  AsyncReadNext(data_sptr);
-  // Old tag will be deleted after return in BlockingRun().
-}
-
-template <class Response>
-inline void OnEnd(const Status& status,
-    const ClientReaderDataSptr<Response>& data_sptr) {
-  StatusCallback& on_status = data_sptr->on_status;
-  if (status.ok()) {
-    AsyncRecvStatus(data_sptr->call_sptr,
-        data_sptr->status, on_status);
-    return;
-  }
-
-  if (on_status) on_status(status);
-}
-#endif
-
 }  // namespace grpc_cb
