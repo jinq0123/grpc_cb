@@ -85,7 +85,6 @@ void ClientAsyncWriterImpl2::SendCloseIfNot() {
 
   delete tag;
   status_.SetInternalError("Failed to close client stream.");
-  // XXX *status_ok_sptr_ = false;  // Todo: extract SetInternalError()
   CallCloseHandler();
 }  // Close()
 
@@ -115,10 +114,6 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
   } else {
     status_ = tag.GetStatus();
   }
-
-  // XXX
-  //if (!status_.ok())
-  //  *status_ok_sptr_ = false;
 
   CallCloseHandler();
 }
