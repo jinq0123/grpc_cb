@@ -115,13 +115,19 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
 
 void ClientAsyncWriterImpl2::OnEndOfWriting() {
   Guard g(mtx_);
+  if (!status_.ok()) {
+    assert(!writer_sptr_);
+    return;
+  }
 
   if (!writer_sptr_) return;
-  const Status& status = writer_sptr_->GetStatus();
-
-  // XXX to close, call on_status() ...
+  status_ = writer_sptr_->GetStatus();
   writer_sptr_.reset();  // Stop circular sharing.
-  SendCloseIfNot();
+
+  if (status_.ok())
+    SendCloseIfNot();
+  else
+    CallCloseHandler();
 }
 
 void ClientAsyncWriterImpl2::SetInternalError(const std::string& sError) {
