@@ -47,7 +47,7 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
     // Impl2 and WriterHelper share each other untill OnEndOfWriting().
     auto sptr = shared_from_this();
     writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
-        [sptr](const Status& status) { sptr->OnEndOfWriting(status); }));
+        [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
   writer_sptr_->Write(msg_sptr);
@@ -89,14 +89,16 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, read_handler_sptr_,
-      [sptr](const Status& status) {
-        sptr->OnEndOfReading(status);
-      }));
+      [sptr]() { sptr->OnEndOfReading(); }));
   reader_sptr_->Start();
 }
 
-void ClientAsyncReaderWriterImpl2::OnEndOfReading(const Status& status) {
+void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
   Guard g(mtx_);
+
+  if (!reader_sptr_) return;
+  const Status& status = reader_sptr_->GetStatus();
+
   // XXX check status
   // XXXX recv status if writing is closed
   reader_sptr_.reset();  // Stop circular sharing.
@@ -123,7 +125,14 @@ void ClientAsyncReaderWriterImpl2::WriteNext() {
     CloseWritingNow();
 }
 
-void ClientAsyncReaderWriterImpl2::OnEndOfWriting(const Status& status) {
+void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
+  // There is no double lock,
+  // because OnEnd callback will not run from any WriterHelper's methods.
+  Guard g(mtx_);
+
+  if (!writer_sptr_) return;
+  const Status& status = writer_sptr_->GetStatus();
+
   // XXX Check status and call on_status...
   assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.

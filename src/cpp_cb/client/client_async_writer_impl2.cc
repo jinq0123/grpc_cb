@@ -41,7 +41,7 @@ bool ClientAsyncWriterImpl2::Write(const MessageSptr& request_sptr) {
     // Impl2 and WriterHelper shared each other untill OnEnd().
     auto sptr = shared_from_this();
     writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
-        [sptr](const Status& status) { sptr->OnEndOfWriting(status); }));
+        [sptr]() { sptr->OnEndOfWriting(); }));
   }
 
   writer_sptr_->Write(request_sptr);
@@ -134,7 +134,14 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
   CallCloseHandler();
 }
 
-void ClientAsyncWriterImpl2::OnEndOfWriting(const Status& status) {
+void ClientAsyncWriterImpl2::OnEndOfWriting() {
+  // There is no double lock,
+  // because OnEnd callback will not run from any WriterHelper's methods.
+  Guard g(mtx_);
+
+  if (!writer_sptr_) return;
+  const Status& status = writer_sptr_->GetStatus();
+
   // XXX to close, call on_status() ...
   assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.

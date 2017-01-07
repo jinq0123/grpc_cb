@@ -47,11 +47,11 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
 
  private:
   // Callback of ReaderHelper.
-  void OnEndOfReading(const Status& status);
+  void OnEndOfReading();
   // Callback of WriterHelper.
   void OnWritten();  // XXX Move into WriterHelper
   // Callback of WriterHelper.
-  void OnEndOfWriting(const Status& stauts);
+  void OnEndOfWriting();
 
  private:
   // Write next message and close.

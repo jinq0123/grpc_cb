@@ -56,13 +56,20 @@ void ClientAsyncReaderImpl::Start() {
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, read_handler_sptr_,
-      [sptr](const Status& status) { sptr->OnEndOfReading(status); }));
+      [sptr]() { sptr->OnEndOfReading(); }));
   reader_sptr_->Start();
 }
 
-void ClientAsyncReaderImpl::OnEndOfReading(const Status& status) {
+void ClientAsyncReaderImpl::OnEndOfReading() {
+  // There is no double lock,
+  // because OnEnd callback will not run from any ReaderHelper's methods.
   Guard g(mtx_);
+
   assert(reading_started_);
+
+  if (!reader_sptr_) return;
+  const Status& status = reader_sptr_->GetStatus();
+
   // XXX check status...
   ClientAsyncReader::RecvStatus(call_sptr_, on_status_);
   reader_sptr_.reset();  // Stop circular sharing.

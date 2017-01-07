@@ -23,7 +23,13 @@ class ClientReaderAsyncReadCqTag;
 class ClientAsyncReaderHelper GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderHelper> {
  public:
-  using OnEnd = std::function<void(const Status& status)>;
+  // XXX Do not use status paramter, use GetStatus() instead.
+  // XXX Do not callback OnEnd in API to avoid mutex deadlock.
+  // XXX API return false to indicate end (need to OnEnd()).
+  // XXX Same for WriterHelper.
+
+  // Callbacks will not run in any methods to avoid metux double lock.
+  using OnEnd = std::function<void()>;
   ClientAsyncReaderHelper(CompletionQueueSptr cq_sptr, CallSptr call_sptr,
                           const ClientAsyncReadHandlerSptr& read_handler_sptr,
                           const OnEnd& on_end);
@@ -32,6 +38,7 @@ class ClientAsyncReaderHelper GRPC_FINAL
  public:
   void Start();
   void Abort() { aborted_ = true; }
+  const Status& GetStatus() const { return status_; }
 
  public:
   void OnRead(ClientReaderAsyncReadCqTag& tag);

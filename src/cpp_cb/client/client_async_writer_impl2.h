@@ -50,7 +50,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   void CloseNow();
   void CallCloseHandler();
 
-  void OnEndOfWriting(const Status& status);  // Callback from WriterHelper
+  void OnEndOfWriting();  // Callback from WriterHelper
 
  private:
   // Todo: The callback may lock the mutex recursively?

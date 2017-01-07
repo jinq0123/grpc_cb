@@ -46,7 +46,7 @@ void ClientAsyncReaderHelper::Next() {
 
   delete tag;
   status_.SetInternalError("Failed to async read server stream.");
-  on_end_(status_);
+  on_end_();
 }
 
 void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
@@ -56,7 +56,7 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
   assert(on_end_);
   if (!tag.HasGotMsg()) {
     // End of read. Do not recv status in Reader. Do it after all reading and writing.
-    on_end_(status_);
+    on_end_();
     return;
   }
 
@@ -67,7 +67,7 @@ void ClientAsyncReaderHelper::OnRead(ClientReaderAsyncReadCqTag& tag) {
     return;
   }
 
-  on_end_(status_);
+  on_end_();
 }
 
 //void ClientAsyncReaderHelper::AsyncRecvStatus() {

@@ -41,7 +41,7 @@ class ClientAsyncReaderImpl GRPC_FINAL
 
  private:
   // Reader callback on end with status.
-  void OnEndOfReading(const Status& status);
+  void OnEndOfReading();
 
  private:
   std::mutex mtx_;
