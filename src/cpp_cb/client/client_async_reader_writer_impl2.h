@@ -54,10 +54,10 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   void OnEndOfWriting();
 
  private:
-  // Write next message and close.
-  // DEL void WriteNext();
-  void CloseWritingNow();
+  void SendCloseIfNot();
   void SetInternalError(const std::string& sError);
+  bool IsReadingEnded() const;
+  bool IsWritingEnded() const;
 
  private:
   // Callbacks will lock again.
@@ -73,7 +73,9 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   StatusCallback on_status_;
 
   bool reading_started_ = false;  // ReadEach() to trigger reading.
-  bool can_close_writing_ = false;  // Waiting to close?
+  bool writing_started_ = false;  // Write() to trigger writing.
+
+  bool has_sent_close_ = false;  // Client send close once.
 
   // Helper will be shared by CqTag.
   std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;

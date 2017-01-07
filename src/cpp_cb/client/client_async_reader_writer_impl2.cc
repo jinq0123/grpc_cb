@@ -35,7 +35,7 @@ ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
   // Reader and Writer helpers share this.
   assert(!reader_sptr_);
   assert(!writer_sptr_);
-  CloseWritingNow();  // XXX CloseWriting()?
+  SendCloseIfNot();
 }
 
 bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
@@ -46,28 +46,37 @@ bool ClientAsyncReaderWriterImpl2::Write(const MessageSptr& msg_sptr) {
     return false;
   }
 
-  if (!writer_sptr_) {
-    // Impl2 and WriterHelper share each other untill OnEndOfWriting().
-    auto sptr = shared_from_this();
-    writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
-        [sptr]() { sptr->OnEndOfWriting(); }));
-  }
+  if (writer_sptr_)
+    return writer_sptr_->Queue(msg_sptr);
+  if (writing_started_)  // but writer_sptr_ is reset
+    return false;
 
+  // new writer only once
+  writing_started_ = true;
+  // Impl2 and WriterHelper share each other untill OnEndOfWriting().
+  auto sptr = shared_from_this();  // can not in ctr().
+  writer_sptr_.reset(new ClientAsyncWriterHelper(call_sptr_,
+      [sptr]() { sptr->OnEndOfWriting(); }));
   return writer_sptr_->Queue(msg_sptr);
 }
 
 void ClientAsyncReaderWriterImpl2::CloseWriting() {
   Guard g(mtx_);
-  // Set to send close when all messages are written.
-  can_close_writing_ = true;  // XXX DEL just writer_sptr_->Close()
+  writing_started_ = true;  // Maybe without any Write().
 
-  // XXX writer->SetCanClose
+  // End when all messages are written.
+  if (writer_sptr_)
+      writer_sptr_->QueueEnd();
 }
 
-// private. Called in dtr().
-void ClientAsyncReaderWriterImpl2::CloseWritingNow() {
-  if (!status_.ok()) return;
+// Called in dtr().
+// Send close only if reading and writing are both ended.
+void ClientAsyncReaderWriterImpl2::SendCloseIfNot() {
+  assert(!reader_sptr_);  // Must be ended.
   assert(!writer_sptr_);  // Must be ended.
+  if (!status_.ok()) return;
+  if (has_sent_close_) return;
+    has_sent_close_ = true;
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) return;
@@ -105,29 +114,10 @@ void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
   // XXX check status
   // XXXX recv status if writing is closed
   reader_sptr_.reset();  // Stop circular sharing.
+  assert(IsReadingEnded());
+  if (IsWritingEnded())
+    SendCloseIfNot();
 }
-
-// XXX Write Next in WriterHelper. Don't callback on Impl.
-// DEL
-//void ClientAsyncReaderWriterImpl2::OnWritten() {
-//  Guard g(mtx_);
-//
-//  // Called from the write completion callback.
-//  assert(writer_sptr_);
-//  assert(writer_sptr_->IsWriting());
-//  WriteNext();
-//}
-
-// DEL
-// Send messages one by one, and finally close.
-//void ClientAsyncReaderWriterImpl2::WriteNext() {
-//  assert(writer_sptr_);
-//  if (writer_sptr_->WriteNext())
-//    return;  // XXX Get status...
-//
-//  if (can_close_writing_)
-//    CloseWritingNow();
-//}
 
 void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   Guard g(mtx_);
@@ -136,10 +126,10 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   const Status& status = writer_sptr_->GetStatus();
 
   // XXX Check status and call on_status...
-  // assert(writer_sptr_->IsWritingClosed());
   writer_sptr_.reset();  // Stop circular sharing.
-
-  // XXX CloseWritingNow()
+  assert(IsWritingEnded());
+  if (IsReadingEnded())
+    SendCloseIfNot();
 }
 
 void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {
@@ -152,6 +142,14 @@ void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {
     writer_sptr_->Abort();
     writer_sptr_.reset();
   }
+}
+
+bool ClientAsyncReaderWriterImpl2::IsReadingEnded() const {
+  return reading_started_ && !reader_sptr_;
+}
+
+bool ClientAsyncReaderWriterImpl2::IsWritingEnded() const {
+  return writing_started_ && !writer_sptr_;
 }
 
 }  // namespace grpc_cb
