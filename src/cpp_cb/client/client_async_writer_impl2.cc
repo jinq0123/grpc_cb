@@ -54,6 +54,7 @@ void ClientAsyncWriterImpl2::Close(const CloseHandlerSptr& handler_sptr) {
 
   if (close_handler_sptr_) return;  // already done
   close_handler_sptr_ = handler_sptr;
+  writing_started_ = true;  // Maybe without any Write().
 
   if (!status_.ok()) {
     CallCloseHandler();
