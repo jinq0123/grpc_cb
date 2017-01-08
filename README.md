@@ -9,21 +9,6 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface.
 
 ## Todo
 
-* ClientSyncReader 				DONE
-* ClientSyncReaderHelper		DONE
-* ClientSyncWriter				DONE
-* ClientSyncWriterHelper		DONE
-* ClientSyncReaderWriter		DONE
-* ClientSyncReaderWriterImpl	DONE
-* ClientAsyncReader				DONE
-* ClientAsyncReaderHelper		DONE
-* ClientAsyncWriter
-* ClientAsyncWriterImpl
-* ClientAsyncWriterHelper
-* ClientAsyncReaderWriter
-* ClientAsyncReaderWriterImpl
-* ServerWriter
-
 * Check thread-safety
 * Rename ...CallBack to On...
 * Make impl sptr const:
