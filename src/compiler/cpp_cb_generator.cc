@@ -179,20 +179,36 @@ void PrintHeaderClientMethodPublic(
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
           *vars,
-          "::grpc_cb::ClientWriter<$Request$>\n"
-          "$Method$();\n\n");
+          "::grpc_cb::ClientSyncWriter<$Request$>\n"
+          "Sync$Method$();\n"
+          "\n"
+          "::grpc_cb::ClientAsyncWriter<\n"
+          "    $Request$,\n"
+          "    $Response$>\n"
+          "Async$Method$();\n\n");
   } else if (ServerOnlyStreaming(method)) {
       printer->Print(
           *vars,
-          "::grpc_cb::ClientReader<$Response$>\n"
-          "$Method$(const $Request$& request);\n\n");
+          "::grpc_cb::ClientSyncReader<$Response$>\n"
+          "Sync$Method$(const $Request$& request);\n"
+          "\n"
+          "using $Method$MsgCb = std::function<\n"
+          "    void(const $Response$&)>;\n"
+          "void Async$Method$(const $Request$& request,\n"
+          "    const $Method$MsgCb& on_msg = $Method$MsgCb(),\n"
+          "    const ::grpc_cb::StatusCallback& on_status = ::grpc_cb::StatusCallback());\n\n");
   } else if (BidiStreaming(method)) {
       printer->Print(
           *vars,
-          "::grpc_cb::ClientReaderWriter<\n"
-          "  $Request$,\n"
-          "  $Response$>\n"
-          "$Method$();\n\n");
+          "::grpc_cb::ClientSyncReaderWriter<\n"
+          "    $Request$,\n"
+          "    $Response$>\n"
+          "Sync$Method$();\n"
+          "\n"
+          "::grpc_cb::ClientAsyncReaderWriter<\n"
+          "    $Request$,\n"
+          "    $Response$>\n"
+          "Async$Method$(const ::grpc_cb::StatusCallback& on_status);\n\n");
   }
 }
 
@@ -554,9 +570,9 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
-                   "::grpc_cb::ClientReader<$Response$>\n"
+                   "::grpc_cb::ClientSyncReader<$Response$>\n"
                    "Stub::$Method$(const $Request$& request) {\n"
-                   "  return ::grpc_cb::ClientReader<$Response$>(\n"
+                   "  return ::grpc_cb::ClientSyncReader<$Response$>(\n"
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCqSptr());\n"
                    "}\n\n");
   } else if (BidiStreaming(method)) {

@@ -52,7 +52,7 @@ void ServerMethodCallCqTag::DoComplete(bool success)
   assert(payload_ptr_);
   assert(call_ptr_);
   CallSptr call_sptr(new Call(call_ptr_));  // destroys grpc_call
-  service_->CallMethod(method_index_, *payload_ptr_, call_sptr, cq_sptr_);
+  service_->CallMethod(method_index_, *payload_ptr_, call_sptr);
 
   // Request the next method call.
   // Calls grpc_server_request_registered_call() in ctr().
