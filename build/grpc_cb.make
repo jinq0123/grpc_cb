@@ -85,7 +85,6 @@ OBJECTS := \
 	$(OBJDIR)/call_operations.o \
 	$(OBJDIR)/completion_queue.o \
 	$(OBJDIR)/do_next_completion.o \
-	$(OBJDIR)/proto_utils.o \
 	$(OBJDIR)/server.o \
 	$(OBJDIR)/server_credentials.o \
 	$(OBJDIR)/server_method_call_cqtag.o \
@@ -210,9 +209,6 @@ $(OBJDIR)/completion_queue.o: ../src/cpp_cb/common/completion_queue.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/do_next_completion.o: ../src/cpp_cb/common/do_next_completion.cc
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/proto_utils.o: ../src/cpp_cb/proto/proto_utils.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/server.o: ../src/cpp_cb/server/server.cc

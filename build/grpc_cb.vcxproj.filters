@@ -34,9 +34,6 @@
     <Filter Include="src\cpp_cb\common">
       <UniqueIdentifier>{5BCC2E67-C7E2-2CFD-105A-B81E7CAFFD84}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\cpp_cb\proto">
-      <UniqueIdentifier>{666F4BFC-5268-6A4E-7B9A-4FD367F2495A}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\cpp_cb\server">
       <UniqueIdentifier>{4944CF8B-B55A-CD21-FED1-58436A279EA9}</UniqueIdentifier>
     </Filter>
@@ -255,9 +252,6 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2_sptr.h">
-      <Filter>src\cpp_cb\client</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
@@ -334,9 +328,6 @@
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc">
       <Filter>src\cpp_cb\common</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cpp_cb\proto\proto_utils.cc">
-      <Filter>src\cpp_cb\proto</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\server\server.cc">
       <Filter>src\cpp_cb\server</Filter>

@@ -157,7 +157,6 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h" />
-    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
@@ -185,7 +184,6 @@
     <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />
     <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc" />
     <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc" />
-    <ClCompile Include="..\src\cpp_cb\proto\proto_utils.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_credentials.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_method_call_cqtag.cc" />
