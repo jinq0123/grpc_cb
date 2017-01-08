@@ -143,6 +143,7 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
     SendCloseIfNot();
 }
 
+// Set status and callback and reset helpers.
 void ClientAsyncReaderWriterImpl2::SetInternalError(const std::string& sError) {
   status_.SetInternalError(sError);
   CallOnStatus();
