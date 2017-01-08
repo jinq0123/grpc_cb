@@ -12,10 +12,9 @@ namespace grpc_cb {
 template <class Response>
 class ServerWriter GRPC_FINAL {
  public:
-  ServerWriter(const CallSptr& call_sptr, const CompletionQueueSptr& cq_sptr)
-      : impl_sptr_(new ServerWriterImpl(call_sptr, cq_sptr)) {
+  explicit ServerWriter(const CallSptr& call_sptr)
+      : impl_sptr_(new ServerWriterImpl(call_sptr)) {
     assert(call_sptr);
-    assert(cq_sptr);
   }
 
  public:
