@@ -109,8 +109,6 @@ void Stub::AsyncListFeatures(
   reader.ReadEach(on_msg, on_status);
 }
 
-// XXX void Stub::AsyncListFeatures(request, reader)
-
 ::grpc_cb::ClientSyncWriter<::routeguide::Point>
 Stub::SyncRecordRoute() {
   return ::grpc_cb::ClientSyncWriter<::routeguide::Point>(
@@ -124,28 +122,28 @@ Stub::AsyncRecordRoute() {
   return ::grpc_cb::ClientAsyncWriter<
       ::routeguide::Point,
       ::routeguide::RouteSummary>(
-      GetChannelSptr(), method_names[2], GetCqSptr());
+          GetChannelSptr(), method_names[2], GetCqSptr());
 }
 
 ::grpc_cb::ClientSyncReaderWriter<
-  ::routeguide::RouteNote,
-  ::routeguide::RouteNote>
+    ::routeguide::RouteNote,
+    ::routeguide::RouteNote>
 Stub::SyncRouteChat() {
   return ::grpc_cb::ClientSyncReaderWriter<
-    ::routeguide::RouteNote,
-    ::routeguide::RouteNote>(
-        GetChannelSptr(), method_names[3]);
+      ::routeguide::RouteNote,
+      ::routeguide::RouteNote>(
+          GetChannelSptr(), method_names[3]);
 }
 
 ::grpc_cb::ClientAsyncReaderWriter<
-  ::routeguide::RouteNote,
-  ::routeguide::RouteNote>
+    ::routeguide::RouteNote,
+    ::routeguide::RouteNote>
 Stub::AsyncRouteChat(
     const ::grpc_cb::StatusCallback& on_status) {
   return ::grpc_cb::ClientAsyncReaderWriter<
-    ::routeguide::RouteNote,
-    ::routeguide::RouteNote>(
-        GetChannelSptr(), method_names[3], GetCqSptr(), on_status);
+      ::routeguide::RouteNote,
+      ::routeguide::RouteNote>(
+          GetChannelSptr(), method_names[3], GetCqSptr(), on_status);
 }
 
 Service::Service() {}
@@ -157,9 +155,9 @@ const std::string& Service::GetMethodName(size_t method_index) const {
   return method_names[method_index];
 }
 
-void Service::CallMethod(size_t method_index, grpc_byte_buffer& request_buffer,
-                         const ::grpc_cb::CallSptr& call_sptr,
-                         const ::grpc_cb::CompletionQueueSptr& cq_sptr) {
+void Service::CallMethod(
+    size_t method_index, grpc_byte_buffer& request_buffer,
+    const ::grpc_cb::CallSptr& call_sptr) {
   assert(method_index < GetMethodCount());
   switch (method_index) {
     case 0:
@@ -168,19 +166,18 @@ void Service::CallMethod(size_t method_index, grpc_byte_buffer& request_buffer,
       return;
     case 1:
       ListFeatures(request_buffer,
-          ListFeatures_Writer(call_sptr, cq_sptr));
+          ListFeatures_Writer(call_sptr));
       return;
     case 2:
       RecordRoute(call_sptr);
       return;
     case 3:
-      RouteChat(call_sptr, cq_sptr);
+      RouteChat(call_sptr);
       return;
   }  // switch
   assert(false);
   (void)request_buffer;
   (void)call_sptr;
-  (void)cq_sptr;
 }
 
 void Service::GetFeature(
@@ -267,14 +264,12 @@ void Service::RecordRoute_OnEnd(
   replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
 }
 
-void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr,
-                        const ::grpc_cb::CompletionQueueSptr& cq_sptr) {
+void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
-  assert(cq_sptr);
   using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>;
-  RouteChat_Writer writer(call_sptr, cq_sptr);
+  RouteChat_Writer writer(call_sptr);
   RwCqTag::MsgCallback on_msg =
     [this](const ::routeguide::RouteNote& msg,
            const RouteChat_Writer& writer) {
