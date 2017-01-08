@@ -76,7 +76,7 @@ void ClientAsyncReaderWriterImpl2::SendCloseIfNot() {
   assert(!writer_sptr_);  // Must be ended.
   if (!status_.ok()) return;
   if (has_sent_close_) return;
-    has_sent_close_ = true;
+  has_sent_close_ = true;
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
   if (tag->Start()) {
@@ -96,10 +96,10 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
 
   read_handler_sptr_ = handler_sptr;
   if (reading_started_) return;
-  reading_started_ = true;
+  reading_started_ = true;  // new reader_sptr_ once
 
   assert(!reader_sptr_);
-  // Impl2 and Helper will share each other.
+  // Impl2 and ReaderHelper will share each other until OnEndOfReading().
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
       cq_sptr_, call_sptr_, read_handler_sptr_,
