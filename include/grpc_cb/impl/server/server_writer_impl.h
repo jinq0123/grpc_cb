@@ -63,7 +63,7 @@ class ServerWriterImpl GRPC_FINAL
 
  private:
   CallSptr call_sptr_;
-  CompletionQueueSptr cq_sptr_;
+  // DEL CompletionQueueSptr cq_sptr_;
   bool closed_ = false;  // on error or done
   bool send_init_md_ = true;  // to send initial metadata once
   bool is_sending_ = false;  // grpc must send one by one
