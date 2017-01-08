@@ -3,8 +3,6 @@
 
 #include "server_method_call_cqtag.h"
 
-#include <google/protobuf/message.h>  // for Message
-
 #include <grpc_cb/service.h>  // for Service
 #include <grpc_cb/impl/call.h>  // for Call
 #include <grpc_cb/impl/completion_queue.h>  // for c_cq()
@@ -46,8 +44,6 @@ void ServerMethodCallCqTag::DoComplete(bool success)
   // TODO: check success
 
   // Deal payload.
-  // DEL using Message = ::google::protobuf::Message;
-  //     std::unique_ptr<Message> request;
   assert(service_);
   assert(payload_ptr_);
   assert(call_ptr_);

@@ -13,7 +13,7 @@
 #include <grpc_cb/impl/completion_queue_tag.h>   // for CompletionQueueTag
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 
-struct grpc_call;  // DEL
+struct grpc_call;
 
 namespace grpc_cb {
 
