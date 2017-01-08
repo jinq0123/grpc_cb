@@ -44,15 +44,14 @@ bool ServerWriterImpl::Write(
 
 bool ServerWriterImpl::BlockingWrite(
     const ::google::protobuf::Message& response) {
-  if (GetQueueSize()) {
-      // Next XXX
-  }
-  // DEL AsyncWrite(response);  // Will trigger sending.
+  if (!AsyncWrite(response))  // Will trigger sending.
+    return false;
 
-  while (GetQueueSize())
+  while (GetQueueSize())  // need to clear queue on error
     std::this_thread::yield();
 
-  return false;  // XXX check error?
+  Guard g(mtx_);
+  return closed_;
 }
 
 bool ServerWriterImpl::AsyncWrite(
@@ -101,7 +100,7 @@ void ServerWriterImpl::TryToWriteNext() {
     MessageSptr msg = queue_.front();
     queue_.pop();
     assert(msg);
-    SendMsg(*msg);  // XXX check return
+    SendMsg(*msg);
     return;
   }
 
@@ -144,6 +143,7 @@ bool ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
 
   delete tag;
   closed_ = true;  // error
+  queue_ = MessageQueue();  // reset to break BlockingWrite().
   // Todo: do sth. on error?
   return false;
 }

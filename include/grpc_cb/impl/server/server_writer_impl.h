@@ -64,12 +64,14 @@ class ServerWriterImpl GRPC_FINAL
  private:
   CallSptr call_sptr_;
   CompletionQueueSptr cq_sptr_;
-  bool closed_ = false;
+  bool closed_ = false;  // on error or done
   bool send_init_md_ = true;  // to send initial metadata once
   bool is_sending_ = false;  // grpc must send one by one
 
   size_t high_queue_size_ = std::numeric_limits<size_t>::max();
   MessageQueue queue_;
+
+  // new in BlockingClose()/AsyncClose()
   std::unique_ptr<Status> close_status_uptr_;
 
   mutable std::mutex mtx_;
