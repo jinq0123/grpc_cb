@@ -13,7 +13,7 @@
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
 #include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue
-#include <grpc_cb/impl/proto_utils.h>                     // for DeserializeProto()
+#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
 #include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 #include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
 
@@ -189,7 +189,7 @@ void Service::GetFeature(
   using Request = ::routeguide::Point;
   Request request;
   ::grpc_cb::Status status =
-      ::grpc_cb::DeserializeProto(
+      ::grpc_cb::Proto::Deserialize(
           &request_buffer, &request, 0 /* TODO: max_message_size*/);
   if (status.ok()) {
     GetFeature(request, replier);
@@ -210,7 +210,7 @@ void Service::ListFeatures(grpc_byte_buffer& request_buffer,
   using Request = ::routeguide::Rectangle;
   Request request;
   ::grpc_cb::Status status =
-      ::grpc_cb::DeserializeProto(
+      ::grpc_cb::Proto::Deserialize(
           &request_buffer, &request, 0 /* TODO: max_message_size*/);
   if (status.ok()) {
     ListFeatures(request, writer);

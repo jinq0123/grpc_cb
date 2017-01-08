@@ -406,7 +406,7 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag\n");
     printer.Print("#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag\n");
     printer.Print("#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue\n");
-    printer.Print("#include <grpc_cb/impl/proto_utils.h>                     // for DeserializeProto()\n");
+    printer.Print("#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()\n");
     printer.Print("#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag\n");
     printer.Print("#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag\n");
     printer.Print("\n");
@@ -589,7 +589,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "  using Request = $Request$;\n"
         "  Request request;\n"
         "  ::grpc_cb::Status status =\n"
-        "      ::grpc_cb::DeserializeProto(\n"
+        "      ::grpc_cb::Proto::Deserialize(\n"
         "          &request_buffer, &request, 0 /* TODO: max_message_size*/);\n"
         "  if (status.ok()) {\n"
         "    $Method$(request, replier);\n"
@@ -653,7 +653,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "  using Request = $Request$;\n"
         "  Request request;\n"
         "  ::grpc_cb::Status status =\n"
-        "      ::grpc_cb::DeserializeProto(\n"
+        "      ::grpc_cb::Proto::Deserialize(\n"
         "          &request_buffer, &request, 0 /* TODO: max_message_size*/);\n"
         "  if (status.ok()) {\n"
         "    $Method$(request, writer);\n"

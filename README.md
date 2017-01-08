@@ -13,4 +13,5 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface.
 * Rename ...CallBack to On...
 * Make impl sptr const:
   const std::shared_ptr<Impl> impl_sptr_;
+* Convert grpc_byte_buffer to string, which is needed by lua.
 

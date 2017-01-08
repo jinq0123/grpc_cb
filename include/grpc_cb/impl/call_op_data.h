@@ -61,7 +61,7 @@ class CodSendMsg GRPC_FINAL : noncopyable {
   Status SerializeMsg(const ::google::protobuf::Message& message)
       GRPC_MUST_USE_RESULT {
     // send_buf_ is created here and destroyed in dtr().
-    return SerializeProto(message, &send_buf_);
+    return Proto::Serialize(message, &send_buf_);
   }
 
   grpc_byte_buffer* GetSendBuf() { return send_buf_; }
@@ -102,7 +102,7 @@ class CodRecvMsg GRPC_FINAL : noncopyable {
   // To detect end of stream.
   bool HasGotMsg() const { return nullptr != recv_buf_; }
   Status GetResultMsg(::google::protobuf::Message& message, int max_msg_size) {
-    return DeserializeProto(recv_buf_, &message, max_msg_size);
+    return Proto::Deserialize(recv_buf_, &message, max_msg_size);
   }
 
  private:

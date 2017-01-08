@@ -92,6 +92,7 @@ OBJECTS := \
 	$(OBJDIR)/server_writer_impl.o \
 	$(OBJDIR)/server_writer_write_cqtag.o \
 	$(OBJDIR)/service.o \
+	$(OBJDIR)/proto_utils.o \
 	$(OBJDIR)/status.o \
 	$(OBJDIR)/string_ref.o \
 
@@ -230,6 +231,9 @@ $(OBJDIR)/server_writer_write_cqtag.o: ../src/cpp_cb/server/server_writer_write_
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/service.o: ../src/cpp_cb/server/service.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/proto_utils.o: ../src/cpp_cb/util/proto_utils.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/status.o: ../src/cpp_cb/util/status.cc
