@@ -109,10 +109,12 @@ void ClientAsyncReaderWriterImpl2::ReadEach(
 
 void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
   Guard g(mtx_);
-  if (!status_.ok()) return;
   if (!reader_sptr_) return;
-  status_ = reader_sptr_->GetStatus();
+  Status r_status(reader_sptr_->GetStatus());  // before reset()
   reader_sptr_.reset();  // Stop circular sharing.
+
+  if (!status_.ok()) return;
+  status_ = r_status;
   if (!status_.ok()) {
     CallOnStatus();
     return;
@@ -125,11 +127,12 @@ void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
 
 void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   Guard g(mtx_);
-  if (!status_.ok()) return;
   if (!writer_sptr_) return;
-  status_ = writer_sptr_->GetStatus();
+  Status w_status(writer_sptr_->GetStatus());  // before reset()
   writer_sptr_.reset();  // Stop circular sharing.
 
+  if (!status_.ok()) return;
+  status_ = w_status;
   if (!status_.ok()) {
     CallOnStatus();
     return;

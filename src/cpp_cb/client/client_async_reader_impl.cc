@@ -31,6 +31,7 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
 
   delete tag;
   status_.SetInternalError("Failed to start async client reader.");
+  CallOnStatus();
 }
 
 ClientAsyncReaderImpl::~ClientAsyncReaderImpl() {}
@@ -43,7 +44,11 @@ void ClientAsyncReaderImpl::SetReadHandler(
 
 void ClientAsyncReaderImpl::SetOnStatus(const StatusCallback& on_status) {
   Guard g(mtx_);
+  if (set_on_status_once_) return;
+  set_on_status_once_ = true;
   on_status_ = on_status;
+  if (!status_.ok())
+    CallOnStatus();
 }
 
 void ClientAsyncReaderImpl::Start() {
@@ -65,16 +70,23 @@ void ClientAsyncReaderImpl::OnEndOfReading() {
   assert(reading_started_);
 
   if (!reader_sptr_) return;
-  const Status status(reader_sptr_->GetStatus());  // Copy
+  Status r_status(reader_sptr_->GetStatus());  // Copy before reset()
   reader_sptr_.reset();  // Stop circular sharing.
 
-  if (status.ok()) {
+  if (!status_.ok()) return;
+  status_ = r_status;
+  if (status_.ok()) {
     ClientAsyncReader::RecvStatus(call_sptr_, on_status_);
     return;
   }
 
-  if (on_status_)
-    on_status_(status);
+  CallOnStatus();
+}
+
+void ClientAsyncReaderImpl::CallOnStatus() {
+  if (!on_status_) return;
+  on_status_(status_);
+  on_status_ = StatusCallback();
 }
 
 }  // namespace grpc_cb

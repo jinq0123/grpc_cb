@@ -43,6 +43,8 @@ class ClientAsyncReaderImpl GRPC_FINAL
   // Reader callback on end with status.
   void OnEndOfReading();
 
+  void CallOnStatus();
+
  private:
   // ReaderHelper callback will lock again.
   using Mutex = std::recursive_mutex;
@@ -56,6 +58,7 @@ class ClientAsyncReaderImpl GRPC_FINAL
 
   ClientAsyncReadHandlerSptr read_handler_sptr_;
   StatusCallback on_status_;
+  bool set_on_status_once_ = false;  // set on_status_ only once
 
   // ReaderHelper will be shared by CqTag.
   std::shared_ptr<ClientAsyncReaderHelper> reader_sptr_;

@@ -115,15 +115,13 @@ void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
 
 void ClientAsyncWriterImpl2::OnEndOfWriting() {
   Guard g(mtx_);
-  if (!status_.ok()) {
-    assert(!writer_sptr_);
-    return;
-  }
 
   if (!writer_sptr_) return;
-  status_ = writer_sptr_->GetStatus();
+  Status w_status(writer_sptr_->GetStatus());  // copy before reset()
   writer_sptr_.reset();  // Stop circular sharing.
 
+  if (!status_.ok()) return;
+  status_ = w_status;
   if (status_.ok())
     SendCloseIfNot();
   else
