@@ -11,15 +11,11 @@
 
 namespace grpc_cb {
 
-ClientAsyncReaderHelper::ClientAsyncReaderHelper(
-    CompletionQueueSptr cq_sptr, CallSptr call_sptr,
-    const ClientAsyncReadHandlerSptr& read_handler_sptr,
-    const OnEnd& on_end)
-    : cq_sptr_(cq_sptr),  // XXX DEL
-      call_sptr_(call_sptr),
+ClientAsyncReaderHelper::ClientAsyncReaderHelper(CallSptr call_sptr,
+    const ClientAsyncReadHandlerSptr& read_handler_sptr, const OnEnd& on_end)
+    : call_sptr_(call_sptr),
       read_handler_sptr_(read_handler_sptr),
       on_end_(on_end) {
-  assert(cq_sptr);
   assert(call_sptr);
   assert(read_handler_sptr);
   assert(on_end);

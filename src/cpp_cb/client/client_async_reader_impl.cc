@@ -17,8 +17,7 @@ ClientAsyncReaderImpl::ClientAsyncReaderImpl(
     const ChannelSptr& channel, const std::string& method,
     const ::google::protobuf::Message& request,
     const CompletionQueueSptr& cq_sptr)
-    : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+    : call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   assert(channel);
   assert(call_sptr_);
@@ -60,8 +59,7 @@ void ClientAsyncReaderImpl::Start() {
   // Impl and Helper will share each other until the end of reading.
   auto sptr = shared_from_this();
   reader_sptr_.reset(new ClientAsyncReaderHelper(
-      cq_sptr_, call_sptr_, read_handler_sptr_,
-      [sptr]() { sptr->OnEndOfReading(); }));
+      call_sptr_, read_handler_sptr_, [sptr]() { sptr->OnEndOfReading(); }));
   reader_sptr_->Start();
 }
 

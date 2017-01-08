@@ -51,7 +51,6 @@ class ClientAsyncReaderImpl GRPC_FINAL
   Mutex mtx_;
   using Guard = std::lock_guard<Mutex>;
 
-  const CompletionQueueSptr cq_sptr_;  // DEL
   const CallSptr call_sptr_;
   Status status_;
   bool reading_started_{ false };

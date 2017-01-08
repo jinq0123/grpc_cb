@@ -64,7 +64,6 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   mutable Mutex mtx_;
   using Guard = std::lock_guard<Mutex>;
 
-  const CompletionQueueSptr cq_sptr_;
   const CallSptr call_sptr_;
   Status status_;
 
