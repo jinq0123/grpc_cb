@@ -860,6 +860,8 @@ static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
   }  // for
   printer->Print("  }  // switch\n"
                  "  assert(false);\n"
+                 "  (void)request_buffer;\n"
+                 "  (void)call_sptr;\n"
                  "}\n\n");
 }
 
