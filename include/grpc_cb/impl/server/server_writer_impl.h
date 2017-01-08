@@ -9,7 +9,6 @@
 #include <mutex>
 
 #include <grpc_cb/impl/call_sptr.h>              // for CallSptr
-#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/message_queue.h>          // for MessageQueue
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 #include <grpc_cb/support/protobuf_fwd.h>        // for Message
@@ -22,8 +21,7 @@ class Status;
 class ServerWriterImpl GRPC_FINAL
     : public std::enable_shared_from_this<ServerWriterImpl> {
  public:
-  ServerWriterImpl(const CallSptr& call_sptr,
-                   const CompletionQueueSptr& cq_sptr);
+  explicit ServerWriterImpl(const CallSptr& call_sptr);
   ~ServerWriterImpl();  // blocking
 
  public:
@@ -63,7 +61,6 @@ class ServerWriterImpl GRPC_FINAL
 
  private:
   CallSptr call_sptr_;
-  // DEL CompletionQueueSptr cq_sptr_;
   bool closed_ = false;  // on error or done
   bool send_init_md_ = true;  // to send initial metadata once
   bool is_sending_ = false;  // grpc must send one by one
