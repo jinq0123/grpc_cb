@@ -30,7 +30,7 @@ class ServerWriterImpl GRPC_FINAL
   // Write() will block if the high queue size reached.
   bool Write(const ::google::protobuf::Message& response);
   bool BlockingWrite(const ::google::protobuf::Message& response);
-  void AsyncWrite(const ::google::protobuf::Message& response);
+  bool AsyncWrite(const ::google::protobuf::Message& response);
 
   size_t GetQueueSize() const {
     Guard g(mtx_);
@@ -59,7 +59,7 @@ class ServerWriterImpl GRPC_FINAL
 
  private:
   void SendStatus();  // to close
-  void SendMsg(const ::google::protobuf::Message& msg);
+  bool SendMsg(const ::google::protobuf::Message& msg);
 
  private:
   CallSptr call_sptr_;

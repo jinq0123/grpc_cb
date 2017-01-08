@@ -37,11 +37,9 @@ bool ServerWriterImpl::Write(
   }
 
   if (is_high)
-    BlockingWrite(response);
+    return BlockingWrite(response);
   else
-    AsyncWrite(response);
-
-  return false;  // XXX
+    return AsyncWrite(response);
 }
 
 bool ServerWriterImpl::BlockingWrite(
@@ -57,22 +55,22 @@ bool ServerWriterImpl::BlockingWrite(
   return false;  // XXX check error?
 }
 
-void ServerWriterImpl::AsyncWrite(
+bool ServerWriterImpl::AsyncWrite(
     const ::google::protobuf::Message& response) {
   Guard g(mtx_);
 
   if (closed_ || close_status_uptr_)
-    return;
+    return false;
 
   if (is_sending_) {
     MessageSptr p(response.New());
     p->CopyFrom(response);
     queue_.push(p);
-    return;
+    return true;
   }
 
   assert(queue_.empty());
-  SendMsg(response);
+  return SendMsg(response);
 }
 
 void ServerWriterImpl::BlockingClose(const Status& status) {
@@ -103,7 +101,7 @@ void ServerWriterImpl::TryToWriteNext() {
     MessageSptr msg = queue_.front();
     queue_.pop();
     assert(msg);
-    SendMsg(*msg);
+    SendMsg(*msg);  // XXX check return
     return;
   }
 
@@ -131,7 +129,7 @@ void ServerWriterImpl::SendStatus() {
   delete tag;
 }
 
-void ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
+bool ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
   assert(!closed_);
   assert(!is_sending_);
   is_sending_ = true;
@@ -141,12 +139,13 @@ void ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
   CqTag* tag = new CqTag(call_sptr_, shared_from_this());
   if (tag->Start(msg, send_init_md_)) {
     send_init_md_ = false;
-    return;
+    return true;
   }
 
   delete tag;
   closed_ = true;  // error
   // Todo: do sth. on error?
+  return false;
 }
 
 }  // namespace grpc_cb
