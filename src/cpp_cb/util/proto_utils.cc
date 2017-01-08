@@ -219,7 +219,7 @@ Status Deserialize(grpc_byte_buffer* buffer, ::google::protobuf::Message* msg,
         result = Status::InternalError("Did not read entire message");
       }
     }
-    grpc_byte_buffer_destroy(buffer);
+    // DO NOT grpc_byte_buffer_destroy(buffer);
     return result;
 }  // Deserialize()
 

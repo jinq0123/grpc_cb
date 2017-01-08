@@ -5,6 +5,7 @@
 #define GRPC_INTERNAL_CPP_CB_COMMON_CALL_OPERATIONS_H
 
 #include <cassert>
+#include <cstring>  // for memset()
 
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 #include <grpc_cb/impl/call_op_data.h>     // for CodSendInitMd
@@ -22,6 +23,11 @@ namespace grpc_cb {
 //   which are kept in CallCqTag, because this object is transient.
 class CallOperations GRPC_FINAL {
  public:
+  CallOperations() {
+    static_assert(std::is_pod<grpc_op>::value, "grpc_op is not pod.");
+    std::memset(ops_, 0, sizeof(ops_));
+  }
+
   inline size_t GetOpsNum() const {
     assert(nops_ <= MAX_OPS);
     return nops_;
