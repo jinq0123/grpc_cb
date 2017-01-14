@@ -7,7 +7,7 @@
 
 namespace grpc_cb {
 
-// XXX Use callback instead of reader_sptr. As ClientAsyncWriterCloseCqTag
+// TODO: Use callback instead of reader_sptr. As ClientAsyncWriterCloseCqTag
 
 ClientAsyncSendMsgCqTag::ClientAsyncSendMsgCqTag(
     const ClientAsyncWriterHelperSptr writer_sptr)
