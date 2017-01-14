@@ -1,13 +1,12 @@
+# Overview
 
-#Overview
+C++ callback implementation of gRPC.
 
-This directory contains source code for C++ callback implementation of gRPC.
-
-#Status
+# Status
 
 Not ready
 
-#Todo
+# Todo
 * WriteOptions
 * Add interfaces for protobuf bytes message.
 * DoComplete(bool success) use success parameter.
@@ -15,7 +14,7 @@ Not ready
 * Examples of async server.
 * Examples of async client stream.
 
-#Design
+# Design
 CompletionQueueTag is the element of CompletionQueue.
 On completion, CompletionQueueTag is poped, and DoComplete() is called,
 and then got deleted.
@@ -44,13 +43,15 @@ Async call uses a shared completion queue and do next for all calls.
 * SetOnStart() to get init metadata from reader/writer
 * SetOnRead(on_read)
 * SetOnEnd(on_end) to check status and get trail metadata
-    on_end(status) or 
-    on_end(status, response) for client stream
+
+		on_end(status) or 
+		on_end(status, response) for client stream
+
 * Write()
 * CloseWrite()
 
 
-#Other
+# Other
  
 To generate grpc_cb files:
 ```
