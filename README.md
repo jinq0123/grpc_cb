@@ -1,5 +1,5 @@
 # gRPC_cb
-C++ [gRPC](http://www.grpc.io/) library with callback interface.
+C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc but not on grpc++. It is a replacement of grpc++. Easier to use.
 
 (Not ready)
 
