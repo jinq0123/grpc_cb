@@ -23,7 +23,7 @@ bool DoNextCompletion(CompletionQueue& cq) {
         break;
       }  // case
       case GRPC_QUEUE_SHUTDOWN:
-        return true;
+        return false;
       case GRPC_QUEUE_TIMEOUT:
         assert(false);
         break;
@@ -31,7 +31,7 @@ bool DoNextCompletion(CompletionQueue& cq) {
         assert(false);
         break;
     }  // switch
-    return false;
+    return true;
 }
 
 }  // namespace grpv_cb
