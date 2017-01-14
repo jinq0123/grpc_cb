@@ -37,13 +37,14 @@ inline bool BlockingReadOne(
 
   ClientReaderReadCqTag tag(call_sptr);
   if (!tag.Start()) {
-    status.SetInternalError("End of server stream.");  // Todo: use EndOfStream instead of status.
+    status.SetInternalError("Failed to read server stream.");
     return false;
   }
 
   // tag.Start() has queued the tag. Wait for completion.
   cq_sptr->Pluck(&tag);
-  // Todo: check HasGotMsg()...
+  if (!tag.HasGotMsg())
+      return false;  // Need to set EndOfStream?
   status = tag.GetResultMsg(response);
   return status.ok();
 }

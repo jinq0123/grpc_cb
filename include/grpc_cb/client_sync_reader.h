@@ -23,6 +23,7 @@ class ClientSyncReader GRPC_FINAL {
                       const ::google::protobuf::Message& request);
 
  public:
+  // Return false if error or end of stream.
   inline bool ReadOne(Response* response) const {
     assert(response);
     Data& d = *data_sptr_;
