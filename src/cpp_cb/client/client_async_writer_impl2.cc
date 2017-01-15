@@ -28,8 +28,6 @@ ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
   // Call close handler when Close(CloseHandler)
 }
 
-// XXX recv init md...
-
 ClientAsyncWriterImpl2::~ClientAsyncWriterImpl2() {
   // Have done CallCloseHandler().
 }

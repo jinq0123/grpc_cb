@@ -13,7 +13,7 @@
 
 namespace grpc_cb {
 
-// Send and recv init metadata.
+// Send init metadata.
 // Used in ClientWriter and ClientReaderWriter.
 class ClientSendInitMdCqTag : public CallCqTag {
  public:

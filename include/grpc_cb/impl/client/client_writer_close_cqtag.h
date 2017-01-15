@@ -37,7 +37,7 @@ class ClientWriterCloseCqTag : public CallCqTag {
 
 bool ClientWriterCloseCqTag::Start() {
   CallOperations ops;
-  ops.ClientSendClose();  // XXX separate send and recv
+  ops.ClientSendClose();  // TODO: separate send and recv
   ops.RecvInitMd(cod_recv_init_md_);
   ops.RecvMsg(cod_recv_msg_);
   ops.ClientRecvStatus(cod_client_recv_status_);

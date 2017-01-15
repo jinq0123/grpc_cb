@@ -4,8 +4,9 @@
 #include "client_async_reader_writer_impl2.h"
 
 #include <grpc_cb/channel.h>                           // for MakeSharedCall()
+#include <grpc_cb/impl/client/client_recv_init_md_cqtag.h>  // for ClientRecvInitMdCqTag
+#include <grpc_cb/impl/client/client_send_close_cqtag.h>    // for ClientSendCloseCqTag
 #include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // ClientSendInitMdCqTag
-#include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 
 #include "client_async_reader_helper.h"  // for ClientAsyncReaderHelper
 #include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
@@ -24,11 +25,19 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
   assert(cq_sptr);
   assert(call_sptr_);
 
-  ClientSendInitMdCqTag* tag = new ClientSendInitMdCqTag(call_sptr_);
-  if (tag->Start()) return;
-  delete tag;
-  SetInternalError("Failed to init stream.");
-  // XXX RecvInitMd...
+  ClientSendInitMdCqTag* send_tag = new ClientSendInitMdCqTag(call_sptr_);
+  if (!send_tag->Start()) {
+    delete send_tag;
+    SetInternalError("Failed to send init metadata to init stream.");
+    return;
+  }
+
+  ClientRecvInitMdCqTag* recv_tag = new ClientRecvInitMdCqTag(call_sptr_);
+  if (!recv_tag->Start()) {
+    delete recv_tag;
+    SetInternalError("Failed to receive init metadata to init stream.");
+    return;
+  }
 }
 
 ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
