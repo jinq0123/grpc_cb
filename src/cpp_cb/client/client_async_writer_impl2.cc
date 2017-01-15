@@ -78,12 +78,12 @@ void ClientAsyncWriterImpl2::SendCloseIfNot() {
   if (has_sent_close_) return;
   has_sent_close_ = true;
   auto sptr = shared_from_this();
-  using Tag = ClientAsyncWriterCloseCqTag;
-  Tag* tag = new Tag(call_sptr_, [sptr, tag]() {
-      sptr->OnClosed(*tag);
+  auto* tag = new ClientAsyncWriterCloseCqTag(call_sptr_);
+  tag->SetOnClosed([sptr, tag]() {
+    sptr->OnClosed(*tag);
   });
   if (tag->Start())
-      return;
+    return;
 
   delete tag;
   SetInternalError("Failed to close client stream.");  // Calls CallCloseHandler();

@@ -13,14 +13,16 @@ namespace grpc_cb {
 
 class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
+  explicit ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr);
+
   using OnClosed = std::function<void ()>;
-  ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr,
-      const OnClosed& on_closed);
+  void SetOnClosed(const OnClosed& on_closed) { on_closed_ = on_closed; }
+  // Todo: Change callback in ctr() to SetCb(), because callback need to reference this.
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
-  const OnClosed on_closed_;
+  OnClosed on_closed_;
 };  // class ClientAsyncWriterCloseCqTag
 
 }  // namespace grpc_cb
