@@ -75,7 +75,6 @@ Status ClientSyncWriter<Request>::Close(
 
   Status& status = data.status;
   if (!status.ok()) return status;
-  // XXX recv init md
   ClientWriterCloseCqTag tag(data.call_sptr);
   if (!tag.Start()) {
     status.SetInternalError("Failed to finish client stream.");

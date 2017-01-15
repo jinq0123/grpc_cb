@@ -23,14 +23,12 @@ class ClientSendInitMdCqTag : public CallCqTag {
 
  private:
   CodSendInitMd cod_send_init_md_;
-  // DEL CodRecvInitMd cod_recv_init_md_;
 };  // class ClientSendInitMdCqTag
 
 bool ClientSendInitMdCqTag::Start() {
   CallOperations ops;
   // Todo: Fill send_init_md_array_ -> FillMetadataVector()
   ops.SendInitMd(cod_send_init_md_);
-  // DEL ops.RecvInitMd(cod_recv_init_md_);
   return GetCallSptr()->StartBatch(ops, this);
 }
 

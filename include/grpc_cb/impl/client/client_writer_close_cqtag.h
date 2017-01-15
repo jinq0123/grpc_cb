@@ -30,7 +30,7 @@ class ClientWriterCloseCqTag : public CallCqTag {
   inline Status GetResponse(::google::protobuf::Message& response) GRPC_MUST_USE_RESULT;
 
  private:
-  // XXX recv init md
+  CodRecvInitMd cod_recv_init_md_;
   CodRecvMsg cod_recv_msg_;
   CodClientRecvStatus cod_client_recv_status_;
 };  // class ClientWriterCloseCqTag
@@ -38,6 +38,7 @@ class ClientWriterCloseCqTag : public CallCqTag {
 bool ClientWriterCloseCqTag::Start() {
   CallOperations ops;
   ops.ClientSendClose();  // XXX separate send and recv
+  ops.RecvInitMd(cod_recv_init_md_);
   ops.RecvMsg(cod_recv_msg_);
   ops.ClientRecvStatus(cod_client_recv_status_);
   return GetCallSptr()->StartBatch(ops, this);
@@ -45,8 +46,7 @@ bool ClientWriterCloseCqTag::Start() {
 
 Status ClientWriterCloseCqTag::GetResponse(
     ::google::protobuf::Message& response) {
-  return cod_recv_msg_.GetResultMsg(
-        response, GetCallSptr()->GetMaxMsgSize());
+  return cod_recv_msg_.GetResultMsg(response, GetCallSptr()->GetMaxMsgSize());
 }
 
 }  // namespace grpc_cb
