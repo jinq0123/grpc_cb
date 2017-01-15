@@ -15,7 +15,6 @@ namespace grpc_cb {
 
 // Send and recv init metadata.
 // Used in ClientWriter and ClientReaderWriter.
-// Base of AsyncClientInitMdCqTag.
 class ClientInitMdCqTag : public CallCqTag {
  public:
   inline explicit ClientInitMdCqTag(const CallSptr& call_sptr) : CallCqTag(call_sptr) {}
