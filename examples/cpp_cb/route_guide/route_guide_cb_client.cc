@@ -33,6 +33,7 @@
 
 #include <atomic>
 #include <chrono>
+#include <future>  // for async()
 #include <iostream>
 #include <memory>
 #include <random>
@@ -363,22 +364,27 @@ void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>
 
 void RouteChatAsync(const ChannelSptr& channel) {
   Stub stub(channel);
-  std::atomic_bool bReadDone = false;
+  std::atomic_bool bReaderDone = false;
   ClientAsyncReaderWriter<RouteNote, RouteNote> async_reader_writer(
-      stub.AsyncRouteChat([&bReadDone](const Status& status) {
+      stub.AsyncRouteChat([&bReaderDone](const Status& status) {
         if (!status.ok()) {
           std::cout << "RouteChat rpc failed. " << status.GetDetails()
                     << std::endl;
         }
-        bReadDone = true;
+        bReaderDone = true;
       }));
 
   async_reader_writer.ReadEach(
       [](const RouteNote& note) { PrintServerNote(note); });
 
   AsyncWriteRouteNotes(async_reader_writer);
+  auto f = std::async(std::launch::async, [&stub]() { 
+    stub.BlockingRun();
+  });
 
-  stub.BlockingRun();
+  while (!bReaderDone)
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  stub.Shutdown();  // To break BlockingRun().
 }  // RouteChatAsync()
 
 int main(int argc, char** argv) {
