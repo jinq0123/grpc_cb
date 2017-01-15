@@ -79,20 +79,15 @@ void ClientAsyncReaderWriterImpl2::CloseWriting() {
 }
 
 // Called in dtr().
-// Send close only if reading and writing are both ended.
+// Send close to half-close when writing are ended.
 void ClientAsyncReaderWriterImpl2::SendCloseIfNot() {
-  assert(!reader_sptr_);  // Must be ended.
   assert(!writer_sptr_);  // Must be ended.
   if (!status_.ok()) return;
   if (has_sent_close_) return;
   has_sent_close_ = true;
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
-  if (tag->Start()) {
-    CallOnStatus();
-    return;
-  }
-
+  if (tag->Start()) return;
   delete tag;
   SetInternalError("Failed to close writing.");  // calls on_status_
 }
@@ -120,17 +115,12 @@ void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
   if (!reader_sptr_) return;
   Status r_status(reader_sptr_->GetStatus());  // before reset()
   reader_sptr_.reset();  // Stop circular sharing.
+  assert(IsReadingEnded());
 
   if (!status_.ok()) return;
   status_ = r_status;
-  if (!status_.ok()) {
+  if (!status_.ok() || IsWritingEnded())
     CallOnStatus();
-    return;
-  }
-
-  assert(IsReadingEnded());
-  if (IsWritingEnded())
-    SendCloseIfNot();
 }
 
 void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
@@ -147,8 +137,7 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   }
 
   assert(IsWritingEnded());
-  if (IsReadingEnded())
-    SendCloseIfNot();
+  SendCloseIfNot();
 }
 
 // Set status and callback and reset helpers.
