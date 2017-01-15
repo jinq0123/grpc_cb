@@ -4,7 +4,7 @@
 #include "client_async_reader_writer_impl2.h"
 
 #include <grpc_cb/channel.h>                           // for MakeSharedCall()
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
+#include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // ClientSendInitMdCqTag
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
 
 #include "client_async_reader_helper.h"  // for ClientAsyncReaderHelper
@@ -24,10 +24,11 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
   assert(cq_sptr);
   assert(call_sptr_);
 
-  ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
+  ClientSendInitMdCqTag* tag = new ClientSendInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
   SetInternalError("Failed to init stream.");
+  // XXX RecvInitMd...
 }
 
 ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {

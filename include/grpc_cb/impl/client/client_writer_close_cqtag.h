@@ -30,13 +30,14 @@ class ClientWriterCloseCqTag : public CallCqTag {
   inline Status GetResponse(::google::protobuf::Message& response) GRPC_MUST_USE_RESULT;
 
  private:
+  // XXX recv init md
   CodRecvMsg cod_recv_msg_;
   CodClientRecvStatus cod_client_recv_status_;
 };  // class ClientWriterCloseCqTag
 
 bool ClientWriterCloseCqTag::Start() {
   CallOperations ops;
-  ops.ClientSendClose();
+  ops.ClientSendClose();  // XXX separate send and recv
   ops.RecvMsg(cod_recv_msg_);
   ops.ClientRecvStatus(cod_client_recv_status_);
   return GetCallSptr()->StartBatch(ops, this);

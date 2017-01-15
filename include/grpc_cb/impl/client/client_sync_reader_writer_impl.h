@@ -55,7 +55,7 @@ ClientSyncReaderWriterImpl<Request, Response>::ClientSyncReaderWriterImpl(
   CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
-  ClientInitMdCqTag tag(call_sptr);
+  ClientSendInitMdCqTag tag(call_sptr);
   if (tag.Start()) {
     cq_sptr->Pluck(&tag);
     return;
@@ -98,6 +98,7 @@ void ClientSyncReaderWriterImpl<Request, Response>::CloseWriting() {
 template <class Request, class Response>
 bool ClientSyncReaderWriterImpl<Request, Response>::ReadOne(Response* response) const {
   assert(response);
+  // XXX RecvInitMd if not yet
   Data& d = *data_sptr_;
   return ClientSyncReaderHelper::BlockingReadOne(
       d.call_sptr, d.cq_sptr, *response, d.status);

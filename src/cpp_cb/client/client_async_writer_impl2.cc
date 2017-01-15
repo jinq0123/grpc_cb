@@ -7,7 +7,7 @@
 
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
+#include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // for ClientSendInitMdCqTag
 
 #include "client_async_writer_close_cqtag.h"  // for ClientAsyncWriterCloseCqTag
 #include "client_async_writer_helper.h"       // for ClientAsyncWriterHelper
@@ -21,12 +21,14 @@ ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
       call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
   assert(cq_sptr);
   assert(channel);
-  ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
+  ClientSendInitMdCqTag* tag = new ClientSendInitMdCqTag(call_sptr_);
   if (tag->Start()) return;
   delete tag;
   SetInternalError("Failed to init client stream.");
   // Call close handler when Close(CloseHandler)
 }
+
+// XXX recv init md...
 
 ClientAsyncWriterImpl2::~ClientAsyncWriterImpl2() {
   // Have done CallCloseHandler().
