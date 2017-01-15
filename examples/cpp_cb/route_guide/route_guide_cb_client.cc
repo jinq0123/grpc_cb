@@ -312,7 +312,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
       0, feature_list.size() - 1);
 
   Stub stub(channel);
-  std::thread thd([&stub]() { stub.BlockingRun(); });
+  auto f = std::async(std::launch::async, [&stub]() { stub.BlockingRun(); });
 
   // ClientAsyncWriter<Point, RouteSummary> writer;
   auto writer = stub.AsyncRecordRoute();
@@ -342,7 +342,6 @@ void RecordRouteAsync(const ChannelSptr& channel,
   // Todo: timeout
 
   stub.Shutdown();
-  thd.join();
 }  // RecordRouteAsync()
 
 void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>
