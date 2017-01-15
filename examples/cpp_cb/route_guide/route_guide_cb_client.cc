@@ -38,7 +38,6 @@
 #include <memory>
 #include <random>
 #include <string>
-#include <thread>
 
 #include "helper.h"
 #include "route_guide.grpc_cb.pb.h"
@@ -210,7 +209,7 @@ class RouteGuideClient {
     if (status.ok()) {
       std::cout << "Finished trip with " << stats.point_count() << " points\n"
                 << "Passed " << stats.feature_count() << " features\n"
-                << "Travelled " << stats.distance() << " meters\n"
+                << "Traveled " << stats.distance() << " meters\n"
                 << "It took " << stats.elapsed_time() << " seconds"
                 << std::endl;
     } else {
@@ -224,7 +223,7 @@ class RouteGuideClient {
     ClientSyncReaderWriter<RouteNote, RouteNote> sync_reader_writer(
         stub_->SyncRouteChat());
 
-    std::thread thd([sync_reader_writer]() {
+    auto f = std::async(std::launch::async, [sync_reader_writer]() {
         RunWriteRouteNote(sync_reader_writer);
     });
 
@@ -232,7 +231,7 @@ class RouteGuideClient {
     while (sync_reader_writer.ReadOne(&server_note))
         PrintServerNote(server_note);
 
-    thd.join();
+    f.wait();
     // Todo: Close() should auto close writing.
     Status status = sync_reader_writer.RecvStatus();
     if (!status.ok()) {
@@ -335,7 +334,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
     }
     std::cout << "Finished trip with " << resp.point_count() << " points\n"
               << "Passed " << resp.feature_count() << " features\n"
-              << "Travelled " << resp.distance() << " meters\n"
+              << "Traveled " << resp.distance() << " meters\n"
               << "It took " << resp.elapsed_time() << " seconds" << std::endl;
   });
 
