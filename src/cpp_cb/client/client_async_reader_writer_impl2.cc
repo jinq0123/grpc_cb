@@ -3,7 +3,7 @@
 
 #include "client_async_reader_writer_impl2.h"
 
-#include <grpc_cb/channel.h>                           // for MakeSharedCall()
+#include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_recv_init_md_cqtag.h>  // for ClientRecvInitMdCqTag
 #include <grpc_cb/impl/client/client_send_close_cqtag.h>    // for ClientSendCloseCqTag
 #include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // ClientSendInitMdCqTag
