@@ -6,6 +6,7 @@
 
 #include <atomic>
 #include <cassert>
+#include <mutex>
 
 #include <grpc/grpc.h>
 #include <grpc/support/port_platform.h>  // for GRPC_MUST_USE_RESULT
@@ -18,8 +19,8 @@ struct grpc_call;
 
 namespace grpc_cb {
 
-// Straightforward wrapping of the C call object.
-// Todo: Thread-safe.
+// Wrap of the C call object.
+// Thread-safe.
 // Differ from grpc++:
 //  grpc_call is owned by Call instead of ClientContext/ServerContext.
 class Call GRPC_FINAL {
@@ -37,6 +38,9 @@ class Call GRPC_FINAL {
   static void SetDefaultMaxMsgSize(int size) { default_max_msg_size_ = size; }
 
  private:
+  using Mutex = std::mutex;
+  using Guard = std::lock_guard<Mutex>;
+  Mutex mtx_;  // for grpc_call
   const std::unique_ptr<grpc_call, void (*)(grpc_call*)> c_call_uptr_;  // owned
 
  private:
@@ -55,6 +59,7 @@ Call::Call(grpc_call* c_call)
 
 bool Call::StartBatch(const CallOperations& ops, void* tag) {
   // grpc_call_start_batch() is not thread-safe.
+  Guard g(mtx_);
   grpc_call_error result = grpc_call_start_batch(
     c_call_uptr_.get(), ops.GetOps(), ops.GetOpsNum(), tag, nullptr);
   return GRPC_CALL_OK == result;
