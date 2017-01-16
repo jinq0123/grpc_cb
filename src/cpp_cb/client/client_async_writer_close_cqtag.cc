@@ -8,16 +8,13 @@
 namespace grpc_cb {
 
 ClientAsyncWriterCloseCqTag::ClientAsyncWriterCloseCqTag(
-    const CallSptr& call_sptr, const OnClosed& on_closed)
-    : ClientWriterCloseCqTag(call_sptr),
-      on_closed_(on_closed) {
-  assert(on_closed);
+    const CallSptr& call_sptr) : ClientWriterCloseCqTag(call_sptr) {
 }
 
 void ClientAsyncWriterCloseCqTag::DoComplete(bool success) {
   assert(success);  // Todo
-  assert(on_closed_);
-  on_closed_();
+  if (on_closed_)
+    on_closed_();
 
   // Todo: Add async client writer example.
 }

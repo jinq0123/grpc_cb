@@ -3,9 +3,10 @@
 
 #include "client_async_reader_writer_impl2.h"
 
-#include <grpc_cb/channel.h>                           // for MakeSharedCall()
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>  // ClientInitMdCqTag
-#include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
+#include <grpc_cb/channel.h>  // for MakeSharedCall()
+#include <grpc_cb/impl/client/client_recv_init_md_cqtag.h>  // for ClientRecvInitMdCqTag
+#include <grpc_cb/impl/client/client_send_close_cqtag.h>    // for ClientSendCloseCqTag
+#include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // ClientSendInitMdCqTag
 
 #include "client_async_reader_helper.h"  // for ClientAsyncReaderHelper
 #include "client_async_writer_helper.h"  // for ClientAsyncWriterHelper
@@ -24,10 +25,19 @@ ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
   assert(cq_sptr);
   assert(call_sptr_);
 
-  ClientInitMdCqTag* tag = new ClientInitMdCqTag(call_sptr_);
-  if (tag->Start()) return;
-  delete tag;
-  SetInternalError("Failed to init stream.");
+  ClientSendInitMdCqTag* send_tag = new ClientSendInitMdCqTag(call_sptr_);
+  if (!send_tag->Start()) {
+    delete send_tag;
+    SetInternalError("Failed to send init metadata to init stream.");
+    return;
+  }
+
+  ClientRecvInitMdCqTag* recv_tag = new ClientRecvInitMdCqTag(call_sptr_);
+  if (!recv_tag->Start()) {
+    delete recv_tag;
+    SetInternalError("Failed to receive init metadata to init stream.");
+    return;
+  }
 }
 
 ClientAsyncReaderWriterImpl2::~ClientAsyncReaderWriterImpl2() {
@@ -69,20 +79,15 @@ void ClientAsyncReaderWriterImpl2::CloseWriting() {
 }
 
 // Called in dtr().
-// Send close only if reading and writing are both ended.
+// Send close to half-close when writing are ended.
 void ClientAsyncReaderWriterImpl2::SendCloseIfNot() {
-  assert(!reader_sptr_);  // Must be ended.
   assert(!writer_sptr_);  // Must be ended.
   if (!status_.ok()) return;
   if (has_sent_close_) return;
   has_sent_close_ = true;
 
   ClientSendCloseCqTag* tag = new ClientSendCloseCqTag(call_sptr_);
-  if (tag->Start()) {
-    CallOnStatus();
-    return;
-  }
-
+  if (tag->Start()) return;
   delete tag;
   SetInternalError("Failed to close writing.");  // calls on_status_
 }
@@ -110,17 +115,12 @@ void ClientAsyncReaderWriterImpl2::OnEndOfReading() {
   if (!reader_sptr_) return;
   Status r_status(reader_sptr_->GetStatus());  // before reset()
   reader_sptr_.reset();  // Stop circular sharing.
+  assert(IsReadingEnded());
 
   if (!status_.ok()) return;
   status_ = r_status;
-  if (!status_.ok()) {
+  if (!status_.ok() || IsWritingEnded())
     CallOnStatus();
-    return;
-  }
-
-  assert(IsReadingEnded());
-  if (IsWritingEnded())
-    SendCloseIfNot();
 }
 
 void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
@@ -137,8 +137,7 @@ void ClientAsyncReaderWriterImpl2::OnEndOfWriting() {
   }
 
   assert(IsWritingEnded());
-  if (IsReadingEnded())
-    SendCloseIfNot();
+  SendCloseIfNot();
 }
 
 // Set status and callback and reset helpers.

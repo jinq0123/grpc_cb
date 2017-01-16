@@ -8,7 +8,8 @@
 
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
-#include <grpc_cb/impl/client/client_send_close_cqtag.h>  // for ClientSendCloseCqTag
+#include <grpc_cb/impl/client/client_recv_init_md_cqtag.h>  // for ClientRecvInitMdCqTag
+#include <grpc_cb/impl/client/client_send_close_cqtag.h>    // for ClientSendCloseCqTag
 #include <grpc_cb/impl/client/client_sync_reader_helper.h>  // for ClientSyncReaderHelper
 #include <grpc_cb/impl/client/client_sync_writer_helper.h>  // for ClientSyncWriterHelper
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
@@ -28,7 +29,7 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
   // Writing() is optional which is called in dtr().
   inline void CloseWriting();
 
-  inline bool ReadOne(Response* response) const;
+  inline bool ReadOne(Response* response);
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
     if (!d.status.ok()) return d.status;
@@ -36,11 +37,15 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
   }
 
  private:
+  void RecvInitMdIfNot();
+
+ private:
   // Wrap all data in shared struct pointer to make copy quick.
   using Data = ClientReaderData<Response>;
   using DataSptr = ClientReaderDataSptr<Response>;
   DataSptr data_sptr_;  // Same as reader. Easy to copy.
   bool writing_closed_ = false;  // Is BlockingCloseWriting() called?
+  bool init_md_received_ = false;  // to receive init metadata once
 };  // class ClientSyncReaderWriterImpl<>
 
 // Todo: BlockingGetInitMd();
@@ -55,7 +60,7 @@ ClientSyncReaderWriterImpl<Request, Response>::ClientSyncReaderWriterImpl(
   CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
-  ClientInitMdCqTag tag(call_sptr);
+  ClientSendInitMdCqTag tag(call_sptr);
   if (tag.Start()) {
     cq_sptr->Pluck(&tag);
     return;
@@ -96,11 +101,30 @@ void ClientSyncReaderWriterImpl<Request, Response>::CloseWriting() {
 
 // Todo: same as ClientReader?
 template <class Request, class Response>
-bool ClientSyncReaderWriterImpl<Request, Response>::ReadOne(Response* response) const {
+bool ClientSyncReaderWriterImpl<Request, Response>::ReadOne(Response* response) {
   assert(response);
   Data& d = *data_sptr_;
+  Status& status = d.status;
+  if (!status.ok()) return false;
+  RecvInitMdIfNot();
+  if (!status.ok()) return false;
   return ClientSyncReaderHelper::BlockingReadOne(
-      d.call_sptr, d.cq_sptr, *response, d.status);
+      d.call_sptr, d.cq_sptr, *response, status);
+}
+
+template <class Request, class Response>
+void ClientSyncReaderWriterImpl<Request, Response>::RecvInitMdIfNot() {
+  if (init_md_received_) return;
+  init_md_received_ = true;
+  Status& status = data_sptr_->status;
+  assert(status.ok());
+
+  ClientRecvInitMdCqTag tag(data_sptr_->call_sptr);
+  if (tag.Start()) {
+    data_sptr_->cq_sptr->Pluck(&tag);
+    return;
+  }
+  status.SetInternalError("Failed to receive init metadata.");
 }
 
 }  // namespace grpc_cb

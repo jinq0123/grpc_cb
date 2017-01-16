@@ -111,9 +111,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_call_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\grpc_cb\impl\client\client_init_md_cqtag.h">
-      <Filter>include\grpc_cb\impl\client</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_async_recv_status_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
@@ -129,7 +126,13 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_recv_status_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_recv_init_md_cqtag.h">
+      <Filter>include\grpc_cb\impl\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_send_close_cqtag.h">
+      <Filter>include\grpc_cb\impl\client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_send_init_md_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\client\client_send_msg_cqtag.h">

@@ -108,7 +108,7 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
       const routeguide::Rectangle& rectangle,
       const ListFeatures_Writer& writer) override {
     const std::vector<Feature>& feature_list = feature_list_;
-    std::thread t([&rectangle, writer, &feature_list]() {
+    std::thread t([rectangle, writer, &feature_list]() {
       auto lo = rectangle.lo();
       auto hi = rectangle.hi();
       long left = (std::min)(lo.longitude(), hi.longitude());

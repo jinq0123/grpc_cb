@@ -8,7 +8,7 @@
 
 #include <grpc_cb/channel.h>                           // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>                    // for CallSptr
-#include <grpc_cb/impl/client/client_init_md_cqtag.h>  // for ClientInitMdCqTag
+#include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // for ClientSendInitMdCqTag
 #include <grpc_cb/impl/client/client_sync_writer_helper.h>  // for ClientSyncWriterHelper
 #include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
 #include <grpc_cb/status.h>                                 // for Status
@@ -55,7 +55,7 @@ ClientSyncWriter<Request>::ClientSyncWriter(const ChannelSptr& channel,
   CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
-  ClientInitMdCqTag tag(call_sptr);
+  ClientSendInitMdCqTag tag(call_sptr);
   if (tag.Start()) {
     cq_sptr->Pluck(&tag);
     return;
