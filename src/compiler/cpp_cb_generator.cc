@@ -306,7 +306,7 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
   printer->Print("\n");
   printer->Print("virtual const std::string& GetMethodName(size_t i) const GRPC_OVERRIDE;\n");
   printer->Print("virtual void CallMethod(\n"
-                  "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
+                  "    size_t method_index, grpc_byte_buffer* request_buffer,\n"
                   "    const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;\n\n");
   printer->Outdent();
   printer->Print(" protected:\n");
@@ -828,7 +828,7 @@ static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
                             const grpc::protobuf::ServiceDescriptor *service,
                             std::map<grpc::string, grpc::string> *vars) {
   printer->Print("void Service::CallMethod(\n"
-                 "    size_t method_index, grpc_byte_buffer& request_buffer,\n"
+                 "    size_t method_index, grpc_byte_buffer* request_buffer,\n"
                  "    const ::grpc_cb::CallSptr& call_sptr) {\n"
                  "  assert(method_index < GetMethodCount());\n"
                  "  switch (method_index) {\n");
@@ -844,14 +844,17 @@ static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
 
     if (NoStreaming(method)) {
       printer->Print(*vars,
-                 "      $Method$(request_buffer,\n"
+                 "      assert(request_buffer);\n"
+                 "      $Method$(*request_buffer,\n"
                  "          $Method$_Replier(call_sptr));\n");
     } else if (ServerOnlyStreaming(method)) {
       printer->Print(*vars,
-                 "      $Method$(request_buffer,\n"
+                 "      assert(request_buffer);\n"
+                 "      $Method$(*request_buffer,\n"
                  "          $Method$_Writer(call_sptr));\n");
     } else {
       printer->Print(*vars,
+                 "      assert(!request_buffer);\n"
                  "      $Method$(call_sptr);\n");
     }  // if
 
