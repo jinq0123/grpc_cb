@@ -3,7 +3,7 @@
 
 #include <grpc_cb/impl/server/server_writer_impl.h>
 
-#include <thread>
+#include <thread>  // for yield()
 
 #include <google/protobuf/message.h>
 
