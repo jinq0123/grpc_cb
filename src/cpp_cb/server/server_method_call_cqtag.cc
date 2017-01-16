@@ -28,11 +28,13 @@ ServerMethodCallCqTag::ServerMethodCallCqTag(grpc_server* server,
   assert(method_index < service->GetMethodCount());
 
   memset(&initial_metadata_array_, 0, sizeof(initial_metadata_array_));
-
   grpc_completion_queue* ccq = &cq_sptr->c_cq();
+  grpc_byte_buffer **optional_payload =
+      service->IsMethodClientStreaming(method_index) ?
+      nullptr : &payload_ptr_;
   grpc_server_request_registered_call(server, registered_method, &call_ptr_,
                                       &deadline_, &initial_metadata_array_,
-                                      &payload_ptr_, ccq, ccq, this);
+                                      optional_payload, ccq, ccq, this);
 }
 
 ServerMethodCallCqTag::~ServerMethodCallCqTag() {
@@ -45,10 +47,10 @@ void ServerMethodCallCqTag::DoComplete(bool success)
 
   // Deal payload.
   assert(service_);
-  assert(payload_ptr_);
+  // assert(payload_ptr_);
   assert(call_ptr_);
   CallSptr call_sptr(new Call(call_ptr_));  // destroys grpc_call
-  service_->CallMethod(method_index_, *payload_ptr_, call_sptr);
+  service_->CallMethod(method_index_, payload_ptr_, call_sptr);
 
   // Request the next method call.
   // Calls grpc_server_request_registered_call() in ctr().

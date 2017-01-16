@@ -156,22 +156,26 @@ const std::string& Service::GetMethodName(size_t method_index) const {
 }
 
 void Service::CallMethod(
-    size_t method_index, grpc_byte_buffer& request_buffer,
+    size_t method_index, grpc_byte_buffer* request_buffer,
     const ::grpc_cb::CallSptr& call_sptr) {
   assert(method_index < GetMethodCount());
   switch (method_index) {
     case 0:
-      GetFeature(request_buffer,
+      assert(request_buffer);
+      GetFeature(*request_buffer,
           GetFeature_Replier(call_sptr));
       return;
     case 1:
-      ListFeatures(request_buffer,
+      assert(request_buffer);
+      ListFeatures(*request_buffer,
           ListFeatures_Writer(call_sptr));
       return;
     case 2:
+      assert(!request_buffer);
       RecordRoute(call_sptr);
       return;
     case 3:
+      assert(!request_buffer);
       RouteChat(call_sptr);
       return;
   }  // switch

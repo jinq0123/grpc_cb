@@ -29,6 +29,14 @@ Server::Server()
 
 Server::~Server() { Shutdown(); }
 
+static grpc_server_register_method_payload_handling GetMethodPayloadHandling(
+    Service& service, size_t method_index) {
+  assert(method_index < service.GetMethodCount());
+  if (service.IsMethodClientStreaming(method_index))
+    return GRPC_SRM_PAYLOAD_NONE;
+  return GRPC_SRM_PAYLOAD_READ_INITIAL_BYTE_BUFFER;
+}
+
 void Server::RegisterService(Service& service) {
   RegisteredService& rs = service_map_[service.GetFullName()];
   rs.service = &service;
@@ -39,7 +47,7 @@ void Server::RegisterService(Service& service) {
     const std::string& name = service.GetMethodName(i);
     void* registered_method = grpc_server_register_method(
         c_server_uptr_.get(), name.c_str(), nullptr/* TODO: host*/,
-        service.GetMethodPayloadHandling(i), 0);
+        GetMethodPayloadHandling(service, i), 0);
     registered_methods.push_back(registered_method);  // maybe null
   }
 }

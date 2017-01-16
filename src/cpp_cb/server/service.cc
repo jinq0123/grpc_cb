@@ -15,17 +15,13 @@ size_t Service::GetMethodCount() const {
   return GetDescriptor().method_count();
 }
 
-grpc_server_register_method_payload_handling
-Service::GetMethodPayloadHandling(size_t method_index) const
-{
+bool Service::IsMethodClientStreaming(size_t method_index) const {
   assert(method_index < GetMethodCount());
   const ::google::protobuf::ServiceDescriptor& svc_desc = GetDescriptor();
   const ::google::protobuf::MethodDescriptor* method_desc =
     svc_desc.method(method_index);
   assert(method_desc);
-  if (method_desc->client_streaming())
-    return GRPC_SRM_PAYLOAD_NONE;
-  return GRPC_SRM_PAYLOAD_READ_INITIAL_BYTE_BUFFER;
+  return method_desc->client_streaming();
 }
 
 }  // namespace grpc_cb
