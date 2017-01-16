@@ -36,10 +36,6 @@ class Call GRPC_FINAL {
  public:
   static void SetDefaultMaxMsgSize(int size) { default_max_msg_size_ = size; }
 
- public:
-  // Todo: return reference? None-null? Hide it?
-  inline grpc_call* c_call() const { return c_call_uptr_.get(); }
-
  private:
   const std::unique_ptr<grpc_call, void (*)(grpc_call*)> c_call_uptr_;  // owned
 
@@ -60,7 +56,7 @@ Call::Call(grpc_call* c_call)
 bool Call::StartBatch(const CallOperations& ops, void* tag) {
   // grpc_call_start_batch() is not thread-safe.
   grpc_call_error result = grpc_call_start_batch(
-    c_call(), ops.GetOps(), ops.GetOpsNum(), tag, nullptr);
+    c_call_uptr_.get(), ops.GetOps(), ops.GetOpsNum(), tag, nullptr);
   return GRPC_CALL_OK == result;
 }
 
