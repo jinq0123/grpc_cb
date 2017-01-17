@@ -260,21 +260,22 @@ Service::RecordRoute(
   return nullptr;
 }
 
-void Service::RecordRoute_OnStart(
-    const RecordRoute_Replier& replier) {
-  (void)replier;
-}
-
-void Service::RecordRoute_OnMsg(
-    const ::routeguide::Point& msg,
-    const RecordRoute_Replier& replier) {
-  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
-}
-
-void Service::RecordRoute_OnEnd(
-    const RecordRoute_Replier& replier) {
-  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
-}
+// DEL
+//void Service::RecordRoute_OnStart(
+//    const RecordRoute_Replier& replier) {
+//  (void)replier;
+//}
+//
+//void Service::RecordRoute_OnMsg(
+//    const ::routeguide::Point& msg,
+//    const RecordRoute_Replier& replier) {
+//  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
+//}
+//
+//void Service::RecordRoute_OnEnd(
+//    const RecordRoute_Replier& replier) {
+//  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
+//}
 
 void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
@@ -311,21 +312,22 @@ Service::RouteChat(
   return nullptr;
 }
 
-void Service::RouteChat_OnStart(
-    const RouteChat_Writer& writer) {
-  (void)writer;
-}
-
-void Service::RouteChat_OnMsg(
-    const ::routeguide::RouteNote& msg,
-    const RouteChat_Writer& writer) {
-  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
-}
-
-void Service::RouteChat_OnEnd(
-    const RouteChat_Writer& writer) {
-  (void)writer;
-}
+// DEL
+//void Service::RouteChat_OnStart(
+//    const RouteChat_Writer& writer) {
+//  (void)writer;
+//}
+//
+//void Service::RouteChat_OnMsg(
+//    const ::routeguide::RouteNote& msg,
+//    const RouteChat_Writer& writer) {
+//  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
+//}
+//
+//void Service::RouteChat_OnEnd(
+//    const RouteChat_Writer& writer) {
+//  (void)writer;
+//}
 
 }  // namespace RouteGuide
 

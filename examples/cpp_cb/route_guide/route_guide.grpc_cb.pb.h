@@ -105,39 +105,46 @@ class Service : public ::grpc_cb::Service {
       const ListFeatures_Writer& writer);
 
   // XXX private it
+ private:
   void RecordRoute(const ::grpc_cb::CallSptr& call_sptr);
+ public:
   using RecordRoute_Replier = ::grpc_cb::ServerReplier<
       ::routeguide::RouteSummary>;
   using RecordRoute_Reader = ::grpc_cb::ServerReaderForClientOnlyStreaming<
       ::routeguide::Point, ::routeguide::RouteSummary>;
   using RecordRoute_ReaderSptr = std::shared_ptr<RecordRoute_Reader>;
+ protected:
   RecordRoute_ReaderSptr RecordRoute(
       const RecordRoute_Replier& replier);
 
-  virtual void RecordRoute_OnStart(
-      const RecordRoute_Replier& replier);
-  virtual void RecordRoute_OnMsg(
-      const ::routeguide::Point& point,
-      const RecordRoute_Replier& replier);
-  virtual void RecordRoute_OnEnd(
-      const RecordRoute_Replier& replier);
+  //virtual void RecordRoute_OnStart(
+  //    const RecordRoute_Replier& replier);
+  //virtual void RecordRoute_OnMsg(
+  //    const ::routeguide::Point& point,
+  //    const RecordRoute_Replier& replier);
+  //virtual void RecordRoute_OnEnd(
+  //    const RecordRoute_Replier& replier);
 
+ private:
   void RouteChat(const ::grpc_cb::CallSptr& call_sptr);
+ public:
   using RouteChat_Writer = ::grpc_cb::ServerWriter<
       ::routeguide::RouteNote>;
   using RouteChat_Reader = ::grpc_cb::ServerReaderForBidiStreaming<
       ::routeguide::RouteNote, ::routeguide::RouteNote>;
   using RouteChat_ReaderSptr = std::shared_ptr<RouteChat_Reader>;
+ protected:
   RouteChat_ReaderSptr RouteChat(
       const RouteChat_Writer& writer);
 
-  virtual void RouteChat_OnStart(
-      const RouteChat_Writer& writer);
-  virtual void RouteChat_OnMsg(
-      const ::routeguide::RouteNote& msg,
-      const RouteChat_Writer& writer);
-  virtual void RouteChat_OnEnd(
-      const RouteChat_Writer& writer);
+  // DEL
+  //virtual void RouteChat_OnStart(
+  //    const RouteChat_Writer& writer);
+  //virtual void RouteChat_OnMsg(
+  //    const ::routeguide::RouteNote& msg,
+  //    const RouteChat_Writer& writer);
+  //virtual void RouteChat_OnEnd(
+  //    const RouteChat_Writer& writer);
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()

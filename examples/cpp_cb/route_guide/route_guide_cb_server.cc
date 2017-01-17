@@ -55,6 +55,8 @@ using routeguide::RouteSummary;
 using routeguide::RouteNote;
 using std::chrono::system_clock;
 
+using FeatureVector = std::vector<Feature>;
+
 float ConvertToRadians(float num) {
   return float(num * 3.1415926 / 180);
 }
@@ -79,8 +81,8 @@ float GetDistance(const Point& start, const Point& end) {
 }
 
 std::string GetFeatureName(const Point& point,
-                           const std::vector<Feature>& feature_list) {
-  for (const Feature& f : feature_list) {
+                           const FeatureVector& feature_vector) {
+  for (const Feature& f : feature_vector) {
     if (f.location().latitude() == point.latitude() &&
         f.location().longitude() == point.longitude()) {
       return f.name();
@@ -89,58 +91,17 @@ std::string GetFeatureName(const Point& point,
   return "";
 }
 
-class RouteGuideImpl final : public routeguide::RouteGuide::Service {
+
+class RecordRoute_ReaderImpl
+    : public routeguide::RouteGuide::Service::RecordRoute_Reader {
  public:
-  explicit RouteGuideImpl(const std::string& db) {
-    routeguide::ParseDb(db, &feature_list_);
-  }
+  explicit RecordRoute_ReaderImpl(const FeatureVector& feature_vec)
+      : feature_vec_(feature_vec) {}
 
-  void GetFeature(
-      const Point& point,
-      ::grpc_cb::ServerReplier<Feature> replier) override {
-    Feature feature;
-    feature.set_name(GetFeatureName(point, feature_list_));
-    feature.mutable_location()->CopyFrom(point);
-    replier.Reply(feature);
-  }
-
-  void ListFeatures(
-      const routeguide::Rectangle& rectangle,
-      const ListFeatures_Writer& writer) override {
-    const std::vector<Feature>& feature_list = feature_list_;
-    std::thread t([rectangle, writer, &feature_list]() {
-      auto lo = rectangle.lo();
-      auto hi = rectangle.hi();
-      long left = (std::min)(lo.longitude(), hi.longitude());
-      long right = (std::max)(lo.longitude(), hi.longitude());
-      long top = (std::max)(lo.latitude(), hi.latitude());
-      long bottom = (std::min)(lo.latitude(), hi.latitude());
-      for (const Feature& f : feature_list) {
-        if (f.location().longitude() >= left &&
-            f.location().longitude() <= right &&
-            f.location().latitude() >= bottom &&
-            f.location().latitude() <= top) {
-          if (!writer.Write(f)) break;
-          // std::this_thread::sleep_for(std::chrono::seconds(1));
-        }
-      }
-      // Todo: auto writer.Close(Status::OK);
-    });  // thread t
-    t.detach();
-  }
-
-  // Todo: Need session id.
-  void RecordRoute_OnStart(
-      const RecordRoute_Replier& replier) override {
-    record_route_result_.reset(new RecordRouteResult);
-  }
-
-  void RecordRoute_OnMsg(const Point& point,
-      const RecordRoute_Replier& replier) override {
-    assert(record_route_result_);
-    RecordRouteResult& r = *record_route_result_;
+  void OnMsg(const Point& point) override {
+    RecordRouteResult& r = record_route_result_;
     r.point_count++;
-    if (!GetFeatureName(point, feature_list_).empty()) {
+    if (!GetFeatureName(point, feature_vec_).empty()) {
       r.feature_count++;
     }
     if (r.point_count != 1) {
@@ -149,11 +110,10 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
     r.previous = point;
   }
 
-  void RecordRoute_OnEnd(const RecordRoute_Replier& replier) override {
-    assert(record_route_result_);
-    const RecordRouteResult r = *record_route_result_;
-    record_route_result_.reset();
-
+  void OnEnd() override {
+    // Make a copy.
+    const RecordRouteResult r = record_route_result_;
+    Replier replier = GetReplier();
     std::thread t([r, replier]() {
       system_clock::time_point end_time = system_clock::now();
       RouteSummary summary;
@@ -170,32 +130,8 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
     });
     t.detach();
   }
-
-  void RouteChat_OnStart(const RouteChat_Writer& writer) override {
-    std::cout << "RouteChat_OnStart()" << std::endl;
-  }
-
-  void RouteChat_OnMsg(const RouteNote& msg,
-      const RouteChat_Writer& writer) override {
-    for (const RouteNote& n : received_notes_) {
-      if (n.location().latitude() == msg.location().latitude() &&
-          n.location().longitude() == msg.location().longitude()) {
-        writer.Write(n);
-      }  // if
-    }  // for
-    received_notes_.push_back(msg);
-  }
-
-  void RouteChat_OnEnd(const RouteChat_Writer& writer) override {
-    std::thread t([writer]() {
-      std::this_thread::sleep_for(std::chrono::seconds(1));
-      writer.Write(RouteNote());
-    });
-    t.detach();
-  }
-
  private:
-  std::vector<Feature> feature_list_;
+  const FeatureVector& feature_vec_;
 
   struct RecordRouteResult {
       int point_count = 0;
@@ -204,9 +140,86 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
       Point previous;
       system_clock::time_point start_time = system_clock::now();
   };
-  // Todo: Need separate sessions.
-  std::unique_ptr<RecordRouteResult> record_route_result_;
-  std::vector<RouteNote> received_notes_;
+
+  RecordRouteResult record_route_result_;
+};  // class RecordRoute_ReaderImpl
+
+class RouteGuideImpl final : public routeguide::RouteGuide::Service {
+ public:
+  explicit RouteGuideImpl(const std::string& db) {
+    routeguide::ParseDb(db, &feature_vector_);
+  }
+
+  void GetFeature(
+      const Point& point,
+      ::grpc_cb::ServerReplier<Feature> replier) override {
+    Feature feature;
+    feature.set_name(GetFeatureName(point, feature_vector_));
+    feature.mutable_location()->CopyFrom(point);
+    replier.Reply(feature);
+  }
+
+  void ListFeatures(
+      const routeguide::Rectangle& rectangle,
+      const ListFeatures_Writer& writer) override {
+    const FeatureVector& feature_vector = feature_vector_;
+    std::thread t([rectangle, writer, &feature_vector]() {
+      auto lo = rectangle.lo();
+      auto hi = rectangle.hi();
+      long left = (std::min)(lo.longitude(), hi.longitude());
+      long right = (std::max)(lo.longitude(), hi.longitude());
+      long top = (std::max)(lo.latitude(), hi.latitude());
+      long bottom = (std::min)(lo.latitude(), hi.latitude());
+      for (const Feature& f : feature_vector) {
+        if (f.location().longitude() >= left &&
+            f.location().longitude() <= right &&
+            f.location().latitude() >= bottom &&
+            f.location().latitude() <= top) {
+          if (!writer.Write(f)) break;
+          // std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
+      }
+      // Todo: auto writer.Close(Status::OK);
+    });  // thread t
+    t.detach();
+  }
+
+  // Todo: Need session id.
+  RecordRoute_ReaderSptr RecordRoute(const RecordRoute_Replier& replier) {
+    return std::make_shared<RecordRoute_ReaderImpl>(feature_vector_);
+  }  // RecordRoute()
+
+  RouteChat_ReaderSptr RouteChat(const RouteChat_Writer& writer) {
+    class Reader : public RouteChat_Reader {
+     public:
+      void OnMsg(const RouteNote& msg) override {
+        for (const RouteNote& n : received_notes_) {
+          if (n.location().latitude() == msg.location().latitude() &&
+              n.location().longitude() == msg.location().longitude()) {
+            GetWriter().Write(n);
+          }  // if
+        }  // for
+        received_notes_.push_back(msg);
+      }
+    
+      void OnEnd() override {
+        RouteChat_Writer writer = GetWriter();
+        std::thread t([writer]() {
+          std::this_thread::sleep_for(std::chrono::seconds(1));
+          writer.Write(RouteNote());
+        });
+        t.detach();
+      }
+
+     private:
+       std::vector<RouteNote> received_notes_;
+    };  // class Reader
+
+    return std::make_shared<RouteChat_Reader>();
+  }
+
+ private:
+  FeatureVector feature_vector_;
 };
 
 void RunServer(const std::string& db_path) {
