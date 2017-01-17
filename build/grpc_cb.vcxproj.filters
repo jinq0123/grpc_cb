@@ -198,6 +198,12 @@
     <ClInclude Include="..\include\grpc_cb\server_reader.h">
       <Filter>include\grpc_cb</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\server_reader_for_bidi_streaming.h">
+      <Filter>include\grpc_cb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\server_reader_for_client_only_streaming.h">
+      <Filter>include\grpc_cb</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\server_replier.h">
       <Filter>include\grpc_cb</Filter>
     </ClInclude>

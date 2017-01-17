@@ -13,6 +13,8 @@
 #include <grpc_cb/client_sync_writer.h>
 #include <grpc_cb/server.h>           // for Server
 #include <grpc_cb/server_reader.h>    // for ServerReader<>
+#include <grpc_cb/server_reader_for_bidi_streaming.h>
+#include <grpc_cb/server_reader_for_client_only_streaming.h>
 #include <grpc_cb/server_replier.h>   // for ServerReplier<>
 #include <grpc_cb/server_writer.h>    // for ServerWriter<>
 #include <grpc_cb/service.h>          // for Service
