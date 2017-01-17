@@ -34,13 +34,10 @@ class Channel : public GrpcLibrary,
     const std::string& method,
     CompletionQueue& cq) const;
 
- private:
-  Channel(const std::string& host, grpc_channel* c_channel);
-
  private: 
   const std::string host_;
-  // Todo: Use unique ptr like Call.
-  grpc_channel* const c_channel_;  // owned
+  const std::unique_ptr<grpc_channel, void (*)(grpc_channel*)>
+      c_channel_uptr_;  // owned
 };
 
 }  // namespace grpc_cb

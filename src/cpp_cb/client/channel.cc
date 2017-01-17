@@ -13,28 +13,22 @@
 namespace grpc_cb {
 
 Channel::Channel(const std::string& target)
-    : c_channel_(grpc_insecure_channel_create(
-        target.c_str(), nullptr, nullptr)) {
-  if (!c_channel_) {
+    : c_channel_uptr_(grpc_insecure_channel_create(
+        target.c_str(), nullptr, nullptr), grpc_channel_destroy) {
+  if (!c_channel_uptr_) {
     throw("Can not create channel.");
   }
 }
 
-Channel::Channel(const std::string& host, grpc_channel* channel)
-    : host_(host), c_channel_(channel) {
-  assert(channel);
-}
-
 Channel::~Channel() {
-  assert(c_channel_);
-  grpc_channel_destroy(c_channel_);
+  assert(c_channel_uptr_);
 }
 
 CallSptr Channel::MakeSharedCall(
     const std::string& method,
     grpc_completion_queue& c_cq) const {
   grpc_call* c_call = grpc_channel_create_call(
-    c_channel_, nullptr, GRPC_PROPAGATE_DEFAULTS, &c_cq, method.c_str(), nullptr,
+    c_channel_uptr_.get(), nullptr, GRPC_PROPAGATE_DEFAULTS, &c_cq, method.c_str(), nullptr,
     gpr_inf_future(GPR_CLOCK_REALTIME), nullptr);
   return CallSptr(new Call(c_call));  // shared_ptr
 }
