@@ -41,27 +41,31 @@
 namespace grpc_cb {
 
 CompletionQueue::CompletionQueue()
-    : c_cq_(grpc_completion_queue_create(nullptr)) {
-  assert(c_cq_);
+    : c_cq_uptr_(grpc_completion_queue_create(nullptr),
+                 grpc_completion_queue_destroy) {
+  assert(c_cq_uptr_);
 }
 
-CompletionQueue::CompletionQueue(grpc_completion_queue* take) : c_cq_(take) {
-  assert(c_cq_);
+CompletionQueue::CompletionQueue(grpc_completion_queue* take)
+    : c_cq_uptr_(take, grpc_completion_queue_destroy) {
+  assert(c_cq_uptr_);
 }
 
 CompletionQueue::~CompletionQueue() {
-  assert(c_cq_);
-  grpc_completion_queue_destroy(c_cq_);
+  assert(c_cq_uptr_);
 }
 
-void CompletionQueue::Shutdown() { grpc_completion_queue_shutdown(c_cq_); }
+void CompletionQueue::Shutdown() {
+  assert(c_cq_uptr_);
+  grpc_completion_queue_shutdown(c_cq_uptr_.get());
+}
 
 grpc_event CompletionQueue::NextInternal(gpr_timespec deadline) {
-  return grpc_completion_queue_next(c_cq_, deadline, nullptr);
+  return grpc_completion_queue_next(c_cq_uptr_.get(), deadline, nullptr);
 }
 
 grpc_event CompletionQueue::PluckInternal(void* tag, gpr_timespec deadline) {
-  return grpc_completion_queue_pluck(c_cq_, tag, deadline, nullptr);
+  return grpc_completion_queue_pluck(c_cq_uptr_.get(), tag, deadline, nullptr);
 }
 
 }  // namespace grpc_cb

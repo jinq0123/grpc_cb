@@ -110,8 +110,8 @@ class CompletionQueue : public GrpcLibrary {
   /// Returns the underlying \a grpc_completion_queue
   /// instance.
   grpc_completion_queue& c_cq() const {
-    assert(c_cq_);
-    return *c_cq_;
+    assert(c_cq_uptr_);
+    return *c_cq_uptr_;
   }
 
  private:
@@ -119,8 +119,8 @@ class CompletionQueue : public GrpcLibrary {
   grpc_event PluckInternal(void* tag, gpr_timespec deadline);
 
  private:
-     // Todo: Use unique_ptr like Call.
-  grpc_completion_queue* const c_cq_;  // owned
+  const std::unique_ptr<grpc_completion_queue, void (*)(grpc_completion_queue*)>
+      c_cq_uptr_;  // owned
 };
 
 }  // namespace grpc_cb
