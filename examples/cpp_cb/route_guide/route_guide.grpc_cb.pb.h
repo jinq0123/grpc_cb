@@ -85,21 +85,26 @@ class Service : public ::grpc_cb::Service {
       size_t method_index, grpc_byte_buffer* request_buffer,
       const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;
 
- protected:
+ public:
   using GetFeature_Replier = ::grpc_cb::ServerReplier<
       ::routeguide::Feature>;
+ private:
   void GetFeature(
       grpc_byte_buffer& request_buffer,
       const GetFeature_Replier& replier);
+ public:
   // Todo: virtual void GetFeature(const std::string& request_buffer, replier);
   virtual void GetFeature(
       const ::routeguide::Point& request,
       GetFeature_Replier replier);
 
+ public:
   using ListFeatures_Writer = ::grpc_cb::ServerWriter<
       ::routeguide::Feature>;
+ private:
   void ListFeatures(grpc_byte_buffer& request_buffer,
       const ListFeatures_Writer& writer);
+ protected:
   virtual void ListFeatures(
       const ::routeguide::Rectangle& request,
       const ListFeatures_Writer& writer);
@@ -117,14 +122,6 @@ class Service : public ::grpc_cb::Service {
   virtual RecordRoute_ReaderSptr RecordRoute(
       const RecordRoute_Replier& replier);
 
-  //virtual void RecordRoute_OnStart(
-  //    const RecordRoute_Replier& replier);
-  //virtual void RecordRoute_OnMsg(
-  //    const ::routeguide::Point& point,
-  //    const RecordRoute_Replier& replier);
-  //virtual void RecordRoute_OnEnd(
-  //    const RecordRoute_Replier& replier);
-
  private:
   void RouteChat(const ::grpc_cb::CallSptr& call_sptr);
  public:
@@ -136,15 +133,6 @@ class Service : public ::grpc_cb::Service {
  protected:
   virtual RouteChat_ReaderSptr RouteChat(
       const RouteChat_Writer& writer);
-
-  // DEL
-  //virtual void RouteChat_OnStart(
-  //    const RouteChat_Writer& writer);
-  //virtual void RouteChat_OnMsg(
-  //    const ::routeguide::RouteNote& msg,
-  //    const RouteChat_Writer& writer);
-  //virtual void RouteChat_OnEnd(
-  //    const RouteChat_Writer& writer);
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()

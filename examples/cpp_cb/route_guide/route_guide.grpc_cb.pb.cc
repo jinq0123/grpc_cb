@@ -7,9 +7,6 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-#include <grpc_cb/impl/call.h>                            // for Call
-#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
-#include <grpc_cb/impl/call_operations.h>                 // for CallOperations
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
 #include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue
@@ -229,25 +226,16 @@ void Service::ListFeatures(
 
 void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
-  using CqTag = ::grpc_cb::ServerReaderCqTag<
-      ::routeguide::Point>;
   RecordRoute_Replier replier(call_sptr);
   RecordRoute_ReaderSptr reader_sptr = RecordRoute(replier);
   if (!reader_sptr) return;
   reader_sptr->SetReplier(replier);
-  //CqTag::MsgCallback on_msg =
-  //  [this](const ::routeguide::Point& point,
-  //         const RecordRoute_Replier& replier) {
-  //    RecordRoute_OnMsg(point, replier);
-  //  };
-  //CqTag::EndCallback on_end =
-  //  [this](const RecordRoute_Replier& replier) {
-  //    RecordRoute_OnEnd(replier);
-  //  };
-  //CqTag::DataSptr data_sptr(new CqTag::Data{replier, on_msg, on_end});
+
+  using CqTag = ::grpc_cb::ServerReaderCqTag<
+      ::routeguide::Point>;
   CqTag* tag = new CqTag(call_sptr, reader_sptr);
   if (tag->Start()) return;
-  // RecordRoute_OnStart(replier);
+
   delete tag;
   reader_sptr->OnError(::grpc_cb::Status::InternalError(
       "Failed to init server reader."));
@@ -260,46 +248,18 @@ Service::RecordRoute(
   return nullptr;
 }
 
-// DEL
-//void Service::RecordRoute_OnStart(
-//    const RecordRoute_Replier& replier) {
-//  (void)replier;
-//}
-//
-//void Service::RecordRoute_OnMsg(
-//    const ::routeguide::Point& msg,
-//    const RecordRoute_Replier& replier) {
-//  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
-//}
-//
-//void Service::RecordRoute_OnEnd(
-//    const RecordRoute_Replier& replier) {
-//  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
-//}
-
 void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
-  using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<
-      ::routeguide::RouteNote>;
   RouteChat_Writer writer(call_sptr);
   RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
   if (!reader_sptr) return;
   reader_sptr->SetWriter(writer);
-  // DEL
-  //RwCqTag::MsgCallback on_msg =
-  //  [this](const ::routeguide::RouteNote& msg,
-  //         const RouteChat_Writer& writer) {
-  //    RouteChat_OnMsg(msg, writer);
-  //  };
-  //RwCqTag::EndCallback on_end =
-  //  [this](const RouteChat_Writer& writer) {
-  //    RouteChat_OnEnd(writer);
-  //  };
-  //RwCqTag::DataSptr data_sptr(new RwCqTag::Data{writer, on_msg, on_end});
 
+  using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<
+      ::routeguide::RouteNote>;
   RwCqTag* tag = new RwCqTag(call_sptr, reader_sptr);
   if (tag->Start()) return;
-  // RouteChat_OnStart(writer);
+
   delete tag;
   reader_sptr->OnError(::grpc_cb::Status::InternalError(
       "Failed to init server stream."));
@@ -311,23 +271,6 @@ Service::RouteChat(
   writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
   return nullptr;
 }
-
-// DEL
-//void Service::RouteChat_OnStart(
-//    const RouteChat_Writer& writer) {
-//  (void)writer;
-//}
-//
-//void Service::RouteChat_OnMsg(
-//    const ::routeguide::RouteNote& msg,
-//    const RouteChat_Writer& writer) {
-//  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
-//}
-//
-//void Service::RouteChat_OnEnd(
-//    const RouteChat_Writer& writer) {
-//  (void)writer;
-//}
 
 }  // namespace RouteGuide
 
