@@ -17,73 +17,59 @@
 
 namespace grpc_cb {
 
-template <class Request, class Response>
+template <class MsgType>
 class ServerReaderCqTag GRPC_FINAL : public CallCqTag {
  public:
-  using Replier = ServerReplier<Response>;
-  using MsgCallback = std::function<void (const Request&, const Replier&)>;
-  using EndCallback = std::function<void (const Replier&)>;
-  struct Data {
-    Replier replier;
-    MsgCallback on_msg;
-    EndCallback on_end;
-  };
-  using DataSptr = std::shared_ptr<Data>;
-
- public:
+  using Reader = ServerReader<MsgType>;
+  using ReaderSptr = std::shared_ptr<Reader>;
   inline ServerReaderCqTag(const CallSptr& call_sptr,
-                           const DataSptr& data_sptr);
+                           const ReaderSptr& reader_sptr);
+ public:
   inline bool Start() GRPC_MUST_USE_RESULT;
-
  public:
   inline void DoComplete(bool success) GRPC_OVERRIDE;
-
  private:
   CodRecvMsg cod_recv_msg_;
-  DataSptr data_sptr_;
+  ReaderSptr reader_sptr_;  // may be null
 };  // class ServerReaderCqTag
 
-template <class Request, class Response>
-ServerReaderCqTag<Request, Response>::ServerReaderCqTag(
-    const CallSptr& call_sptr, const DataSptr& data_sptr)
-    : CallCqTag(call_sptr), data_sptr_(data_sptr) {
+template <class MsgType>
+ServerReaderCqTag<MsgType>::ServerReaderCqTag(
+    const CallSptr& call_sptr, const ReaderSptr& reader_sptr)
+    : CallCqTag(call_sptr), reader_sptr_(reader_sptr) {
   assert(call_sptr);
-  assert(data_sptr);
-  assert(data_sptr->on_msg);
-  assert(data_sptr->on_end);
+  assert(reader_sptr);
 }
 
-template <class Request, class Response>
-bool ServerReaderCqTag<Request, Response>::Start() {
+template <class MsgType>
+bool ServerReaderCqTag<MsgType>::Start() {
   CallOperations ops;
   ops.RecvMsg(cod_recv_msg_);
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-template <class Request, class Response>
-void ServerReaderCqTag<Request, Response>::DoComplete(bool success) {
+template <class MsgType>
+void ServerReaderCqTag<MsgType>::DoComplete(bool success) {
   assert(success);
   if (!cod_recv_msg_.HasGotMsg()) {
-    data_sptr_->on_end(data_sptr_->replier);
+    reader_sptr_->OnEnd();
     return;
   }
 
-  Request request;
+  MsgType msg;
   const CallSptr& call_sptr = GetCallSptr();
   Status status = cod_recv_msg_.GetResultMsg(
-      request, call_sptr->GetMaxMsgSize());
+      msg, call_sptr->GetMaxMsgSize());
   if (!status.ok()) {
-      data_sptr_->replier.ReplyError(status);
-      return;
+    reader_sptr_->OnError(status);
+    return;
   }
+  reader_sptr_->OnMsg(msg);
 
-  data_sptr_->on_msg(request, data_sptr_->replier);
-
-  auto* tag = new ServerReaderCqTag(call_sptr, data_sptr_);
+  auto* tag = new ServerReaderCqTag(call_sptr, reader_sptr_);
   if (tag->Start()) return;
-
   delete tag;
-  data_sptr_->replier.ReplyError(Status::InternalError(
+  reader_sptr_->OnError(Status::InternalError(
     "Failed to read client stream."));
 }
 

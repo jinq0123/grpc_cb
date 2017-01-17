@@ -16,6 +16,7 @@ class Status;
 // ServerReplier is for unary rpc call and client stream rpc.
 // ServerWriter is for server stream rpc.
 // No ServerReader. Reading is done asynchronously and internally.
+// XXX ServerReader is provided by user.
 
 // Copyable.
 // Safe to delete before completion.

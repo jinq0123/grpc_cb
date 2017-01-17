@@ -104,9 +104,16 @@ class Service : public ::grpc_cb::Service {
       const ::routeguide::Rectangle& request,
       const ListFeatures_Writer& writer);
 
+  // XXX private it
   void RecordRoute(const ::grpc_cb::CallSptr& call_sptr);
   using RecordRoute_Replier = ::grpc_cb::ServerReplier<
       ::routeguide::RouteSummary>;
+  using RecordRoute_Reader = ::grpc_cb::ServerReader<
+      ::routeguide::Point>;
+  using RecordRoute_ReaderSptr = std::shared_ptr<RecordRoute_Reader>;
+  RecordRoute_ReaderSptr RecordRoute(
+      const RecordRoute_Replier& replier);
+
   virtual void RecordRoute_OnStart(
       const RecordRoute_Replier& replier);
   virtual void RecordRoute_OnMsg(

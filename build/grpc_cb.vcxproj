@@ -138,6 +138,7 @@
     <ClInclude Include="..\include\grpc_cb\impl\server\server_writer_impl.h" />
     <ClInclude Include="..\include\grpc_cb\security\server_credentials.h" />
     <ClInclude Include="..\include\grpc_cb\server.h" />
+    <ClInclude Include="..\include\grpc_cb\server_reader.h" />
     <ClInclude Include="..\include\grpc_cb\server_replier.h" />
     <ClInclude Include="..\include\grpc_cb\server_writer.h" />
     <ClInclude Include="..\include\grpc_cb\service.h" />
