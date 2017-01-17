@@ -58,12 +58,14 @@ class Service : public ::grpc_cb::Service {
       size_t method_index, grpc_byte_buffer* request_buffer,
       const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;
 
- protected:
+ public:
   using SayHello_Replier = ::grpc_cb::ServerReplier<
       ::helloworld::HelloReply>;
+ private:
   void SayHello(
       grpc_byte_buffer& request_buffer,
       const SayHello_Replier& replier);
+ protected:
   // Todo: virtual void SayHello(const std::string& request_buffer, replier);
   virtual void SayHello(
       const ::helloworld::HelloRequest& request,

@@ -222,48 +222,56 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
       grpc_cpp_generator::ClassName(method->output_type(), true);
   if (NoStreaming(method)) {
     printer->Print(*vars,
-        "using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
-        "    $Response$>;\n"
-        "void $Method$(\n"
-        "    grpc_byte_buffer& request_buffer,\n"
-        "    const $Method$_Replier& replier);\n"
-        "// Todo: virtual void $Method$(const std::string& request_buffer, replier);\n"
-        "virtual void $Method$(\n"
-        "    const $Request$& request,\n"
-        "    $Method$_Replier replier);\n\n");
+        " public:\n"
+        "  using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
+        "      $Response$>;\n"
+        " private:\n"
+        "  void $Method$(\n"
+        "      grpc_byte_buffer& request_buffer,\n"
+        "      const $Method$_Replier& replier);\n"
+        " protected:\n"
+        "  // Todo: virtual void $Method$(const std::string& request_buffer, replier);\n"
+        "  virtual void $Method$(\n"
+        "      const $Request$& request,\n"
+        "      $Method$_Replier replier);\n\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
-        "void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
-        "using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
-        "    $Response$>;\n"
-        "virtual void $Method$_OnStart(\n"
-        "    const $Method$_Replier& replier);\n"
-        "virtual void $Method$_OnMsg(\n"
-        "    const $Request$& point,\n"
-        "    const $Method$_Replier& replier);\n"
-        "virtual void $Method$_OnEnd(\n"
-        "    const $Method$_Replier& replier);\n\n");
+        " private:\n"
+        "  void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
+        " public:\n"
+        "  using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
+        "      $Response$>;\n"
+        "  using $Method$_Reader = ::grpc_cb::ServerReaderForClientOnlyStreaming<\n"
+        "      $Request$, $Response$>;\n"
+        "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
+        " protected:\n"
+        "  virtual $Method$_ReaderSptr $Method$(\n"
+        "      const $Method$_Replier& replier);\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
-        "using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
-        "    $Response$>;\n"
-        "void $Method$(grpc_byte_buffer& request_buffer,\n"
-        "    const $Method$_Writer& writer);\n"
-        "virtual void $Method$(\n"
-        "    const $Request$& request,\n"
-        "    const $Method$_Writer& writer);\n\n");
+        " public:\n"
+        "  using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
+        "      $Response$>;\n"
+        " private:\n"
+        "  void $Method$(grpc_byte_buffer& request_buffer,\n"
+        "      const $Method$_Writer& writer);\n"
+        " protected:\n"
+        "  virtual void $Method$(\n"
+        "      const $Request$& request,\n"
+        "      const $Method$_Writer& writer);\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
-        "void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
-        "using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
-        "    $Response$>;\n"
-        "virtual void $Method$_OnStart(\n"
-        "    const $Method$_Writer& writer);\n"
-        "virtual void $Method$_OnMsg(\n"
-        "    const $Request$& msg,\n"
-        "    const $Method$_Writer& writer);\n"
-        "virtual void $Method$_OnEnd(\n"
-        "    const $Method$_Writer& writer);\n\n");
+        " private:\n"
+        "  void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
+        " public:\n"
+        "  using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
+        "      $Response$>;\n"
+        "  using $Method$_Reader = ::grpc_cb::ServerReaderForBidiStreaming<\n"
+        "      $Request$, $Response$>;\n"
+        "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
+        " protected:\n"
+        "  virtual $Method$_ReaderSptr $Method$(\n"
+        "      const $Method$_Writer& writer);\n\n");
   }
 }
 
@@ -309,12 +317,9 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
                   "    size_t method_index, grpc_byte_buffer* request_buffer,\n"
                   "    const ::grpc_cb::CallSptr& call_sptr) GRPC_OVERRIDE;\n\n");
   printer->Outdent();
-  printer->Print(" protected:\n");
-  printer->Indent();
   for (int i = 0; i < service->method_count(); ++i) {
     PrintHeaderServiceMethod(printer, service->method(i), vars);
   }
-  printer->Outdent();
   printer->Print(" private:\n");
   printer->Indent();
   printer->Print(
@@ -416,9 +421,6 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("#include <google/protobuf/descriptor.h>\n");
     printer.Print("#include <google/protobuf/stubs/once.h>\n");
     printer.Print("\n");
-    printer.Print("#include <grpc_cb/impl/call.h>                            // for Call\n");
-    printer.Print("#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag\n");
-    printer.Print("#include <grpc_cb/impl/call_operations.h>                 // for CallOperations\n");
     printer.Print("#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag\n");
     printer.Print("#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag\n");
     printer.Print("#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue\n");
@@ -654,43 +656,26 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
     printer->Print(*vars,
         "void Service::$Method$(const ::grpc_cb::CallSptr& call_sptr) {\n"
         "  assert(call_sptr);\n"
-        "  using CqTag = ::grpc_cb::ServerReaderCqTag<\n"
-        "      $Request$, $Response$>;\n"
         "  $Method$_Replier replier(call_sptr);\n"
-        "  CqTag::MsgCallback on_msg =\n"
-        "    [this](const $Request$& point,\n"
-        "           const $Method$_Replier& replier) {\n"
-        "      $Method$_OnMsg(point, replier);\n"
-        "    };\n"
-        "  CqTag::EndCallback on_end =\n"
-        "    [this](const $Method$_Replier& replier) {\n"
-        "      $Method$_OnEnd(replier);\n"
-        "    };\n"
-        "  CqTag::DataSptr data_sptr(new CqTag::Data{replier, on_msg, on_end});\n"
-        "  CqTag* tag = new CqTag(call_sptr, data_sptr);\n"
-        "  if (tag->Start()) {\n"
-        "    $Method$_OnStart(replier);\n"
-        "    return;\n"
-        "  }\n"
+        "  $Method$_ReaderSptr reader_sptr = $Method$(replier);\n"
+        "  if (!reader_sptr) return;\n"
+        "  reader_sptr->SetReplier(replier);\n"
+        "\n"
+        "  using CqTag = ::grpc_cb::ServerReaderCqTag<\n"
+        "      $Request$>;\n"
+        "  CqTag* tag = new CqTag(call_sptr, reader_sptr);\n"
+        "  if (tag->Start()) return;\n"
+        "\n"
         "  delete tag;\n"
-        "  replier.ReplyError(::grpc_cb::Status::InternalError(\n"
+        "  reader_sptr->OnError(::grpc_cb::Status::InternalError(\n"
         "      \"Failed to init server reader.\"));\n"
         "}\n"
         "\n"
-        "void Service::$Method$_OnStart(\n"
-        "    const $Method$_Replier& replier) {\n"
-        "  (void)replier;\n"
-        "}\n"
-        "\n"
-        "void Service::$Method$_OnMsg(\n"
-        "    const $Request$& msg,\n"
+        "Service::$Method$_ReaderSptr\n"
+        "Service::$Method$(\n"
         "    const $Method$_Replier& replier) {\n"
         "  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);\n"
-        "}\n"
-        "\n"
-        "void Service::$Method$_OnEnd(\n"
-        "    const $Method$_Replier& replier) {\n"
-        "  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);\n"
+        "  return nullptr;\n"
         "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
@@ -718,45 +703,26 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
     printer->Print(*vars,
         "void Service::$Method$(const ::grpc_cb::CallSptr& call_sptr) {\n"
         "  assert(call_sptr);\n"
-        "  using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<\n"
-        "      $Request$,\n"
-        "      $Response$>;\n"
         "  $Method$_Writer writer(call_sptr);\n"
-        "  RwCqTag::MsgCallback on_msg =\n"
-        "    [this](const $Request$& msg,\n"
-        "           const $Method$_Writer& writer) {\n"
-        "      $Method$_OnMsg(msg, writer);\n"
-        "    };\n"
-        "  RwCqTag::EndCallback on_end =\n"
-        "    [this](const $Method$_Writer& writer) {\n"
-        "      $Method$_OnEnd(writer);\n"
-        "    };\n"
-        "  RwCqTag::DataSptr data_sptr(new RwCqTag::Data{writer, on_msg, on_end});\n"
+        "  $Method$_ReaderSptr reader_sptr = $Method$(writer);\n"
+        "  if (!reader_sptr) return;\n"
+        "  reader_sptr->SetWriter(writer);\n"
         "\n"
-        "  RwCqTag* tag = new RwCqTag(call_sptr, data_sptr);\n"
-        "  if (tag->Start()) {\n"
-        "    $Method$_OnStart(writer);\n"
-        "    return;\n"
-        "  }\n"
+        "  using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<\n"
+        "      $Request$>;\n"
+        "  RwCqTag* tag = new RwCqTag(call_sptr, reader_sptr);\n"
+        "  if (tag->Start()) return;\n"
+        "\n"
         "  delete tag;\n"
-        "  writer.AsyncClose(::grpc_cb::Status::InternalError(\n"
+        "  reader_sptr->OnError(::grpc_cb::Status::InternalError(\n"
         "      \"Failed to init server stream.\"));\n"
         "}\n"
         "\n"
-        "void Service::$Method$_OnStart(\n"
-        "    const $Method$_Writer& writer) {\n"
-        "  (void)writer;\n"
-        "}\n"
-        "\n"
-        "void Service::$Method$_OnMsg(\n"
-        "    const $Request$& msg,\n"
+        "Service::$Method$_ReaderSptr\n"
+        "Service::$Method$(\n"
         "    const $Method$_Writer& writer) {\n"
         "  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);\n"
-        "}\n"
-        "\n"
-        "void Service::$Method$_OnEnd(\n"
-        "    const $Method$_Writer& writer) {\n"
-        "  (void)writer;\n"
+        "  return nullptr;\n"
         "}\n\n");
   }
 }

@@ -92,7 +92,7 @@ class Service : public ::grpc_cb::Service {
   void GetFeature(
       grpc_byte_buffer& request_buffer,
       const GetFeature_Replier& replier);
- public:
+ protected:
   // Todo: virtual void GetFeature(const std::string& request_buffer, replier);
   virtual void GetFeature(
       const ::routeguide::Point& request,
@@ -109,7 +109,6 @@ class Service : public ::grpc_cb::Service {
       const ::routeguide::Rectangle& request,
       const ListFeatures_Writer& writer);
 
-  // XXX private it
  private:
   void RecordRoute(const ::grpc_cb::CallSptr& call_sptr);
  public:
