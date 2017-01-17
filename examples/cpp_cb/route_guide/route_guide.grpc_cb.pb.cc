@@ -233,6 +233,8 @@ void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
       ::routeguide::Point>;
   RecordRoute_Replier replier(call_sptr);
   RecordRoute_ReaderSptr reader_sptr = RecordRoute(replier);
+  if (!reader_sptr) return;
+  reader_sptr->SetReplier(replier);
   //CqTag::MsgCallback on_msg =
   //  [this](const ::routeguide::Point& point,
   //         const RecordRoute_Replier& replier) {
@@ -247,14 +249,15 @@ void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
   if (tag->Start()) return;
   // RecordRoute_OnStart(replier);
   delete tag;
-  replier.ReplyError(::grpc_cb::Status::InternalError(
+  reader_sptr->OnError(::grpc_cb::Status::InternalError(
       "Failed to init server reader."));
 }
 
 Service::RecordRoute_ReaderSptr
 Service::RecordRoute(
     const RecordRoute_Replier& replier) {
-  return std::make_shared<RecordRoute_Reader>();
+  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
+  return nullptr;
 }
 
 void Service::RecordRoute_OnStart(

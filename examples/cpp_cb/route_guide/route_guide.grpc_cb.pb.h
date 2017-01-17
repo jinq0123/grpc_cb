@@ -108,8 +108,8 @@ class Service : public ::grpc_cb::Service {
   void RecordRoute(const ::grpc_cb::CallSptr& call_sptr);
   using RecordRoute_Replier = ::grpc_cb::ServerReplier<
       ::routeguide::RouteSummary>;
-  using RecordRoute_Reader = ::grpc_cb::ServerReader<
-      ::routeguide::Point>;
+  using RecordRoute_Reader = ::grpc_cb::ServerReaderForClientOnlyStreaming<
+      ::routeguide::Point, ::routeguide::RouteSummary>;
   using RecordRoute_ReaderSptr = std::shared_ptr<RecordRoute_Reader>;
   RecordRoute_ReaderSptr RecordRoute(
       const RecordRoute_Replier& replier);
