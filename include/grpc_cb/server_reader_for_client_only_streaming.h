@@ -25,14 +25,31 @@ class ServerReaderForClientOnlyStreaming : public ServerReader<Request> {
   virtual ~ServerReaderForClientOnlyStreaming() {}
 
  public:
+  // Set by generated code.
   using Replier = ServerReplier<Response>;
   void SetReplier(const Replier& replier) {
     replier_uptr_.reset(new Replier(replier));
   }
 
  public:
+  void Reply(const Response& response) {
+    assert(replier_uptr_);
+    replier_uptr_->Reply(response);
+  }
+  void ReplyError(const Status& status) {
+    assert(replier_uptr_);
+    replier_uptr_->ReplyError(status);
+  }
+  Replier& GetReplier() {
+    assert(replier_uptr_);
+    return *replier_uptr_;
+  }
+
+ public:
   void OnMsg(const Request& msg) GRPC_OVERRIDE {}
-  void OnError(const Status& status) GRPC_OVERRIDE {}
+  void OnError(const Status& status) GRPC_OVERRIDE {
+    ReplyError(status);
+  }
   void OnEnd() GRPC_OVERRIDE {}
 
  private:
