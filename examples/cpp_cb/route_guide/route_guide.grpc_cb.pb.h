@@ -114,7 +114,7 @@ class Service : public ::grpc_cb::Service {
       ::routeguide::Point, ::routeguide::RouteSummary>;
   using RecordRoute_ReaderSptr = std::shared_ptr<RecordRoute_Reader>;
  protected:
-  RecordRoute_ReaderSptr RecordRoute(
+  virtual RecordRoute_ReaderSptr RecordRoute(
       const RecordRoute_Replier& replier);
 
   //virtual void RecordRoute_OnStart(
@@ -134,7 +134,7 @@ class Service : public ::grpc_cb::Service {
       ::routeguide::RouteNote, ::routeguide::RouteNote>;
   using RouteChat_ReaderSptr = std::shared_ptr<RouteChat_Reader>;
  protected:
-  RouteChat_ReaderSptr RouteChat(
+  virtual RouteChat_ReaderSptr RouteChat(
       const RouteChat_Writer& writer);
 
   // DEL

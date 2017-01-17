@@ -98,6 +98,7 @@ class RecordRoute_ReaderImpl
   explicit RecordRoute_ReaderImpl(const FeatureVector& feature_vec)
       : feature_vec_(feature_vec) {}
 
+ protected:
   void OnMsg(const Point& point) override {
     RecordRouteResult& r = record_route_result_;
     r.point_count++;
@@ -130,6 +131,7 @@ class RecordRoute_ReaderImpl
     });
     t.detach();
   }
+
  private:
   const FeatureVector& feature_vec_;
 
@@ -185,13 +187,14 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
   }
 
   // Todo: Need session id.
-  RecordRoute_ReaderSptr RecordRoute(const RecordRoute_Replier& replier) {
+  RecordRoute_ReaderSptr RecordRoute(
+      const RecordRoute_Replier& replier) override {
     return std::make_shared<RecordRoute_ReaderImpl>(feature_vector_);
   }  // RecordRoute()
 
-  RouteChat_ReaderSptr RouteChat(const RouteChat_Writer& writer) {
+  RouteChat_ReaderSptr RouteChat(const RouteChat_Writer& writer) override {
     class Reader : public RouteChat_Reader {
-     public:
+     protected:
       void OnMsg(const RouteNote& msg) override {
         for (const RouteNote& n : received_notes_) {
           if (n.location().latitude() == msg.location().latitude() &&
@@ -200,7 +203,7 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
           }  // if
         }  // for
         received_notes_.push_back(msg);
-      }
+      }  // OnMsg()
     
       void OnEnd() override {
         RouteChat_Writer writer = GetWriter();
@@ -209,13 +212,13 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
           writer.Write(RouteNote());
         });
         t.detach();
-      }
+      }  // OnEnd()
 
      private:
        std::vector<RouteNote> received_notes_;
     };  // class Reader
 
-    return std::make_shared<RouteChat_Reader>();
+    return std::make_shared<Reader>();
   }
 
  private:
