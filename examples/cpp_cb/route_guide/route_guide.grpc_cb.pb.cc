@@ -282,25 +282,33 @@ void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>;
   RouteChat_Writer writer(call_sptr);
-  RwCqTag::MsgCallback on_msg =
-    [this](const ::routeguide::RouteNote& msg,
-           const RouteChat_Writer& writer) {
-      RouteChat_OnMsg(msg, writer);
-    };
-  RwCqTag::EndCallback on_end =
-    [this](const RouteChat_Writer& writer) {
-      RouteChat_OnEnd(writer);
-    };
-  RwCqTag::DataSptr data_sptr(new RwCqTag::Data{writer, on_msg, on_end});
+  RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
+  if (!reader_sptr) return;
+  reader_sptr->SetWriter(writer);
+  //RwCqTag::MsgCallback on_msg =
+  //  [this](const ::routeguide::RouteNote& msg,
+  //         const RouteChat_Writer& writer) {
+  //    RouteChat_OnMsg(msg, writer);
+  //  };
+  //RwCqTag::EndCallback on_end =
+  //  [this](const RouteChat_Writer& writer) {
+  //    RouteChat_OnEnd(writer);
+  //  };
+  //RwCqTag::DataSptr data_sptr(new RwCqTag::Data{writer, on_msg, on_end});
 
-  RwCqTag* tag = new RwCqTag(call_sptr, data_sptr);
-  if (tag->Start()) {
-    RouteChat_OnStart(writer);
-    return;
-  }
+  RwCqTag* tag = new RwCqTag(call_sptr, reader_sptr);
+  if (tag->Start()) return;
+  // RouteChat_OnStart(writer);
   delete tag;
-  writer.AsyncClose(::grpc_cb::Status::InternalError(
+  reader_sptr->OnError(::grpc_cb::Status::InternalError(
       "Failed to init server stream."));
+}
+
+Service::RouteChat_ReaderSptr
+Service::RouteChat(
+    const RouteChat_Writer& writer) {
+  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
+  return nullptr;
 }
 
 void Service::RouteChat_OnStart(

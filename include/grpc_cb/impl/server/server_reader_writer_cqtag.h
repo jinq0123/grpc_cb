@@ -17,23 +17,27 @@
 
 namespace grpc_cb {
 
+// Delete Response XXXX
 template <class Request, class Response>
 class ServerReaderWriterCqTag GRPC_FINAL : public CallCqTag {
- public:
+
+  // DEL
   // Like ServerReaderCqTag but use Writer instead of Replier.
-  using Writer = ServerWriter<Response>;
-  using MsgCallback = std::function<void (const Request&, const Writer&)>;
-  using EndCallback = std::function<void (const Writer&)>;
-  struct Data {
-    Writer writer;
-    MsgCallback on_msg;
-    EndCallback on_end;
-  };
-  using DataSptr = std::shared_ptr<Data>;
+  //using Writer = ServerWriter<Response>;
+  //using MsgCallback = std::function<void (const Request&, const Writer&)>;
+  //using EndCallback = std::function<void (const Writer&)>;
+  //struct Data {
+  //  Writer writer;
+  //  MsgCallback on_msg;
+  //  EndCallback on_end;
+  //};
+  //using DataSptr = std::shared_ptr<Data>;
 
  public:
+  using Reader = ServerReader<Request>;
+  using ReaderSptr = std::shared_ptr<Reader>;
   inline ServerReaderWriterCqTag(const CallSptr& call_sptr,
-      const DataSptr& data_sptr);
+      const ReaderSptr& reader_sptr);
   inline bool Start() GRPC_MUST_USE_RESULT;
 
  public:
@@ -41,17 +45,15 @@ class ServerReaderWriterCqTag GRPC_FINAL : public CallCqTag {
 
  private:
   CodRecvMsg cod_recv_msg_;
-  DataSptr data_sptr_;
+  ReaderSptr reader_sptr_;
 };  // class ServerReaderWriterCqTag
 
 template <class Request, class Response>
 ServerReaderWriterCqTag<Request, Response>::ServerReaderWriterCqTag(
-    const CallSptr& call_sptr, const DataSptr& data_sptr)
-    : CallCqTag(call_sptr), data_sptr_(data_sptr) {
+    const CallSptr& call_sptr, const ReaderSptr& reader_sptr)
+    : CallCqTag(call_sptr), reader_sptr_(reader_sptr) {
   assert(call_sptr);
-  assert(data_sptr);
-  assert(data_sptr->on_msg);
-  assert(data_sptr->on_end);
+  assert(reader_sptr);
 }
 
 template <class Request, class Response>
@@ -66,7 +68,7 @@ void ServerReaderWriterCqTag<Request, Response>::DoComplete(bool success) {
   assert(success);
   const CallSptr& call_sptr = GetCallSptr();
   if (!cod_recv_msg_.HasGotMsg()) {
-    data_sptr_->on_end(data_sptr_->writer);
+    reader_sptr_->OnEnd();
     return;
   }
 
@@ -74,17 +76,15 @@ void ServerReaderWriterCqTag<Request, Response>::DoComplete(bool success) {
   Status status = cod_recv_msg_.GetResultMsg(
       request, call_sptr->GetMaxMsgSize());
   if (!status.ok()) {
-      data_sptr_->writer.AsyncClose(status);
+      reader_sptr_->OnError(status);  // writer.AsyncClose(status);
       return;
   }
+  reader_sptr_->OnMsg(request);
 
-  data_sptr_->on_msg(request, data_sptr_->writer);
-
-  auto* tag = new ServerReaderWriterCqTag(call_sptr, data_sptr_);
+  auto* tag = new ServerReaderWriterCqTag(call_sptr, reader_sptr_);
   if (tag->Start()) return;
-
   delete tag;
-  data_sptr_->writer.AsyncClose(Status::InternalError("Failed to read client stream."));
+  reader_sptr_->OnError(Status::InternalError("Failed to read client stream."));
 }
 
 }  // namespace grpc_cb
