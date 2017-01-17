@@ -7,14 +7,12 @@
 #include <memory>  // for unique_ptr<>
 
 #include <grpc_cb/server_reader.h>  // for ServerReader<>
+#include <grpc_cb/server_replier.h>  // for ReplyError()
 #include <grpc_cb/support/config.h>  // for GRPC_OVERRIDE
 
 namespace grpc_cb {
 
 class Status;
-
-template <class ResponseType>
-class ServerReplier;
 
 // ServerReader for client only streaming.
 template <class Request, class Response>

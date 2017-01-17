@@ -8,13 +8,11 @@
 
 #include <grpc_cb/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/support/config.h>  // for GRPC_OVERRIDE
+#include <grpc_cb/server_writer.h>  // for ServerWriter<>
 
 namespace grpc_cb {
 
 class Status;
-
-template <class Response>
-class ServerWriter;
 
 // ServerReader for bidirectional streaming.
 template <class Request, class Response>
