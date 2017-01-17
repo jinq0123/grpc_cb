@@ -17,22 +17,8 @@
 
 namespace grpc_cb {
 
-// Delete Response XXXX
-template <class Request, class Response>
+template <class Request>
 class ServerReaderWriterCqTag GRPC_FINAL : public CallCqTag {
-
-  // DEL
-  // Like ServerReaderCqTag but use Writer instead of Replier.
-  //using Writer = ServerWriter<Response>;
-  //using MsgCallback = std::function<void (const Request&, const Writer&)>;
-  //using EndCallback = std::function<void (const Writer&)>;
-  //struct Data {
-  //  Writer writer;
-  //  MsgCallback on_msg;
-  //  EndCallback on_end;
-  //};
-  //using DataSptr = std::shared_ptr<Data>;
-
  public:
   using Reader = ServerReader<Request>;
   using ReaderSptr = std::shared_ptr<Reader>;
@@ -48,23 +34,23 @@ class ServerReaderWriterCqTag GRPC_FINAL : public CallCqTag {
   ReaderSptr reader_sptr_;
 };  // class ServerReaderWriterCqTag
 
-template <class Request, class Response>
-ServerReaderWriterCqTag<Request, Response>::ServerReaderWriterCqTag(
+template <class Request>
+ServerReaderWriterCqTag<Request>::ServerReaderWriterCqTag(
     const CallSptr& call_sptr, const ReaderSptr& reader_sptr)
     : CallCqTag(call_sptr), reader_sptr_(reader_sptr) {
   assert(call_sptr);
   assert(reader_sptr);
 }
 
-template <class Request, class Response>
-bool ServerReaderWriterCqTag<Request, Response>::Start() {
+template <class Request>
+bool ServerReaderWriterCqTag<Request>::Start() {
   CallOperations ops;
   ops.RecvMsg(cod_recv_msg_);
   return GetCallSptr()->StartBatch(ops, this);
 }
 
-template <class Request, class Response>
-void ServerReaderWriterCqTag<Request, Response>::DoComplete(bool success) {
+template <class Request>
+void ServerReaderWriterCqTag<Request>::DoComplete(bool success) {
   assert(success);
   const CallSptr& call_sptr = GetCallSptr();
   if (!cod_recv_msg_.HasGotMsg()) {

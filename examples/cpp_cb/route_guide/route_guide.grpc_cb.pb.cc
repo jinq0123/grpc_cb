@@ -279,12 +279,12 @@ void Service::RecordRoute_OnEnd(
 void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
   using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<
-      ::routeguide::RouteNote,
       ::routeguide::RouteNote>;
   RouteChat_Writer writer(call_sptr);
   RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
   if (!reader_sptr) return;
   reader_sptr->SetWriter(writer);
+  // DEL
   //RwCqTag::MsgCallback on_msg =
   //  [this](const ::routeguide::RouteNote& msg,
   //         const RouteChat_Writer& writer) {
