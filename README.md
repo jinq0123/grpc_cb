@@ -5,6 +5,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 
 ## Build
 1. Copy [grpc](https://github.com/grpc/grpc) as third-party/grpc, and build grpc.
+	* To ease the building on Windows: [plasticbox/grpc-windows](https://github.com/plasticbox/grpc-windows)
 2. Use build/grpc_cb.sln or build/Makefile to build grpc_cb.
 
 ## Todo
