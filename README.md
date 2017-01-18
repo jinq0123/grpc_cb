@@ -67,6 +67,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 	* Server-side streaming RPC
 	* Client-side streaming RPC
 	* Bidirectional streaming RPC
+
 + Asycn call
 	* Simple RPC: ```AsyncGetFeature()```
 		+ With response callback
@@ -77,10 +78,12 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 					PrintFeature(feature);
 				});
 			```
+
 		+ Ignoring response
 			```cpp
 			stub.AsyncGetFeature(point);
 			```
+
 		+ With error callback
 			```cpp
 			stub.AsyncGetFeature(point,
@@ -89,11 +92,13 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 					cout << err.GetDetails() << endl;
 				});  // AsyncGetFeature()
 			```
+
 	* Run the stub
 		+ Async calls need 
 			```cpp
 			stub.BlockingRun();  // until stub.Shutdown()
 			```
+
 		+ It can run in other thread.
 		+ It can be before or after async calls.
 		+ ```stub.Shutdown()``` or ```~Stub()``` to end ```stub.BlockingRun()```.
