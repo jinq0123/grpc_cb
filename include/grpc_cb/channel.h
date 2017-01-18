@@ -35,7 +35,6 @@ class Channel : public GrpcLibrary,
     CompletionQueue& cq) const;
 
  private: 
-  const std::string host_;
   const std::unique_ptr<grpc_channel, void (*)(grpc_channel*)>
       c_channel_uptr_;  // owned
 };
