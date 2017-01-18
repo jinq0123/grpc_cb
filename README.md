@@ -42,22 +42,65 @@ The generated namespace ```RouteGuide``` contains
 * a ```Stub``` class for clients to call.
 * a ```Service``` class for servers to implement.
 
-#### Creating the client
+### Creating the client
 See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
-1. Creating a stub
-	1. Create a shared ```Channel``` for out stub, specifying the server address.
-		```cpp
-		ChannelSptr channel(new Channel("localhost:50051"));
-		```
-	1. Create a ```Stub```
-		```cpp
-		Stub stub(channel);
-		```
-1. Calling service methods
+
+#### Creating a stub
+1. Create a shared ```Channel```, specifying the server address.
+	```cpp
+	ChannelSptr channel(new Channel("localhost:50051"));
+	```
+1. Create a ```Stub```
+	```cpp
+	Stub stub(channel);
+	```
+
+#### Calling service methods
++ Blocking call
 	* Simple RPC
+		```cpp
+		Point point = MakePoint(0, 0);
+		Feature feature;
+		Status status = stub.BlockingGetFeature(point, &feature);
+		```
+
+	* Server-side streaming RPC
+	* Client-side streaming RPC
+	* Bidirectional streaming RPC
++ Asycn call
+	* Simple RPC: ```AsyncGetFeature()```
+		+ With response callback
+			```cpp
+			Point point = MakePoint(0, 0);
+			stub.AsyncGetFeature(point,
+				[](const Feature& feature) {
+					PrintFeature(feature);
+				});
+			```
+		+ Ignoring response
+			```cpp
+			stub.AsyncGetFeature(point);
+			```
+		+ With error callback
+			```cpp
+			stub.AsyncGetFeature(point,
+				[](const Feature& feature) { PrintFeature(feature); },
+				[](const Status& err) {
+					cout << err.GetDetails() << endl;
+				});  // AsyncGetFeature()
+			```
+	* Run the stub
+		+ Async calls need 
+			```cpp
+			stub.BlockingRun();  // until stub.Shutdown()
+			```
+		+ It can run in other thread.
+		+ It can be before or after async calls.
+		+ ```stub.Shutdown()``` or ```~Stub()``` to end ```stub.BlockingRun()```.
+
 	* Server-side streaming RPC
 	* Client-side streaming RPC
 	* Bidirectional streaming RPC
 
-#### Creating the server
+### Creating the server
 See examples/cpp_cb/route_guide/route_guide_server.cc.
