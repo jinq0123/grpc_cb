@@ -23,3 +23,4 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 		const std::shared_ptr<Impl> impl_sptr_;
 
 1. Convert grpc_byte_buffer to string, which is needed by lua.
+1. Support message type other than protobuffer.
