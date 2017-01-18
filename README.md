@@ -15,7 +15,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 * route_guide example
 
 ## Todo
-
+1. Delete NewStub()
 1. Check thread-safety
 1. Rename ...CallBack to On...
 1. Make impl sptr const:
@@ -41,3 +41,23 @@ This generates the following files in directory examples/cpp_cb/route_guide
 The generated namespace ```RouteGuide``` contains
 * a ```Stub``` class for clients to call.
 * a ```Service``` class for servers to implement.
+
+#### Creating the client
+See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
+1. Creating a stub
+	1. Create a shared ```Channel``` for out stub, specifying the server address.
+		```cpp
+		ChannelSptr channel(new Channel("localhost:50051"));
+		```
+	1. Create a ```Stub```
+		```cpp
+		Stub stub(channel);
+		```
+1. Calling service methods
+	* Simple RPC
+	* Server-side streaming RPC
+	* Client-side streaming RPC
+	* Bidirectional streaming RPC
+
+#### Creating the server
+See examples/cpp_cb/route_guide/route_guide_server.cc.
