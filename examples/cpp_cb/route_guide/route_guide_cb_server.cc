@@ -91,7 +91,6 @@ std::string GetFeatureName(const Point& point,
   return "";
 }
 
-
 class RecordRoute_ReaderImpl
     : public routeguide::RouteGuide::Service::RecordRoute_Reader {
  public:
