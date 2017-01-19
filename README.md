@@ -153,9 +153,51 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		+ It can be before or after async calls.
 		+ ```stub.Shutdown()``` or ```~Stub()``` to end ```stub.BlockingRun()```.
 
-	* Server-side streaming RPC
-	* Client-side streaming RPC
-	* Bidirectional streaming RPC
+	* Server-side streaming RPC: ```AsyncListFeatures()```
+		```cpp
+		stub.AsyncListFeatures(rect,
+			[](const Feature& feature) {
+				cout << feature.name() << endl;
+			},
+			[&stub](const Status& status) {
+				stub.Shutdown();  // To break BlockingRun().
+			});
+		stub.BlockingRun();  // until stub.Shutdown()
+		```
+
+	* Client-side streaming RPC: ```AsyncRecordRoute()```
+		```cpp
+		auto async_writer = stub.AsyncRecordRoute();
+		for (int i = 0; i < kPoints; i++) {
+			const Feature& f = GetRandomFeature();
+			if (!async_writer.Write(f.location())) {
+				break;
+			}
+		}
+		// Recv reponse and status.
+		async_writer.Close([](const Status& status, const RouteSummary& resp) {
+			if (status.ok())
+				cout << resp.point_count() << endl;
+		});
+		```
+
+	* Bidirectional streaming RPC: ```AsyncRouteChat()```
+		```cpp
+		std::atomic_bool bReaderDone = false;
+		auto async_reader_writer(
+			stub.AsyncRouteChat([&bReaderDone](const Status& status) {
+				bReaderDone = true;
+			}));
+		
+		async_reader_writer.ReadEach(
+			[](const RouteNote& note) { PrintServerNote(note); });
+
+		std::vector<RouteNote> notes{ ... };
+		for (const RouteNote& note : notes) {
+			async_reader_writer.Write(note);
+		}
+		async_reader_writer.CloseWriting();
+		```
 
 ### Creating the server
 See examples/cpp_cb/route_guide/route_guide_server.cc.

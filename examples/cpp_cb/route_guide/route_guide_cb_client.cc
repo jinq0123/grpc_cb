@@ -275,12 +275,12 @@ void ListFeaturesAsync(const ChannelSptr& channel) {
   std::cout << "Looking for features between 40, -75 and 42, -73" << std::endl;
 
   stub.AsyncListFeatures(rect,
-    [](const Feature& feature){
+    [](const Feature& feature) {
       std::cout << "Got feature " << feature.name() << " at "
           << feature.location().latitude()/kCoordFactor << ", "
           << feature.location().longitude()/kCoordFactor << std::endl;
     },
-    [&stub](const Status& status){
+    [&stub](const Status& status) {
       std::cout << "End status: (" << status.GetCode() << ") "
           << status.GetDetails() << std::endl;
       stub.Shutdown();  // To break BlockingRun().
