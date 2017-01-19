@@ -213,7 +213,7 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 	}
 	```
 
-1. Implementing ```GetFeature()```
+1. Simple RPC: ```GetFeature()```
 	* Reply immediately
 		```cpp
 		void GetFeature(const Point& point,
@@ -239,5 +239,23 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 		}
 	```
 
+1. Server-side streaming RPC: ```ListFeatures()```
+	```cpp
+	void ListFeatures(const routeguide::Rectangle& rectangle,
+			const ListFeatures_Writer& writer) override {
+		ListFeatures_Writer writer_copy(writer)
+		std::thread t([writer_copy]() {
+			for (const Feature& f : feature_vector) {
+				if (!writer_copy.Write(f)) break;
+				Sleep(1000);
+			}
+		});  // thread t
+		t.detach();
+	}
+	```
+
+1. Client-side streaming RPC: ```RecordRoute()```
+
+1. Bidirectional streaming RPC: ```RouteChat()```
 
 #### Starting the server
