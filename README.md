@@ -237,7 +237,7 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 			});
 			thd.detach();
 		}
-	```
+		```
 
 1. Server-side streaming RPC: ```ListFeatures()```
 	```cpp
@@ -254,7 +254,7 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 	```
 
 1. Client-side streaming RPC: ```RecordRoute()```
-	1. Should return a shared reader:
+	- Should return a shared reader:
 		```cpp
 		RecordRoute_ReaderSptr RecordRoute(
 			RecordRoute_Replier replier) override {
@@ -262,7 +262,7 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 		}  // RecordRoute()
 		```
 	
-	1. Should implement a ```RecordRoute_Reader```:
+	- Should implement a ```RecordRoute_Reader```:
 		```cpp
 		class RecordRoute_ReaderImpl
 				: public routeguide::RouteGuide::Service::RecordRoute_Reader {
@@ -270,7 +270,7 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 		}
 		```
 	
-	1. Implement virtual methods
+	- Implement virtual methods
 		* ```OnMsg(const Request& msg)```
 			+ Default noop.
 		* ```OnError(const Status& status)```
