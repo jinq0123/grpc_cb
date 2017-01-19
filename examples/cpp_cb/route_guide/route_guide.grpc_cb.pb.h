@@ -44,7 +44,9 @@ class Stub : public ::grpc_cb::ServiceStub {
       const GetFeatureCallback& cb,
       const ::grpc_cb::ErrorCallback& ecb);
 
-  ::grpc_cb::ClientSyncReader<::routeguide::Feature>
+  using ListFeatures_SyncReader =
+      ::grpc_cb::ClientSyncReader<::routeguide::Feature>;
+  ListFeatures_SyncReader
   SyncListFeatures(const ::routeguide::Rectangle& request);
 
   using ListFeaturesMsgCb = std::function<
@@ -53,22 +55,30 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ListFeaturesMsgCb& on_msg = ListFeaturesMsgCb(),
       const ::grpc_cb::StatusCallback& on_status = ::grpc_cb::StatusCallback());
 
-  ::grpc_cb::ClientSyncWriter<::routeguide::Point>
+  using RecordRoute_SyncWriter =
+      ::grpc_cb::ClientSyncWriter<::routeguide::Point>;
+  RecordRoute_SyncWriter
   SyncRecordRoute();
 
-  ::grpc_cb::ClientAsyncWriter<
-      ::routeguide::Point,
-      ::routeguide::RouteSummary>
+  using RecordRoute_AsyncWriter =
+      ::grpc_cb::ClientAsyncWriter<
+          ::routeguide::Point,
+          ::routeguide::RouteSummary>;
+  RecordRoute_AsyncWriter
   AsyncRecordRoute();
 
-  ::grpc_cb::ClientSyncReaderWriter<
-      ::routeguide::RouteNote,
-      ::routeguide::RouteNote>
+  using RouteChat_SyncReaderWriter =
+      ::grpc_cb::ClientSyncReaderWriter<
+          ::routeguide::RouteNote,
+          ::routeguide::RouteNote>;
+  RouteChat_SyncReaderWriter
   SyncRouteChat();
 
-  ::grpc_cb::ClientAsyncReaderWriter<
-      ::routeguide::RouteNote,
-      ::routeguide::RouteNote>
+  using RouteChat_AsyncReaderWriter =
+      ::grpc_cb::ClientAsyncReaderWriter<
+          ::routeguide::RouteNote,
+          ::routeguide::RouteNote>;
+  RouteChat_AsyncReaderWriter
   AsyncRouteChat(const ::grpc_cb::StatusCallback& on_status);
 
 };  // class Stub

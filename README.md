@@ -25,7 +25,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Timeout
 1. Security
-1. Support message type other than protobuffer.
+1. Support message types other than protobuffer.
 
 ## Tutorial
 ### Generating client and server code
