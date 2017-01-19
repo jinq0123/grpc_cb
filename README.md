@@ -278,7 +278,36 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 		* ```OnEnd()```
 			+ Default noop.
 
-
 1. Bidirectional streaming RPC: ```RouteChat()```
+	* Should return a shared reader.
+		```cpp
+		RouteChat_ReaderSptr RouteChat(RouteChat_Writer writer) override {
+			return std::make_shared<Reader>();
+		}
+		```
+	* Implement a reader.
+		```cpp
+		class Reader : public RouteChat_Reader {
+			protected:
+				void OnMsg(const RouteNote& msg) override {
+					for (const RouteNote& n : received_notes_) {
+						GetWriter().Write(n);
+					}  // for
+					received_notes_.push_back(msg);
+				}  // OnMsg()
+				
+				void OnEnd() override {
+					RouteChat_Writer writer = GetWriter();
+					std::thread t([writer]() {
+						std::this_thread::sleep_for(std::chrono::seconds(1));
+						writer.Write(RouteNote());
+					});
+					t.detach();
+				}  // OnEnd()
+		
+			private:
+				std::vector<RouteNote> received_notes_;
+		};  // class Reader
+		```
 
 #### Starting the server
