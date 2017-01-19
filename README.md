@@ -254,6 +254,30 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 	```
 
 1. Client-side streaming RPC: ```RecordRoute()```
+	1. Should return a shared reader:
+		```cpp
+		RecordRoute_ReaderSptr RecordRoute(
+			RecordRoute_Replier replier) override {
+			return std::make_shared<RecordRoute_ReaderImpl>(feature_vector_);
+		}  // RecordRoute()
+		```
+	
+	1. Should implement a ```RecordRoute_Reader```:
+		```cpp
+		class RecordRoute_ReaderImpl
+				: public routeguide::RouteGuide::Service::RecordRoute_Reader {
+			...
+		}
+		```
+	
+	1. Implement virtual methods
+		* ```OnMsg(const Request& msg)```
+			+ Default noop.
+		* ```OnError(const Status& status)```
+			+ Default replys error.
+		* ```OnEnd()```
+			+ Default noop.
+
 
 1. Bidirectional streaming RPC: ```RouteChat()```
 
