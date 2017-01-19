@@ -22,6 +22,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 
 		const std::shared_ptr<Impl> impl_sptr_;
 
+1. Run multi stubs in one thread.
 1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Timeout
 1. Security
@@ -60,14 +61,14 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 
 #### Calling service methods
 + Blocking call
-	* Simple RPC
+	* Simple RPC: ```BlockingGetFeature()```
 		```cpp
 		Point point = MakePoint(0, 0);
 		Feature feature;
 		Status status = stub.BlockingGetFeature(point, &feature);
 		```
 
-	* Server-side streaming RPC
+	* Server-side streaming RPC: ```SyncListFeatures()```
 		```cpp
 		auto sync_reader(stub_->SyncListFeatures(rect));
 		while (sync_reader.ReadOne(&feature)) {
@@ -76,7 +77,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		Status status = sync_reader.RecvStatus();
 		```
 
-	* Client-side streaming RPC
+	* Client-side streaming RPC: ```SyncRecordRoute()```
 		```cpp
 		auto sync_writer(stub_->SyncRecordRoute());
 		for (int i = 0; i < kPoints; i++) {
@@ -92,7 +93,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		Status status = sync_writer.Close(&stats);
 		```
 
-	* Bidirectional streaming RPC
+	* Bidirectional streaming RPC: ```SyncRouteChat()```
 		```cpp
 		auto sync_reader_writer(stub_->SyncRouteChat());
 		auto f = std::async(std::launch::async, [sync_reader_writer]() {
@@ -108,7 +109,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		```
 
 		```cpp
-		void RunWriteRouteNote(RouteChat_SyncReaderWriter sync_reader_writer) {
+		void RunWriteRouteNote(Stus::RouteChat_SyncReaderWriter sync_reader_writer) {
 			std::vector<RouteNote> notes{ ... };
 			for (const RouteNote& note : notes) {
 				sync_reader_writer.Write(note);
