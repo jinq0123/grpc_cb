@@ -22,7 +22,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 
 		const std::shared_ptr<Impl> impl_sptr_;
 
-1. Convert grpc_byte_buffer to string, which is needed by lua.
+1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Timeout
 1. Security
 1. Support message type other than protobuffer.
@@ -52,7 +52,8 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 	```cpp
 	ChannelSptr channel(new Channel("localhost:50051"));
 	```
-1. Create a ```Stub```
+
+1. Instantiate a ```Stub```
 	```cpp
 	Stub stub(channel);
 	```
