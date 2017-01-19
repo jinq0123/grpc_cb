@@ -153,7 +153,7 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
 
   void GetFeature(
       const Point& point,
-      ::grpc_cb::ServerReplier<Feature> replier) override {
+      const GetFeature_Replier& replier) override {
     Feature feature;
     feature.set_name(GetFeatureName(point, feature_vector_));
     feature.mutable_location()->CopyFrom(point);

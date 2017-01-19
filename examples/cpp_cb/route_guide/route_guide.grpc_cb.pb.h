@@ -106,7 +106,7 @@ class Service : public ::grpc_cb::Service {
   // Todo: virtual void GetFeature(const std::string& request_buffer, replier);
   virtual void GetFeature(
       const ::routeguide::Point& request,
-      GetFeature_Replier replier);
+      const GetFeature_Replier& replier);
 
  public:
   using ListFeatures_Writer = ::grpc_cb::ServerWriter<

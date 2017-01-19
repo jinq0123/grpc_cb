@@ -201,3 +201,43 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 
 ### Creating the server
 See examples/cpp_cb/route_guide/route_guide_server.cc.
+
+#### Implementing RouteGuide service
+
+1. Define a ```RouteGuideImpl``` class that implements the generated
+   ```RouteGuide::Service``` interface.
+   Service is always asynchronous, and there is no AsyncService class.
+	```cpp
+	class RouteGuideImpl final : public routeguide::RouteGuide::Service {
+		...
+	}
+	```
+
+1. Implementing ```GetFeature()```
+	* Reply immediately
+		```cpp
+		void GetFeature(const Point& point,
+				const GetFeature_Replier& replier) override {
+			Feature feature;
+			feature.set_name("...");
+			replier.Reply(feature);
+		}
+		```
+
+	* Reply later
+		```cpp
+		void GetFeature(const Point& point,
+				const GetFeature_Replier& replier) override {
+			GetFeature_Replier replier_copy(replier);
+			std::thread thd([replier_copy]() {
+				Sleep(1000);
+				Feature feature;
+				feature.set_name("...");
+				replier_copy.Reply(feature);
+			});
+			thd.detach();
+		}
+	```
+
+
+#### Starting the server

@@ -198,7 +198,7 @@ void Service::GetFeature(
 }
 void Service::GetFeature(
     const ::routeguide::Point& request,
-    GetFeature_Replier replier) {
+    const GetFeature_Replier& replier) {
   (void)request;
   replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
 }
