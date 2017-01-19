@@ -44,12 +44,6 @@
 
 using grpc_cb::Channel;
 using grpc_cb::ChannelSptr;
-using grpc_cb::ClientAsyncReader;
-using grpc_cb::ClientAsyncReaderWriter;
-using grpc_cb::ClientAsyncWriter;
-using grpc_cb::ClientSyncReader;
-using grpc_cb::ClientSyncReaderWriter;
-using grpc_cb::ClientSyncWriter;
 using grpc_cb::Status;
 using routeguide::Point;
 using routeguide::Feature;
@@ -127,8 +121,7 @@ void RandomSleep() {
       delay_distribution(generator)));
 }
 
-void RunWriteRouteNote(ClientSyncReaderWriter<RouteNote, RouteNote>
-    sync_reader_writer) {
+void RunWriteRouteNote(Stub::RouteChat_SyncReaderWriter sync_reader_writer) {
   std::vector<RouteNote> notes{
     MakeRouteNote("First message", 0, 0),
     MakeRouteNote("Second message", 0, 1),
@@ -219,9 +212,7 @@ class RouteGuideClient {
   // Todo: Callback on client stream response and status.
 
   void BlockingRouteChat() {
-    ClientSyncReaderWriter<RouteNote, RouteNote> sync_reader_writer(
-        stub_->SyncRouteChat());
-
+    auto sync_reader_writer(stub_->SyncRouteChat());
     auto f = std::async(std::launch::async, [sync_reader_writer]() {
         RunWriteRouteNote(sync_reader_writer);
     });
@@ -342,8 +333,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
   stub.Shutdown();
 }  // RecordRouteAsync()
 
-void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>
-    async_reader_writer) {
+void AsyncWriteRouteNotes(Stub::RouteChat_AsyncReaderWriter async_reader_writer) {
   std::vector<RouteNote> notes{
     MakeRouteNote("First message", 0, 0),
     MakeRouteNote("Second message", 0, 1),
@@ -362,7 +352,7 @@ void AsyncWriteRouteNotes(ClientAsyncReaderWriter<RouteNote, RouteNote>
 void RouteChatAsync(const ChannelSptr& channel) {
   Stub stub(channel);
   std::atomic_bool bReaderDone = false;
-  ClientAsyncReaderWriter<RouteNote, RouteNote> async_reader_writer(
+  auto async_reader_writer(
       stub.AsyncRouteChat([&bReaderDone](const Status& status) {
         if (!status.ok()) {
           std::cout << "RouteChat rpc failed. " << status.GetDetails()
