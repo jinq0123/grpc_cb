@@ -48,7 +48,7 @@ using helloworld::HelloReply;
 class GreeterServiceImpl final : public helloworld::Greeter::Service {
   void SayHello(
       const HelloRequest& request,
-      ::grpc_cb::ServerReplier<HelloReply> replier) override {
+      const SayHello_Replier& replier) override {
     std::string prefix("Hello ");
     std::cout << "SayHello: " << request.name() << std::endl;
     HelloReply reply;

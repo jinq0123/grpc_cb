@@ -130,7 +130,7 @@ void Service::SayHello(
 }
 void Service::SayHello(
     const ::helloworld::HelloRequest& request,
-    SayHello_Replier replier) {
+    const SayHello_Replier& replier) {
   (void)request;
   replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
 }

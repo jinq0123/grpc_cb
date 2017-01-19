@@ -243,7 +243,7 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "  // Todo: virtual void $Method$(const std::string& request_buffer, replier);\n"
         "  virtual void $Method$(\n"
         "      const $Request$& request,\n"
-        "      $Method$_Replier replier);\n\n");
+        "      const $Method$_Replier& replier);\n\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
         " private:\n"
@@ -658,7 +658,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "}\n"
         "void Service::$Method$(\n"
         "    const $Request$& request,\n"
-        "    $Method$_Replier replier) {\n"
+        "    const $Method$_Replier& replier) {\n"
         "  (void)request;\n"
         "  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);\n"
         "}\n\n");
