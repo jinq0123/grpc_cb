@@ -179,17 +179,23 @@ void PrintHeaderClientMethodPublic(
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
           *vars,
-          "::grpc_cb::ClientSyncWriter<$Request$>\n"
+          "using $Method$_SyncWriter =\n"
+          "    ::grpc_cb::ClientSyncWriter<$Request$>;\n"
+          "$Method$_SyncWriter\n"
           "Sync$Method$();\n"
           "\n"
-          "::grpc_cb::ClientAsyncWriter<\n"
-          "    $Request$,\n"
-          "    $Response$>\n"
+          "using $Method$_AsyncWriter =\n"
+          "    ::grpc_cb::ClientAsyncWriter<\n"
+          "        $Request$,\n"
+          "        $Response$>;\n"
+          "$Method$_AsyncWriter\n"
           "Async$Method$();\n\n");
   } else if (ServerOnlyStreaming(method)) {
       printer->Print(
           *vars,
-          "::grpc_cb::ClientSyncReader<$Response$>\n"
+          "using $Method$_SyncReader =\n"
+          "    ::grpc_cb::ClientSyncReader<$Response$>;\n"
+          "$Method$_SyncReader\n"
           "Sync$Method$(const $Request$& request);\n"
           "\n"
           "using $Method$MsgCb = std::function<\n"
@@ -200,14 +206,18 @@ void PrintHeaderClientMethodPublic(
   } else if (BidiStreaming(method)) {
       printer->Print(
           *vars,
-          "::grpc_cb::ClientSyncReaderWriter<\n"
-          "    $Request$,\n"
-          "    $Response$>\n"
+          "using $Method$_SyncReaderWriter =\n"
+          "    ::grpc_cb::ClientSyncReaderWriter<\n"
+          "        $Request$,\n"
+          "        $Response$>;\n"
+          "$Method$_SyncReaderWriter\n"
           "Sync$Method$();\n"
           "\n"
-          "::grpc_cb::ClientAsyncReaderWriter<\n"
-          "    $Request$,\n"
-          "    $Response$>\n"
+          "using $Method$_AsyncReaderWriter =\n"
+          "    ::grpc_cb::ClientAsyncReaderWriter<\n"
+          "        $Request$,\n"
+          "        $Response$>;\n"
+          "$Method$_AsyncReaderWriter\n"
           "Async$Method$(const ::grpc_cb::StatusCallback& on_status);\n\n");
   }
 }
