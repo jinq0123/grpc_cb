@@ -198,7 +198,7 @@ void Service::GetFeature(
 }
 void Service::GetFeature(
     const ::routeguide::Point& request,
-    const GetFeature_Replier& replier) {
+    GetFeature_Replier replier) {
   (void)request;
   replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
 }
@@ -219,7 +219,7 @@ void Service::ListFeatures(grpc_byte_buffer& request_buffer,
 
 void Service::ListFeatures(
     const ::routeguide::Rectangle& request,
-    const ListFeatures_Writer& writer) {
+    ListFeatures_Writer writer) {
   (void)request;
   writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
 }
@@ -242,8 +242,7 @@ void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
 }
 
 Service::RecordRoute_ReaderSptr
-Service::RecordRoute(
-    const RecordRoute_Replier& replier) {
+Service::RecordRoute(RecordRoute_Replier replier) {
   replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);
   return nullptr;
 }
@@ -266,8 +265,7 @@ void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
 }
 
 Service::RouteChat_ReaderSptr
-Service::RouteChat(
-    const RouteChat_Writer& writer) {
+Service::RouteChat(RouteChat_Writer writer) {
   writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
   return nullptr;
 }

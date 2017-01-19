@@ -153,7 +153,7 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
 
   void GetFeature(
       const Point& point,
-      const GetFeature_Replier& replier) override {
+      GetFeature_Replier replier) override {
     Feature feature;
     feature.set_name(GetFeatureName(point, feature_vector_));
     feature.mutable_location()->CopyFrom(point);
@@ -162,7 +162,7 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
 
   void ListFeatures(
       const routeguide::Rectangle& rectangle,
-      const ListFeatures_Writer& writer) override {
+      ListFeatures_Writer writer) override {
     const FeatureVector& feature_vector = feature_vector_;
     std::thread t([rectangle, writer, &feature_vector]() {
       auto lo = rectangle.lo();
@@ -187,11 +187,11 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
 
   // Todo: Need session id.
   RecordRoute_ReaderSptr RecordRoute(
-      const RecordRoute_Replier& replier) override {
+      RecordRoute_Replier replier) override {
     return std::make_shared<RecordRoute_ReaderImpl>(feature_vector_);
   }  // RecordRoute()
 
-  RouteChat_ReaderSptr RouteChat(const RouteChat_Writer& writer) override {
+  RouteChat_ReaderSptr RouteChat(RouteChat_Writer writer) override {
     class Reader : public RouteChat_Reader {
      protected:
       void OnMsg(const RouteNote& msg) override {
