@@ -141,7 +141,7 @@ void RunWriteRouteNote(ClientSyncReaderWriter<RouteNote, RouteNote>
     sync_reader_writer.Write(note);
     // RandomSleep();
   }
-  sync_reader_writer.CloseWriting();  // Optional.
+  sync_reader_writer.CloseWriting();
 }
 
 class RouteGuideClient {
@@ -169,8 +169,7 @@ class RouteGuideClient {
     std::cout << "Looking for features between 40, -75 and 42, -73"
         << std::endl;
 
-    ClientSyncReader<Feature> reader(
-        stub_->SyncListFeatures(rect));
+    auto reader(stub_->SyncListFeatures(rect));
     while (reader.ReadOne(&feature)) {
       std::cout << "Found feature called "
                 << feature.name() << " at "
@@ -191,7 +190,7 @@ class RouteGuideClient {
     std::uniform_int_distribution<int> feature_distribution(
         0, feature_list_.size() - 1);
 
-    ClientSyncWriter<Point> writer(stub_->SyncRecordRoute());
+    auto writer(stub_->SyncRecordRoute());
     for (int i = 0; i < kPoints; i++) {
       const Feature& f = feature_list_[feature_distribution(generator)];
       std::cout << "Visiting point "
@@ -259,7 +258,7 @@ void GetFeatureAsync(const ChannelSptr& channel) {
 
   // Ignore error status.
   stub.AsyncGetFeature(MakePoint(0, 0),
-      [](const Feature& feature) { PrintFeature(feature); });
+                       [](const Feature& feature) { PrintFeature(feature); });
 
   // Ignore response.
   stub.AsyncGetFeature(MakePoint(0, 0));

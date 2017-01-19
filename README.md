@@ -68,9 +68,55 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		```
 
 	* Server-side streaming RPC
-	* Client-side streaming RPC
-	* Bidirectional streaming RPC
+		```cpp
+		auto reader(stub_->SyncListFeatures(rect));
+		while (reader.ReadOne(&feature)) {
+			cout << feature.name() << endl;
+		}
+		Status status = reader.RecvStatus();
+		```
 
+	* Client-side streaming RPC
+		```cpp
+		auto writer(stub_->SyncRecordRoute());
+		for (int i = 0; i < kPoints; i++) {
+			const Feature& f = GetRandomFeature();
+			if (!writer.Write(f.location())) {
+				// Broken stream.
+				break;
+			}
+		}
+		
+		// Recv reponse and status.
+		RouteSummary stats;
+		Status status = writer.Close(&stats);
+		```
+
+	* Bidirectional streaming RPC
+		```cpp
+		auto sync_reader_writer(stub_->SyncRouteChat());
+		auto f = std::async(std::launch::async, [sync_reader_writer]() {
+			RunWriteRouteNote(sync_reader_writer);
+		});
+	
+		RouteNote server_note;
+		while (sync_reader_writer.ReadOne(&server_note))
+			PrintServerNote(server_note);
+	
+		f.wait();
+		Status status = sync_reader_writer.RecvStatus();
+		```
+
+		```cpp
+		void RunWriteRouteNote(RouteChat_SyncReaderWriter sync_reader_writer) {
+			std::vector<RouteNote> notes{ ... };
+			for (const RouteNote& note : notes) {
+				sync_reader_writer.Write(note);
+				RandomSleep();
+			}
+			sync_reader_writer.CloseWriting();
+		}
+		```
 + Asycn call
 	* Simple RPC: ```AsyncGetFeature()```
 		+ With response callback
