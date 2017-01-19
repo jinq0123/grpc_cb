@@ -162,14 +162,14 @@ class RouteGuideClient {
     std::cout << "Looking for features between 40, -75 and 42, -73"
         << std::endl;
 
-    auto reader(stub_->SyncListFeatures(rect));
-    while (reader.ReadOne(&feature)) {
+    auto sync_reader(stub_->SyncListFeatures(rect));
+    while (sync_reader.ReadOne(&feature)) {
       std::cout << "Found feature called "
                 << feature.name() << " at "
                 << feature.location().latitude()/kCoordFactor << ", "
                 << feature.location().longitude()/kCoordFactor << std::endl;
     }
-    Status status = reader.RecvStatus();
+    Status status = sync_reader.RecvStatus();
     if (status.ok()) {
       std::cout << "ListFeatures rpc succeeded." << std::endl;
     } else {
@@ -183,13 +183,13 @@ class RouteGuideClient {
     std::uniform_int_distribution<int> feature_distribution(
         0, feature_list_.size() - 1);
 
-    auto writer(stub_->SyncRecordRoute());
+    auto sync_writer(stub_->SyncRecordRoute());
     for (int i = 0; i < kPoints; i++) {
       const Feature& f = feature_list_[feature_distribution(generator)];
       std::cout << "Visiting point "
                 << f.location().latitude()/kCoordFactor << ", "
                 << f.location().longitude()/kCoordFactor << std::endl;
-      if (!writer.Write(f.location())) {
+      if (!sync_writer.Write(f.location())) {
         // Broken stream.
         break;
       }
@@ -197,7 +197,7 @@ class RouteGuideClient {
     }
     RouteSummary stats;
     // Recv reponse and status.
-    Status status = writer.Close(&stats);  // Todo: timeout
+    Status status = sync_writer.Close(&stats);  // Todo: timeout
     if (status.ok()) {
       std::cout << "Finished trip with " << stats.point_count() << " points\n"
                 << "Passed " << stats.feature_count() << " features\n"
@@ -303,21 +303,21 @@ void RecordRouteAsync(const ChannelSptr& channel,
   Stub stub(channel);
   auto f = std::async(std::launch::async, [&stub]() { stub.BlockingRun(); });
 
-  // ClientAsyncWriter<Point, RouteSummary> writer;
-  auto writer = stub.AsyncRecordRoute();
+  // ClientAsyncWriter<Point, RouteSummary> async_writer;
+  auto async_writer = stub.AsyncRecordRoute();
   for (int i = 0; i < kPoints; i++) {
     const Feature& f = feature_list[feature_distribution(generator)];
     std::cout << "Visiting point "
               << f.location().latitude()/kCoordFactor << ", "
               << f.location().longitude()/kCoordFactor << std::endl;
-    if (!writer.Write(f.location())) {
+    if (!async_writer.Write(f.location())) {
       // Broken stream.
       break;
     }
     RandomSleep();
   }
   // Recv reponse and status.
-  writer.Close([](const Status& status, const RouteSummary& resp) {
+  async_writer.Close([](const Status& status, const RouteSummary& resp) {
     if (!status.ok()) {
       std::cout << "RecordRoute rpc failed." << std::endl;
       return;

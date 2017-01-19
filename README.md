@@ -69,19 +69,19 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 
 	* Server-side streaming RPC
 		```cpp
-		auto reader(stub_->SyncListFeatures(rect));
-		while (reader.ReadOne(&feature)) {
+		auto sync_reader(stub_->SyncListFeatures(rect));
+		while (sync_reader.ReadOne(&feature)) {
 			cout << feature.name() << endl;
 		}
-		Status status = reader.RecvStatus();
+		Status status = sync_reader.RecvStatus();
 		```
 
 	* Client-side streaming RPC
 		```cpp
-		auto writer(stub_->SyncRecordRoute());
+		auto sync_writer(stub_->SyncRecordRoute());
 		for (int i = 0; i < kPoints; i++) {
 			const Feature& f = GetRandomFeature();
-			if (!writer.Write(f.location())) {
+			if (!sync_writer.Write(f.location())) {
 				// Broken stream.
 				break;
 			}
@@ -89,7 +89,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		
 		// Recv reponse and status.
 		RouteSummary stats;
-		Status status = writer.Close(&stats);
+		Status status = sync_writer.Close(&stats);
 		```
 
 	* Bidirectional streaming RPC
