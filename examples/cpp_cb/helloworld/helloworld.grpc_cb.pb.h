@@ -69,7 +69,7 @@ class Service : public ::grpc_cb::Service {
   // Todo: virtual void SayHello(const std::string& request_buffer, replier);
   virtual void SayHello(
       const ::helloworld::HelloRequest& request,
-      const SayHello_Replier& replier);
+      SayHello_Replier replier);
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()

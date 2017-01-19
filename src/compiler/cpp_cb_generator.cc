@@ -243,7 +243,7 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "  // Todo: virtual void $Method$(const std::string& request_buffer, replier);\n"
         "  virtual void $Method$(\n"
         "      const $Request$& request,\n"
-        "      const $Method$_Replier& replier);\n\n");
+        "      $Method$_Replier replier);\n\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
         " private:\n"
@@ -256,7 +256,7 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
         " protected:\n"
         "  virtual $Method$_ReaderSptr $Method$(\n"
-        "      const $Method$_Replier& replier);\n\n");
+        "      $Method$_Replier replier);\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
         " public:\n"
@@ -268,7 +268,7 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         " protected:\n"
         "  virtual void $Method$(\n"
         "      const $Request$& request,\n"
-        "      const $Method$_Writer& writer);\n\n");
+        "      $Method$_Writer writer);\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
         " private:\n"
@@ -281,7 +281,7 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
         " protected:\n"
         "  virtual $Method$_ReaderSptr $Method$(\n"
-        "      const $Method$_Writer& writer);\n\n");
+        "      $Method$_Writer writer);\n\n");
   }
 }
 
@@ -658,7 +658,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "}\n"
         "void Service::$Method$(\n"
         "    const $Request$& request,\n"
-        "    const $Method$_Replier& replier) {\n"
+        "    $Method$_Replier replier) {\n"
         "  (void)request;\n"
         "  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);\n"
         "}\n\n");
@@ -682,8 +682,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "}\n"
         "\n"
         "Service::$Method$_ReaderSptr\n"
-        "Service::$Method$(\n"
-        "    const $Method$_Replier& replier) {\n"
+        "Service::$Method$($Method$_Replier replier) {\n"
         "  replier.ReplyError(::grpc_cb::Status::UNIMPLEMENTED);\n"
         "  return nullptr;\n"
         "}\n\n");
@@ -705,7 +704,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "\n"
         "void Service::$Method$(\n"
         "    const $Request$& request,\n"
-        "    const ListFeatures_Writer& writer) {\n"
+        "    ListFeatures_Writer writer) {\n"
         "  (void)request;\n"
         "  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);\n"
         "}\n\n");
@@ -729,8 +728,7 @@ void PrintSourceServerMethod(grpc::protobuf::io::Printer *printer,
         "}\n"
         "\n"
         "Service::$Method$_ReaderSptr\n"
-        "Service::$Method$(\n"
-        "    const $Method$_Writer& writer) {\n"
+        "Service::$Method$($Method$_Writer writer) {\n"
         "  writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);\n"
         "  return nullptr;\n"
         "}\n\n");
