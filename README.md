@@ -242,11 +242,10 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 1. Server-side streaming RPC: ```ListFeatures()```
 	```cpp
 	void ListFeatures(const routeguide::Rectangle& rectangle,
-			const ListFeatures_Writer& writer) override {
-		ListFeatures_Writer writer_copy(writer)
-		std::thread t([writer_copy]() {
+			ListFeatures_Writer writer) override {
+		std::thread t([writer]() {
 			for (const Feature& f : feature_vector) {
-				if (!writer_copy.Write(f)) break;
+				if (!writer.Write(f)) break;
 				Sleep(1000);
 			}
 		});  // thread t
