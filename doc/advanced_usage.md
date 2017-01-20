@@ -2,7 +2,7 @@
 For basic usage, see tutorial in [../README.md](../README.md).
 
 ## Run multi stubs in one thread.
-Todo
+Todo: Use TryNext()
 ```
 Svc1::Stub stub1(channel);
 Svc2::Stub stub2(channel);
