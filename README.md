@@ -30,6 +30,26 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 1. Support message types other than protobuffer.
 
 ## Tutorial
+### Defining the service
+See examples/protos/route_guide.proto.
+```protobuf
+// Interface exported by the server.
+service RouteGuide {
+  // A simple RPC.
+  rpc GetFeature(Point) returns (Feature) {}
+
+  // A server-to-client streaming RPC.
+  rpc ListFeatures(Rectangle) returns (stream Feature) {}
+
+  // A client-to-server streaming RPC.
+  rpc RecordRoute(stream Point) returns (RouteSummary) {}
+
+  // A Bidirectional streaming RPC.
+  rpc RouteChat(stream RouteNote) returns (stream RouteNote) {}
+}
+...
+```
+
 ### Generating client and server code
 examples/protos/generate.bat is an example to generate client and server interfaces from .proto file, which runs:
 
