@@ -1,8 +1,6 @@
 # gRPC_cb
 C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc but not on grpc++. It is a replacement of grpc++. Easier to use.
 
-(Not ready)
-
 ## Build
 1. Copy [grpc](https://github.com/grpc/grpc) as third-party/grpc, and build grpc.
 	* To ease the building on Windows: [plasticbox/grpc-windows](https://github.com/plasticbox/grpc-windows)
@@ -311,3 +309,19 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 		```
 
 #### Starting the server
+1. Instantiate server and add listening port.
+	```cpp
+	Server svr;
+	svr.AddListeningPort("0.0.0.0:50051");
+	```
+
+2. Instantiate service and register to server.
+	```cpp
+	RouteGuideImpl service(db_path);
+	svr.RegisterService(service);
+	```
+
+3. Blocking run server.
+	```cpp
+	svr.BlockingRun();
+	```
