@@ -49,7 +49,7 @@ class ServerWriter GRPC_FINAL {
   bool IsClosed() const { return impl_sptr_->IsClosed(); }
 
  private:
-  std::shared_ptr<ServerWriterImpl> impl_sptr_;
+  const std::shared_ptr<ServerWriterImpl> impl_sptr_;
 };  // class ServerWriter<>
 
 }  // namespace grpc_cb

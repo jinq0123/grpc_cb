@@ -41,7 +41,7 @@ class ClientSyncReaderWriter GRPC_FINAL {
 
  private:
   using Impl = ClientSyncReaderWriterImpl<Request, Response>;
-  std::shared_ptr<Impl> impl_sptr_;
+  const std::shared_ptr<Impl> impl_sptr_;
 };  // class ClientSyncReaderWriter<>
 
 // Todo: BlockingGetInitMd();

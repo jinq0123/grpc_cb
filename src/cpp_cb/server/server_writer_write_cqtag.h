@@ -35,7 +35,7 @@ class ServerWriterWriteCqTag GRPC_FINAL : public CallCqTag {
  private:
   CodSendInitMd cod_send_init_md_;
   CodSendMsg cod_send_msg_;
-  ServerWriterImplSptr writer_impl_sptr_;
+  const ServerWriterImplSptr writer_impl_sptr_;
 };  // class ServerWriterWriteCqTag
 
 }  // namespace grpc_cb

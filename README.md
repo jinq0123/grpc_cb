@@ -13,11 +13,6 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 * route_guide example
 
 ## Todo
-1. Rename ...CallBack to On...
-1. Make impl sptr const:
-
-		const std::shared_ptr<Impl> impl_sptr_;
-
 1. Run multi stubs in one thread.
 1. Check thread-safety
 1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
