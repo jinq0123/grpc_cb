@@ -308,10 +308,6 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
   }
   printer->Outdent();
   printer->Print("};  // class Stub\n");
-
-  printer->Print("\n");
-  printer->Print(
-      "std::unique_ptr<Stub> NewStub(const ::grpc_cb::ChannelSptr& channel);\n");
   printer->Print("\n");
 
   // Server side - Synchronous
@@ -864,12 +860,6 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
                  "  return *service_descriptor_$Service$;\n"
                  "}\n\n");
 
-  printer->Print(*vars,
-                 "std::unique_ptr<Stub> NewStub("
-                 "const ::grpc_cb::ChannelSptr& channel) {\n"
-                 "  std::unique_ptr<Stub> stub(new Stub(channel));\n"
-                 "  return stub;\n"
-                 "}\n\n");
   printer->Print(*vars,
                  "Stub::Stub(const ::grpc_cb::ChannelSptr& channel)\n"
                  "    : ::grpc_cb::ServiceStub(channel) {}\n\n");

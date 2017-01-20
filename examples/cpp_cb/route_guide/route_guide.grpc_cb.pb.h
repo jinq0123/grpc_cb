@@ -83,8 +83,6 @@ class Stub : public ::grpc_cb::ServiceStub {
 
 };  // class Stub
 
-std::unique_ptr<Stub> NewStub(const ::grpc_cb::ChannelSptr& channel);
-
 class Service : public ::grpc_cb::Service {
  public:
   Service();

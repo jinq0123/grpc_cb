@@ -55,11 +55,6 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor() {
   return *service_descriptor_RouteGuide;
 }
 
-std::unique_ptr<Stub> NewStub(const ::grpc_cb::ChannelSptr& channel) {
-  std::unique_ptr<Stub> stub(new Stub(channel));
-  return stub;
-}
-
 Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
     : ::grpc_cb::ServiceStub(channel) {}
 
