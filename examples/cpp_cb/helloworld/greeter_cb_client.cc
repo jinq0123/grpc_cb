@@ -17,7 +17,7 @@ namespace Greeter = helloworld::Greeter;
 class GreeterClient {
  public:
   GreeterClient(ChannelSptr channel)
-      : stub_(Greeter::NewStub(channel)) {}
+      : stub_(new Greeter::Stub(channel)) {}
 
   // Assambles the client's payload, sends it and presents the response back
   // from the server.

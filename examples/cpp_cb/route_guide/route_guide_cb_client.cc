@@ -140,7 +140,7 @@ void RunWriteRouteNote(Stub::RouteChat_SyncReaderWriter sync_reader_writer) {
 class RouteGuideClient {
  public:
   RouteGuideClient(std::shared_ptr<Channel> channel, const std::string& db)
-      : stub_(routeguide::RouteGuide::NewStub(channel)) {
+      : stub_(new routeguide::RouteGuide::Stub(channel)) {
     routeguide::ParseDb(db, &feature_list_);
     assert(!feature_list_.empty());
   }
