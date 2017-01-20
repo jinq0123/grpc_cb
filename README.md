@@ -227,7 +227,7 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 
 1. Define a ```RouteGuideImpl``` class that implements the generated
    ```RouteGuide::Service``` interface.
-   Service is always asynchronous, and there is no AsyncService class.
+   Service is always asynchronous.
 	```cpp
 	class RouteGuideImpl final : public routeguide::RouteGuide::Service {
 		...
