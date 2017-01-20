@@ -24,6 +24,9 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 1. Support message types other than protobuffer.
 
 ## Tutorial
+Tutorial shows some codes in the route_guide example.
+ See [doc/advanced_usage,md](doc/advanced_usage.md) for more usage examples.
+
 ### Defining the service
 See examples/protos/route_guide.proto.
 ```protobuf
