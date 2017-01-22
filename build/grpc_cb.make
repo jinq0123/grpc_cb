@@ -85,6 +85,9 @@ OBJECTS := \
 	$(OBJDIR)/call_operations.o \
 	$(OBJDIR)/completion_queue.o \
 	$(OBJDIR)/do_next_completion.o \
+	$(OBJDIR)/proto_utils.o \
+	$(OBJDIR)/status.o \
+	$(OBJDIR)/string_ref.o \
 	$(OBJDIR)/server.o \
 	$(OBJDIR)/server_credentials.o \
 	$(OBJDIR)/server_method_call_cqtag.o \
@@ -92,9 +95,6 @@ OBJECTS := \
 	$(OBJDIR)/server_writer_impl.o \
 	$(OBJDIR)/server_writer_write_cqtag.o \
 	$(OBJDIR)/service.o \
-	$(OBJDIR)/proto_utils.o \
-	$(OBJDIR)/status.o \
-	$(OBJDIR)/string_ref.o \
 
 RESOURCES := \
 
@@ -212,6 +212,15 @@ $(OBJDIR)/completion_queue.o: ../src/cpp_cb/common/completion_queue.cc
 $(OBJDIR)/do_next_completion.o: ../src/cpp_cb/common/do_next_completion.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/proto_utils.o: ../src/cpp_cb/common/proto_utils.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/status.o: ../src/cpp_cb/common/status.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/string_ref.o: ../src/cpp_cb/common/string_ref.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/server.o: ../src/cpp_cb/server/server.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -231,15 +240,6 @@ $(OBJDIR)/server_writer_write_cqtag.o: ../src/cpp_cb/server/server_writer_write_
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/service.o: ../src/cpp_cb/server/service.cc
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/proto_utils.o: ../src/cpp_cb/util/proto_utils.cc
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/status.o: ../src/cpp_cb/util/status.cc
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/string_ref.o: ../src/cpp_cb/util/string_ref.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

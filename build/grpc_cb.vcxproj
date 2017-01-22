@@ -188,6 +188,9 @@
     <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />
     <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc" />
     <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\proto_utils.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\status.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\string_ref.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_credentials.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_method_call_cqtag.cc" />
@@ -195,9 +198,6 @@
     <ClCompile Include="..\src\cpp_cb\server\server_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\server\server_writer_write_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\server\service.cc" />
-    <ClCompile Include="..\src\cpp_cb\util\proto_utils.cc" />
-    <ClCompile Include="..\src\cpp_cb\util\status.cc" />
-    <ClCompile Include="..\src\cpp_cb\util\string_ref.cc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

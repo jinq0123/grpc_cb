@@ -7,8 +7,6 @@
 
 namespace grpc_cb {
 
-// XXX Rename As ClientAsyncWriterCloseCqTag
-
 ClientAsyncReaderReadCqTag::ClientAsyncReaderReadCqTag(const CallSptr& call_sptr)
     : ClientReaderReadCqTag(call_sptr) {
 }

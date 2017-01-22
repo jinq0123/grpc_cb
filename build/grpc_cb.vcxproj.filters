@@ -37,9 +37,6 @@
     <Filter Include="src\cpp_cb\server">
       <UniqueIdentifier>{4944CF8B-B55A-CD21-FED1-58436A279EA9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\cpp_cb\util">
-      <UniqueIdentifier>{B0B190AA-1C3D-FE6E-254E-816391585A6F}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\grpc_cb\channel.h">
@@ -341,6 +338,15 @@
     <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc">
       <Filter>src\cpp_cb\common</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\common\proto_utils.cc">
+      <Filter>src\cpp_cb\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\common\status.cc">
+      <Filter>src\cpp_cb\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\common\string_ref.cc">
+      <Filter>src\cpp_cb\common</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\cpp_cb\server\server.cc">
       <Filter>src\cpp_cb\server</Filter>
     </ClCompile>
@@ -361,15 +367,6 @@
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\server\service.cc">
       <Filter>src\cpp_cb\server</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cpp_cb\util\proto_utils.cc">
-      <Filter>src\cpp_cb\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cpp_cb\util\status.cc">
-      <Filter>src\cpp_cb\util</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cpp_cb\util\string_ref.cc">
-      <Filter>src\cpp_cb\util</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
