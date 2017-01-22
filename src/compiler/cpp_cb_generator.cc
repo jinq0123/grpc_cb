@@ -163,19 +163,10 @@ void PrintHeaderClientMethodPublic(
           "\n"
           "using $Method$Callback =\n"
           "    std::function<void (const $Response$& response)>;\n"
-          "inline void Async$Method$(\n"
-          "    const $Request$& request) {\n"
-          "  return Async$Method$(request, &IgnoreResponse<$Response$>);\n"
-          "}\n"
-          "inline void Async$Method$(\n"
-          "    const $Request$& request,\n"
-          "    const $Method$Callback& cb) {\n"
-          "  return Async$Method$(request, cb, GetErrorCallback());  // Use default error callback.\n"
-          "}\n"
           "void Async$Method$(\n"
           "    const $Request$& request,\n"
-          "    const $Method$Callback& cb,\n"
-          "    const ::grpc_cb::ErrorCallback& ecb);\n\n");
+          "    const $Method$Callback& cb = $Method$Callback(),\n"
+          "    const ::grpc_cb::ErrorCallback& ecb = ::grpc_cb::ErrorCallback());\n\n");
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
           *vars,
@@ -558,15 +549,14 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "    const $Request$& request,\n"
         "    const $Method$Callback& cb,\n"
         "    const ::grpc_cb::ErrorCallback& ecb) {\n"
-        "  assert(cb && ecb);\n"
         "  ::grpc_cb::CallSptr call_sptr(\n"
         "      GetChannel().MakeSharedCall(method_names[$Idx$], GetCq()));\n"
         "  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<$Response$>;\n"
         "  CqTag* tag = new CqTag(call_sptr, cb, ecb);\n"
         "  if (tag->Start(request)) return;\n"
         "  delete tag;\n"
-        "  // Todo: Extract CallInternalErrorCb(\"Error to do...\");\n"
-        "  ecb(::grpc_cb::Status::InternalError(\"Failed to async request.\"));\n"
+        "  if (ecb)\n"
+        "    ecb(::grpc_cb::Status::InternalError(\"Failed to async request.\"));\n"
         "}\n"
         "\n");
   } else if (ClientOnlyStreaming(method)) {
