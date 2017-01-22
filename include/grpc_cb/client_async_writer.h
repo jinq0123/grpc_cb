@@ -18,7 +18,7 @@ namespace grpc_cb {
 
 class Status;
 
-// Copyable.
+// Copyable. Thread-safe.
 // Use template class instead of template member function
 //    to ensure client input the correct request type.
 template <class Request, class Response>

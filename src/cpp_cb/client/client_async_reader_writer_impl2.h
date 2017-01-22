@@ -26,6 +26,7 @@ class ClientAsyncWriterHelper;
 // Impl1 is to make Writer copyable.
 // Impl2 will live longer than the Writer.
 // We need dtr() of Impl1 to close writing.
+// Thread-safe.
 class ClientAsyncReaderWriterImpl2 GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderWriterImpl2> {
  public:

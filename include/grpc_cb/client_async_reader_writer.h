@@ -13,7 +13,7 @@
 
 namespace grpc_cb {
 
-// Copyable.
+// Copyable. Thread-safe.
 template <class Request, class Response>
 class ClientAsyncReaderWriter GRPC_FINAL {
  public:

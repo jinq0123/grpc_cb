@@ -17,6 +17,7 @@ namespace grpc_cb {
 
 class ClientAsyncReaderWriterImpl2;
 
+// Thread-safe.
 // Only shared in ClientAsyncReaderWriter, because we need dtr() to close writing.
 class ClientAsyncReaderWriterImpl GRPC_FINAL {
  public:

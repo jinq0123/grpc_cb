@@ -15,6 +15,7 @@ namespace grpc_cb {
 class Status;
 
 // ServerReader for client only streaming.
+// Thread-safe.
 template <class Request, class Response>
 class ServerReaderForClientOnlyStreaming : public ServerReader<Request> {
  public:

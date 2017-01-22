@@ -19,6 +19,7 @@ namespace grpc_cb {
 class ClientAsyncWriterImpl2;
 
 // Only shared in ClientAsyncWriter, because we need dtr() to close writing.
+// Thread-safe.
 class ClientAsyncWriterImpl GRPC_FINAL {
  public:
   ClientAsyncWriterImpl(const ChannelSptr& channel, const std::string& method,

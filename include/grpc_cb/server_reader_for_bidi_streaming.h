@@ -15,6 +15,7 @@ namespace grpc_cb {
 class Status;
 
 // ServerReader for bidirectional streaming.
+// Thread-safe.
 template <class Request, class Response>
 class ServerReaderForBidiStreaming : public ServerReader<Request> {
  public:

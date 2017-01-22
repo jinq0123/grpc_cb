@@ -8,7 +8,8 @@ namespace grpc_cb {
 
 class Status;
 
-// ServerReader is the base of client stream handler.
+// ServerReader is the interface of client streaming handler.
+// Thread-safe.
 template <class MsgType>
 class ServerReader {
  public:
