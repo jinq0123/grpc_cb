@@ -17,6 +17,8 @@
 namespace grpc_cb {
 
 // The base of generated service stubs.
+// Copyable.
+// Thread-safe except for SetErrorCallback() and SetDefaultErrorCallback().
 class ServiceStub {
  public:
   explicit ServiceStub(const ChannelSptr& channel_sptr);
@@ -31,6 +33,7 @@ class ServiceStub {
   inline const ErrorCallback& GetErrorCallback() const {
     return error_callback_;
   }
+  // non-thread-safe
   inline void SetErrorCallback(const ErrorCallback& cb) {
     assert(cb);
     error_callback_ = cb;
@@ -45,12 +48,11 @@ class ServiceStub {
   static inline ErrorCallback& GetDefaultErrorCallback() {
     return default_error_callback_;
   }
+  // non-thread-safe
   static inline void SetDefaultErrorCallback(const ErrorCallback cb) {
     assert(cb);
     default_error_callback_ = cb;
   }
-  // Default ignore error.
-  static void IgnoreError(const Status&) {}
 
  public:
   template <class ResponseType>
@@ -62,9 +64,10 @@ class ServiceStub {
   void Shutdown();
 
  private:
-  ChannelSptr channel_sptr_;
+  const ChannelSptr channel_sptr_;
+  const CompletionQueueSptr cq_sptr_;
+
   ErrorCallback error_callback_;
-  CompletionQueueSptr cq_sptr_;
 
  private:
   static ErrorCallback default_error_callback_;

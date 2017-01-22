@@ -20,6 +20,7 @@ namespace grpc_cb {
 class CompletionQueue;
 
 /// Channel represents a connection to an endpoint.
+/// Thread-safe.
 class Channel : public GrpcLibrary,
                 public std::enable_shared_from_this<Channel> {
  public:

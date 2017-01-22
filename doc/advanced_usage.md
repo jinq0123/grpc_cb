@@ -1,7 +1,7 @@
 # Advanced Usage
 For basic usage, see tutorial in [../README.md](../README.md).
 
-## Run multi stubs in one thread.
+## Run multi stubs in one thread
 Todo: Use TryNext()
 ```
 Svc1::Stub stub1(channel);
@@ -12,13 +12,13 @@ runner.AddStub(stub2);
 runner.BlockingRun();
 ```
 
-## Run a stub in multi threads.
+## Run a stub in multi threads
 ```cpp
 auto f1 = std::async(async, [stub]() { stub.BlockingRun(); }
 auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
 ```
 
-## Mix sync and async stub calls.
+## Mix sync and async stub calls
 
 ```Stub``` uses an internal completion queue for async calls,
  and instantiate a completion queue for each sync operations,
@@ -36,4 +36,24 @@ auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
   Feature feature;
   Status status = stub.BlockingGetFeature(point, &feature);
   ...
-``` 
+```
+
+## Set default error callback
+Use ```ServiceStub::SetErrorCallback()``` to set a default error callback for this stub.
+```cpp
+RouteGuide::Stub stub(channel);
+stub.SetErrorCallback([](const Status& status) {
+	cout << "RouteGuide: " << status.GetDetail() << endl;
+});
+```
+
+Use ```ServiceStub::SetDefaultErrorCallback()``` to set a default error callback for all the new stubs.
+```cpp
+ServiceStub::SetDefaultErrorCallback([](const Status& status) {
+	cout << status.GetDetail() << endl;
+});
+Stub1 stub1(channel);
+Stub2 stub2(channel);
+```
+
+Note: ```SetErrorCallback()``` and ```SetDefaultErrorCallback()``` are not thread-safe.

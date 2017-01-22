@@ -49,6 +49,7 @@ namespace grpc_cb {
 
 /// A thin wrapper around \a grpc_completion_queue (see / \a
 /// src/core/surface/completion_queue.h).
+/// Thread-safe.
 class CompletionQueue : public GrpcLibrary {
  public:
   /// Default constructor. Implicitly creates a \a grpc_completion_queue
