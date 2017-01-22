@@ -30,19 +30,10 @@ class Stub : public ::grpc_cb::ServiceStub {
 
   using SayHelloCallback =
       std::function<void (const ::helloworld::HelloReply& response)>;
-  inline void AsyncSayHello(
-      const ::helloworld::HelloRequest& request) {
-    return AsyncSayHello(request, &IgnoreResponse<::helloworld::HelloReply>);
-  }
-  inline void AsyncSayHello(
-      const ::helloworld::HelloRequest& request,
-      const SayHelloCallback& cb) {
-    return AsyncSayHello(request, cb, GetErrorCallback());  // Use default error callback.
-  }
   void AsyncSayHello(
       const ::helloworld::HelloRequest& request,
-      const SayHelloCallback& cb,
-      const ::grpc_cb::ErrorCallback& ecb);
+      const SayHelloCallback& cb = SayHelloCallback(),
+      const ::grpc_cb::ErrorCallback& ecb = ::grpc_cb::ErrorCallback());
 
 };  // class Stub
 

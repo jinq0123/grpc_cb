@@ -17,7 +17,6 @@ ServiceStub::ServiceStub(const ChannelSptr& channel_sptr)
     error_callback_(default_error_callback_),
     cq_sptr_(new CompletionQueue) {
   assert(channel_sptr);
-  assert(error_callback_);
 }
 
 ServiceStub::~ServiceStub() {

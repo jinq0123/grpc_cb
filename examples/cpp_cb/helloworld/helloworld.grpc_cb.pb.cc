@@ -72,15 +72,14 @@ void Stub::AsyncSayHello(
     const ::helloworld::HelloRequest& request,
     const SayHelloCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
-  assert(cb && ecb);
   ::grpc_cb::CallSptr call_sptr(
       GetChannel().MakeSharedCall(method_names[0], GetCq()));
   using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
   CqTag* tag = new CqTag(call_sptr, cb, ecb);
   if (tag->Start(request)) return;
   delete tag;
-  // Todo: Extract CallInternalErrorCb("Error to do...");
-  ecb(::grpc_cb::Status::InternalError("Failed to async request."));
+  if (ecb)
+    ecb(::grpc_cb::Status::InternalError("Failed to async request."));
 }
 
 Service::Service() {}

@@ -35,7 +35,6 @@ class ServiceStub {
   }
   // non-thread-safe
   inline void SetErrorCallback(const ErrorCallback& cb) {
-    assert(cb);
     error_callback_ = cb;
   }
   inline CompletionQueue& GetCq() const {
@@ -50,13 +49,8 @@ class ServiceStub {
   }
   // non-thread-safe
   static inline void SetDefaultErrorCallback(const ErrorCallback cb) {
-    assert(cb);
     default_error_callback_ = cb;
   }
-
- public:
-  template <class ResponseType>
-  static void IgnoreResponse(const ResponseType&) {}
 
  public:
   void BlockingRun();

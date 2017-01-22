@@ -30,19 +30,10 @@ class Stub : public ::grpc_cb::ServiceStub {
 
   using GetFeatureCallback =
       std::function<void (const ::routeguide::Feature& response)>;
-  inline void AsyncGetFeature(
-      const ::routeguide::Point& request) {
-    return AsyncGetFeature(request, &IgnoreResponse<::routeguide::Feature>);
-  }
-  inline void AsyncGetFeature(
-      const ::routeguide::Point& request,
-      const GetFeatureCallback& cb) {
-    return AsyncGetFeature(request, cb, GetErrorCallback());  // Use default error callback.
-  }
   void AsyncGetFeature(
       const ::routeguide::Point& request,
-      const GetFeatureCallback& cb,
-      const ::grpc_cb::ErrorCallback& ecb);
+      const GetFeatureCallback& cb = GetFeatureCallback(),
+      const ::grpc_cb::ErrorCallback& ecb = ::grpc_cb::ErrorCallback());
 
   using ListFeatures_SyncReader =
       ::grpc_cb::ClientSyncReader<::routeguide::Feature>;
