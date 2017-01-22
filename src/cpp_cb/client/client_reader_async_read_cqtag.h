@@ -7,20 +7,21 @@
 #include <grpc_cb/support/config.h>   // for GRPC_FINAL
 #include <grpc_cb/impl/client/client_reader_read_cqtag.h>  // for ClientReaderReadCqTag
 
-#include "client_async_reader_helper_sptr.h"  // for ClientAsyncReaderHelperSptr
-
 namespace grpc_cb {
 
 // Used in ClientAsyncReaderHelper.
-// Todo: rename to ClientAsyncReaderReadCqTag
+// Todo: rename to ClientAsyncReaderReadCqTag XXX
 class ClientReaderAsyncReadCqTag GRPC_FINAL : public ClientReaderReadCqTag {
  public:
-  ClientReaderAsyncReadCqTag(const ClientAsyncReaderHelperSptr& reader_sptr);
+  explicit ClientReaderAsyncReadCqTag(const CallSptr& call_sptr);
+
+  using OnRead = std::function<void()>;
+  void SetOnRead(const OnRead& on_read) { on_read_ = on_read; }
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
-  const ClientAsyncReaderHelperSptr reader_sptr_;
+  OnRead on_read_;
 };  // class ClientReaderAsyncReadCqTag
 
 }  // namespace grpc_cb

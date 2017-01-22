@@ -7,18 +7,16 @@
 
 namespace grpc_cb {
 
-// TODO: Use callback instead of reader_sptr. As ClientAsyncWriterCloseCqTag
+// XXX TODO: Use callback instead of reader_sptr. As ClientAsyncWriterCloseCqTag
 
-ClientReaderAsyncReadCqTag::ClientReaderAsyncReadCqTag(
-    const ClientAsyncReaderHelperSptr& reader_sptr)
-    : ClientReaderReadCqTag(reader_sptr->GetCallSptr()),
-      reader_sptr_(reader_sptr) {
-  assert(reader_sptr);
+ClientReaderAsyncReadCqTag::ClientReaderAsyncReadCqTag(const CallSptr& call_sptr)
+    : ClientReaderReadCqTag(call_sptr) {
 }
 
 void ClientReaderAsyncReadCqTag::DoComplete(bool success) {
   assert(success);
-  reader_sptr_->OnRead(*this);
+  if (on_read_)
+    on_read_();
 }
 
 }  // namespace grpc_cb

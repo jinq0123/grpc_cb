@@ -15,9 +15,9 @@ class ClientAsyncWriterCloseCqTag GRPC_FINAL : public ClientWriterCloseCqTag {
  public:
   explicit ClientAsyncWriterCloseCqTag(const CallSptr& call_sptr);
 
+  // Can not input callback in ctr(), because callback need to reference this.
   using OnClosed = std::function<void ()>;
   void SetOnClosed(const OnClosed& on_closed) { on_closed_ = on_closed; }
-  // Todo: Change callback in ctr() to SetCb(), because callback need to reference this.
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 

@@ -37,7 +37,7 @@ class ClientAsyncReaderHelper GRPC_FINAL
  public:
   // for ClientReaderAsyncReadCqTag
   void OnRead(ClientReaderAsyncReadCqTag& tag);
-  CallSptr GetCallSptr() const { return call_sptr_; }
+  // DEL CallSptr GetCallSptr() const { return call_sptr_; }
 
  private:
   void Next();

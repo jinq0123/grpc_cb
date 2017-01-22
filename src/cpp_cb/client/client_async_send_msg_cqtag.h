@@ -9,19 +9,19 @@
 #include <grpc_cb/impl/client/client_send_msg_cqtag.h>  // for ClientSendMsgCqTag
 #include <grpc_cb/support/config.h>                     // for GRPC_FINAL
 
-#include "client_async_writer_helper_sptr.h"  // for ClientAsyncWriterHelperSptr
-
 namespace grpc_cb {
 
 class ClientAsyncSendMsgCqTag GRPC_FINAL : public ClientSendMsgCqTag {
  public:
-  explicit ClientAsyncSendMsgCqTag(
-      const ClientAsyncWriterHelperSptr writer_sptr);
+  explicit ClientAsyncSendMsgCqTag(const CallSptr& call_sptr);
+
+  using OnWritten = std::function<void()>;
+  void SetOnWritten(const OnWritten& on_written) { on_written_ = on_written; }
 
   void DoComplete(bool success) GRPC_OVERRIDE;
 
  private:
-  const ClientAsyncWriterHelperSptr writer_sptr_;
+  OnWritten on_written_;
 };  // class ClientAsyncSendMsgCqTag
 
 }  // namespace grpc_cb

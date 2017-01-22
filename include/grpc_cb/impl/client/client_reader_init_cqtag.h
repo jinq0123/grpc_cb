@@ -16,8 +16,10 @@ namespace grpc_cb {
 
 class ClientReaderInitCqTag GRPC_FINAL : public CallCqTag {
  public:
-  inline ClientReaderInitCqTag(const CallSptr& call_sptr) : CallCqTag(call_sptr) {}
-  inline bool Start(const ::google::protobuf::Message& request) GRPC_MUST_USE_RESULT;
+  inline explicit ClientReaderInitCqTag(const CallSptr& call_sptr)
+      : CallCqTag(call_sptr) {}
+  inline bool Start(const ::google::protobuf::Message& request)
+      GRPC_MUST_USE_RESULT;
 
  private:
   CodSendMsg cod_send_msg_;

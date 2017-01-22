@@ -41,8 +41,6 @@ class ClientAsyncWriterHelper GRPC_FINAL
   const Status& GetStatus() const { return status_; }
 
  public:
-  // for ClientAsyncSendMsgCqTag
-  CallSptr GetCallSptr() const { return call_sptr_; }
   void OnWritten();
 
  private:

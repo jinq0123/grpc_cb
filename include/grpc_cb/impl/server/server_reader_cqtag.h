@@ -22,8 +22,9 @@ class ServerReaderCqTag GRPC_FINAL : public CallCqTag {
  public:
   using Reader = ServerReader<MsgType>;
   using ReaderSptr = std::shared_ptr<Reader>;
-  inline ServerReaderCqTag(const CallSptr& call_sptr,
-                           const ReaderSptr& reader_sptr);
+  inline explicit ServerReaderCqTag(const CallSptr& call_sptr,
+                                    const ReaderSptr& reader_sptr);
+
  public:
   inline bool Start() GRPC_MUST_USE_RESULT;
  public:

@@ -36,8 +36,9 @@ void ClientAsyncReaderHelper::Next() {
   if (aborted_)  // Maybe writer failed.
     return;
 
+  auto* tag = new ClientReaderAsyncReadCqTag(call_sptr_);
   auto sptr = shared_from_this();
-  auto* tag = new ClientReaderAsyncReadCqTag(sptr);
+  tag->SetOnRead([sptr, tag]() { sptr->OnRead(*tag); });
   if (tag->Start()) return;
 
   delete tag;
