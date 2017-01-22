@@ -13,7 +13,7 @@
 
 namespace grpc_cb {
 
-// Base of ClientAsyncSendMsgCqTag.
+// Base of ClientAsyncWriterSendMsgCqTag.
 class ClientSendMsgCqTag : public CallCqTag {
  public:
   explicit ClientSendMsgCqTag(const CallSptr& call_sptr)

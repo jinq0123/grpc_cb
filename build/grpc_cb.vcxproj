@@ -156,11 +156,11 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_recv_status.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_writer_impl2.h" />
-    <ClInclude Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_send_msg_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
@@ -174,11 +174,11 @@
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_recv_status.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl2.cc" />
-    <ClCompile Include="..\src\cpp_cb\client\client_async_send_msg_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_close_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_helper.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl2.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_send_msg_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc" />

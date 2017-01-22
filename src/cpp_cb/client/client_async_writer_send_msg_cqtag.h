@@ -1,8 +1,8 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
 
-#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_SEND_MSG_CQTAG_H
-#define GRPC_CB_CLIENT_CLIENT_ASYNC_SEND_MSG_CQTAG_H
+#ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_SEND_MSG_CQTAG_H
+#define GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_SEND_MSG_CQTAG_H
 
 #include <functional>  // for function
 
@@ -11,9 +11,9 @@
 
 namespace grpc_cb {
 
-class ClientAsyncSendMsgCqTag GRPC_FINAL : public ClientSendMsgCqTag {
+class ClientAsyncWriterSendMsgCqTag GRPC_FINAL : public ClientSendMsgCqTag {
  public:
-  explicit ClientAsyncSendMsgCqTag(const CallSptr& call_sptr);
+  explicit ClientAsyncWriterSendMsgCqTag(const CallSptr& call_sptr);
 
   using OnWritten = std::function<void()>;
   void SetOnWritten(const OnWritten& on_written) { on_written_ = on_written; }
@@ -22,7 +22,7 @@ class ClientAsyncSendMsgCqTag GRPC_FINAL : public ClientSendMsgCqTag {
 
  private:
   OnWritten on_written_;
-};  // class ClientAsyncSendMsgCqTag
+};  // class ClientAsyncWriterSendMsgCqTag
 
 }  // namespace grpc_cb
-#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_SEND_MSG_CQTAG_H
+#endif  // GRPC_CB_CLIENT_CLIENT_ASYNC_WRITER_SEND_MSG_CQTAG_H

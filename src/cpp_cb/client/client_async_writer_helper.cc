@@ -7,7 +7,7 @@
 
 #include <grpc_cb/status.h>  // for Status::ok()
 
-#include "client_async_send_msg_cqtag.h"  // for ClientAsyncSendMsgCqTag
+#include "client_async_writer_send_msg_cqtag.h"  // for ClientAsyncWriterSendMsgCqTag
 
 namespace grpc_cb {
 
@@ -53,7 +53,7 @@ bool ClientAsyncWriterHelper::WriteNext() {
 
   assert(call_sptr_);
   // Todo: Rename to ClientAsyncWriterSendMsgCqTag. XXX
-  auto* tag = new ClientAsyncSendMsgCqTag(call_sptr_);
+  auto* tag = new ClientAsyncWriterSendMsgCqTag(call_sptr_);
   auto sptr = shared_from_this();
   tag->SetOnWritten([sptr]() { sptr->OnWritten(); });
   if (tag->Start(*msg_sptr))
