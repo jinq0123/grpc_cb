@@ -13,12 +13,11 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 * route_guide example
 
 ## Todo
-1. Run multi stubs in one thread.
-1. Check thread-safety
-1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Timeout
+1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Connect and disconnect event.
 1. Export for unity.
+1. Run multi stubs in one thread.
 1. Compression
 1. Security
 1. Support message types other than protobuffer.
