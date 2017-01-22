@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_SERVER_REPLIER_IMPL_H
 #define GRPC_CB_SERVER_REPLIER_IMPL_H
 
+#include <atomic>  // for atomic_bool
 #include <memory>
 
 #include <grpc_cb/impl/call_sptr.h>                   // for CallSptr
@@ -16,6 +17,7 @@ class Status;
 // ServerReplierImpl can reply any type of response.
 // User should not use ServerReplierImpl directly, use ServerReplier<> instead.
 // Safe to delete before completion.
+// Thread-safe.
 class ServerReplierImpl GRPC_FINAL {
  public:
   explicit ServerReplierImpl(const CallSptr& call_sptr)
@@ -42,8 +44,8 @@ class ServerReplierImpl GRPC_FINAL {
 
 private:
   const CallSptr call_sptr_;
-  bool send_init_md_ = true;  // need to send initial metadata
-  bool replied_ = false;
+  std::atomic_bool send_init_md_{ true };  // need to send initial metadata
+  std::atomic_bool replied_{ false };
 };  // class ServerReplierImpl
 
 // Todo: SendInitMetadata and SetTrailingMetadata

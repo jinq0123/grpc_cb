@@ -13,12 +13,11 @@ namespace grpc_cb {
 
 class Status;
 
-// ServerReplier is for unary rpc call and client stream rpc.
-// ServerWriter is for server stream rpc.
-// No ServerReader. Reading is done asynchronously and internally.
-// XXX ServerReader is provided by user.
+// ServerReplier is for unary rpc call and client only streaming rpc.
+// ServerWriter is for server streaming rpc.
+// ServerReader is provided by user for client streaming rpc.
 
-// Copyable.
+// Copyable. Thread-safe.
 // Safe to delete before completion.
 // Only accept the 1st reply and ignore other replies.
 template <class ResponseType>

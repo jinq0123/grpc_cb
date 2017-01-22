@@ -8,7 +8,7 @@
 
 namespace grpc_cb {
 
-// Copyable.
+// Copyable. Thread-safe.
 template <class Response>
 class ServerWriter GRPC_FINAL {
  public:
