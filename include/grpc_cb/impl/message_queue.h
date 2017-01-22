@@ -10,7 +10,6 @@
 
 namespace grpc_cb {
 
-// Todo: only used by ServerWriterImpl? Inline it.
 using MessageQueue = std::queue<MessageSptr>;
 
 }  // namespace grpc_cb
