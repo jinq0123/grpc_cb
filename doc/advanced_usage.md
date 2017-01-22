@@ -21,7 +21,7 @@ auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
 ## Mix sync and async stub calls.
 
 ```Stub``` uses an internal completion queue for async calls,
- and instantiate a completion queue for each sync calls,
+ and instantiate a completion queue for each sync operations,
  so ```Stub``` can mix sync and async calls.
 
 ```cpp
