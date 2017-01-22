@@ -43,14 +43,14 @@ Use ```ServiceStub::SetErrorCallback()``` to set a default error callback for th
 ```cpp
 RouteGuide::Stub stub(channel);
 stub.SetErrorCallback([](const Status& status) {
-	cout << "RouteGuide: " << status.GetDetail() << endl;
+	cout << "RouteGuide: " << status.GetDetails() << endl;
 });
 ```
 
 Use ```ServiceStub::SetDefaultErrorCallback()``` to set a default error callback for all the new stubs.
 ```cpp
 ServiceStub::SetDefaultErrorCallback([](const Status& status) {
-	cout << status.GetDetail() << endl;
+	cout << status.GetDetails() << endl;
 });
 Stub1 stub1(channel);
 Stub2 stub2(channel);

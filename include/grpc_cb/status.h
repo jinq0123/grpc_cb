@@ -40,6 +40,7 @@
 
 namespace grpc_cb {
 
+// Non-thread-safe.
 class Status {
  public:
   /// Construct an OK instance.
