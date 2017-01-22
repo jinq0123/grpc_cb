@@ -34,5 +34,5 @@ Todo: set default high queue size
 Because completion queue can not mix ```pluck()``` and ```next()```, 
 the stream rpc call must be sync or async.
 Sync call uses own completion queue and pluck on each read or write.
-Async call uses a shared completion queue and do next for all calls.
+Async call uses a shared completion queue and do next for all operations.
 
