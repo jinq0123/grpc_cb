@@ -12,6 +12,12 @@ runner.AddStub(stub2);
 runner.BlockingRun();
 ```
 
+## Run a stub in multi threads.
+```cpp
+auto f1 = std::async(async, [stub]() { stub.BlockingRun(); }
+auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
+```
+
 ## Mix sync and async stub calls.
 
 ```Stub``` uses an internal completion queue for async calls,
