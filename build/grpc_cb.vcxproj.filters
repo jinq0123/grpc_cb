@@ -243,6 +243,9 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper_sptr.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_read_cqtag.h">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_recv_status.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
@@ -262,9 +265,6 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_send_msg_cqtag.h">
-      <Filter>src\cpp_cb\client</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h">
@@ -288,6 +288,9 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_impl.cc">
+      <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_read_cqtag.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_recv_status.cc">
@@ -315,9 +318,6 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc">
-      <Filter>src\cpp_cb\client</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cpp_cb\client\client_reader_async_read_cqtag.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc">

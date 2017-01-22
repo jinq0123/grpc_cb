@@ -16,7 +16,7 @@ namespace grpc_cb {
 
 // Completion queue tag to read msg blockingly.
 // For ClientReader and ClientReaderWriter.
-// Base class of ClientReaderAsyncReadCqTag.
+// Base class of ClientAsyncReaderReadCqTag.
 class ClientReaderReadCqTag : public CallCqTag {
  public:
   explicit ClientReaderReadCqTag(const CallSptr& call_sptr)

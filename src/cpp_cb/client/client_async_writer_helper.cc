@@ -52,7 +52,6 @@ bool ClientAsyncWriterHelper::WriteNext() {
   msg_queue_.pop();  // may empty now but is_writing_
 
   assert(call_sptr_);
-  // Todo: Rename to ClientAsyncWriterSendMsgCqTag. XXX
   auto* tag = new ClientAsyncWriterSendMsgCqTag(call_sptr_);
   auto sptr = shared_from_this();
   tag->SetOnWritten([sptr]() { sptr->OnWritten(); });
