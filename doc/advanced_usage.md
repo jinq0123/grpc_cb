@@ -68,5 +68,12 @@ Note: ```SetErrorCallback()``` and ```SetDefaultErrorCallback()``` are not threa
 	stub->BlockingSayHello();
 	```
 	
+* Set timeout on stub
+	```cpp
+	Stub stub(channel);
+	stub.SetCallTimeoutMs(1000);
+	```
+
 * Set timeout on call
-* Set timeout on stub?
+	+ Not supported
+	+ Set timeout on stub instead.
