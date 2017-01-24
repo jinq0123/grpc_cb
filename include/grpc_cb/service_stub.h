@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_SERVICE_STUB_H
 #define GRPC_CB_SERVICE_STUB_H
 
+#include <atomic>  // for atomic_int64
 #include <cassert>
 #include <unordered_map>
 
@@ -42,6 +43,10 @@ class ServiceStub {
     return *cq_sptr_;
   }
   inline CompletionQueueSptr GetCqSptr() const { return cq_sptr_; }
+  inline int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
+  inline void SetCallTimeoutMs(int64_t timeout_ms) {
+      call_timeout_ms_ = timeout_ms;
+  }
 
  public:
   static inline ErrorCallback& GetDefaultErrorCallback() {
@@ -62,6 +67,7 @@ class ServiceStub {
   const CompletionQueueSptr cq_sptr_;
 
   ErrorCallback error_callback_;
+  std::atomic_int64_t call_timeout_ms_;
 
  private:
   static ErrorCallback default_error_callback_;

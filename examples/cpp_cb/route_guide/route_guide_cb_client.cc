@@ -140,7 +140,7 @@ void RunWriteRouteNote(Stub::RouteChat_SyncReaderWriter sync_reader_writer) {
 class RouteGuideClient {
  public:
   RouteGuideClient(std::shared_ptr<Channel> channel, const std::string& db)
-      : stub_(new routeguide::RouteGuide::Stub(channel)) {
+      : stub_(new Stub(channel)) {
     routeguide::ParseDb(db, &feature_list_);
     assert(!feature_list_.empty());
   }
@@ -374,6 +374,15 @@ void RouteChatAsync(const ChannelSptr& channel) {
   stub.Shutdown();  // To break BlockingRun().
 }  // RouteChatAsync()
 
+void TestRpcTimeout(const ChannelSptr& channel) {
+  Stub stub(channel);
+  stub.SetCallTimeoutMs(INT64_MIN);
+  Point point = MakePoint(0, 0);
+  Feature feature;
+  Status status = stub.BlockingGetFeature(point, &feature);
+  assert(status.GetCode() == GRPC_STATUS_DEADLINE_EXCEEDED);
+}
+
 int main(int argc, char** argv) {
   // Expect only arg: --db_path=path/to/route_guide_db.json.
   std::string db = routeguide::GetDbFileContent(argc, argv);
@@ -389,6 +398,8 @@ int main(int argc, char** argv) {
   guide.BlockingRecordRoute();
   std::cout << "---- BlockingRouteChat --------------" << std::endl;
   guide.BlockingRouteChat();
+
+  TestRpcTimeout(channel);
 
   std::cout << "---- GetFeatureAsync ----" << std::endl;
   GetFeatureAsync(channel);

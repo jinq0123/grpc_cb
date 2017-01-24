@@ -5,7 +5,7 @@
 
 #include <cassert>
 
-#include <grpc/grpc.h>
+#include <grpc/grpc.h>  // for grpc_channel_create_call()
 
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/completion_queue.h>  // for CompletionQueue
@@ -24,18 +24,25 @@ Channel::~Channel() {
   assert(c_channel_uptr_);
 }
 
-CallSptr Channel::MakeSharedCall(
-    const std::string& method,
-    grpc_completion_queue& c_cq) const {
-  grpc_call* c_call = grpc_channel_create_call(
-    c_channel_uptr_.get(), nullptr, GRPC_PROPAGATE_DEFAULTS, &c_cq, method.c_str(), nullptr,
-    gpr_inf_future(GPR_CLOCK_REALTIME), nullptr);
-  return CallSptr(new Call(c_call));  // shared_ptr
+CallSptr Channel::MakeSharedCall(const std::string& method,
+                                 CompletionQueue& cq) const {
+  return MakeSharedCall(method, cq, call_timeout_ms_);
 }
 
-CallSptr Channel::MakeSharedCall(const std::string& method,
-                           CompletionQueue& cq) const {
-  return MakeSharedCall(method, cq.c_cq());
+CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
+                                 int64_t timeout_ms) const {
+  gpr_timespec deadline =
+      gpr_time_add(gpr_now(GPR_CLOCK_REALTIME),
+                   gpr_time_from_micros(timeout_ms, GPR_TIMESPAN));
+  return MakeSharedCall(method, cq, deadline);
+}
+
+CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
+                                 const gpr_timespec& deadline) const {
+  grpc_call* c_call = grpc_channel_create_call(
+      c_channel_uptr_.get(), nullptr, GRPC_PROPAGATE_DEFAULTS, &cq.c_cq(),
+      method.c_str(), nullptr, deadline, nullptr);
+  return CallSptr(new Call(c_call));  // shared_ptr
 }
 
 }  // namespace grpc_cb

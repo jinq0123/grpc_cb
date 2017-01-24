@@ -61,14 +61,17 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
 ::grpc_cb::Status Stub::BlockingGetFeature(
     const ::routeguide::Point& request,
     ::routeguide::Feature* response) {
-  assert(response);
   ::grpc_cb::CompletionQueue cq;
-  ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(method_names[0], cq));
+  ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(
+      method_names[0], cq, GetCallTimeoutMs()));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
   cq.Pluck(&tag);
-  return tag.GetResponse(*response);
+
+  if (response) return tag.GetResponse(*response);
+  ::routeguide::Feature ingnored_resp;
+  return tag.GetResponse(ingnored_resp);
 }
 
 void Stub::AsyncGetFeature(

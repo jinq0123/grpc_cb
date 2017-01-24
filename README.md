@@ -20,6 +20,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 1. Run multi stubs in one thread.
 1. Compression
 1. Security
+1. Metadata
 1. Support message types other than protobuffer.
 
 ## Tutorial

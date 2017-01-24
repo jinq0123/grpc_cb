@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstring>  // for memset()
 
+#include <grpc/impl/codegen/grpc_types.h>  // for grpc_op
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 #include <grpc_cb/impl/call_op_data.h>     // for CodSendInitMd
 #include <grpc_cb/impl/metadata_vector.h>  // for MetadataVector
@@ -74,9 +75,9 @@ class CallOperations GRPC_FINAL {
 };  // class CallOperations
 
 static inline void InitOp(grpc_op& op, grpc_op_type type, uint32_t flags = 0) {
-    op.op = type;
-    op.flags = flags;
-    op.reserved = nullptr;
+  op.op = type;
+  op.flags = flags;
+  assert(op.reserved == nullptr);
 }
 
 // Todo: Set write options.

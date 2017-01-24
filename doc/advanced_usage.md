@@ -57,3 +57,16 @@ Stub2 stub2(channel);
 ```
 
 Note: ```SetErrorCallback()``` and ```SetDefaultErrorCallback()``` are not thread-safe.
+
+## Timeout RPC calls
+
+* Set timeout on channel
+	```cpp
+	ChannelSptr channel(new Channel("localhost:50051"));
+	Stub stub(channel);
+	channel->SetCallTimeoutMs(1000);  // 1 second
+	stub->BlockingSayHello();
+	```
+	
+* Set timeout on call
+* Set timeout on stub?

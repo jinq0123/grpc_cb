@@ -5,6 +5,7 @@
 
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/completion_queue.h>
+#include <grpc_cb/channel.h>  // for GetCallTimeoutMs()
 
 #include "common/do_next_completion.h"  // for DoNextCompletion()
 
@@ -14,8 +15,9 @@ ErrorCallback ServiceStub::default_error_callback_;  // Default empty.
 
 ServiceStub::ServiceStub(const ChannelSptr& channel_sptr)
     : channel_sptr_(channel_sptr),  // copy shared_ptr
+    cq_sptr_(new CompletionQueue),
     error_callback_(default_error_callback_),
-    cq_sptr_(new CompletionQueue) {
+    call_timeout_ms_(channel_sptr->GetCallTimeoutMs()) {
   assert(channel_sptr);
 }
 

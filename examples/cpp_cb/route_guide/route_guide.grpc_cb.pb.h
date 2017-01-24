@@ -19,14 +19,9 @@ class Stub : public ::grpc_cb::ServiceStub {
  public:
   explicit Stub(const ::grpc_cb::ChannelSptr& channel);
 
-  inline ::grpc_cb::Status BlockingGetFeature(
-       const ::routeguide::Point& request) {
-    ::routeguide::Feature response;
-    return BlockingGetFeature(request, &response);  // Ignore response.
-  }
   ::grpc_cb::Status BlockingGetFeature(
       const ::routeguide::Point& request,
-      ::routeguide::Feature* response);
+      ::routeguide::Feature* response = nullptr);
 
   using GetFeatureCallback =
       std::function<void (const ::routeguide::Feature& response)>;

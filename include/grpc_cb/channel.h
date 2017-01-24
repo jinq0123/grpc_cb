@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CHANNEL_H
 #define GRPC_CB_CHANNEL_H
 
+#include <atomic>  // for atomic_int64_t
 #include <memory>  // for unique_ptr<>
 #include <string>
 
@@ -28,16 +29,22 @@ class Channel : public GrpcLibrary,
   virtual ~Channel() GRPC_OVERRIDE;
 
  public:
-  CallSptr MakeSharedCall(
-    const std::string& method,
-    grpc_completion_queue& c_cq) const;
-  CallSptr MakeSharedCall(
-    const std::string& method,
-    CompletionQueue& cq) const;
+  void SetCallTimeoutMs(int64_t timeout_ms) { call_timeout_ms_ = timeout_ms; }
+  int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
 
- private: 
+ public:
+  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const;
+  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq,
+                          int64_t timeout_ms) const;
+
+ private:
+  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq,
+                          const gpr_timespec& deadline) const;
+
+ private:
   const std::unique_ptr<grpc_channel, void (*)(grpc_channel*)>
       c_channel_uptr_;  // owned
+  std::atomic_int64_t call_timeout_ms_{ INT64_MAX };
 };
 
 }  // namespace grpc_cb
