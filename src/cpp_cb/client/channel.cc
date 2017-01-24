@@ -28,7 +28,7 @@ CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
                                  int64_t timeout_ms) const {
   gpr_timespec deadline =
       gpr_time_add(gpr_now(GPR_CLOCK_REALTIME),
-                   gpr_time_from_micros(timeout_ms, GPR_TIMESPAN));
+                   gpr_time_from_millis(timeout_ms, GPR_TIMESPAN));
   return MakeSharedCall(method, cq, deadline);
 }
 
