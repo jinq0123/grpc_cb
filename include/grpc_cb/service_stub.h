@@ -8,11 +8,12 @@
 #include <cassert>
 #include <unordered_map>
 
-#include <grpc_cb/status_callback.h>  // for StatusCallback
+#include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
-#include <grpc_cb/impl/channel_sptr.h>
+#include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/completion_queue_tag.h>   // for CompletionQueueTag
+#include <grpc_cb/status_callback.h>             // for StatusCallback
 #include <grpc_cb/support/config.h>              // for GRPC_OVERRIDE
 
 namespace grpc_cb {
@@ -46,6 +47,12 @@ class ServiceStub {
   inline int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
   inline void SetCallTimeoutMs(int64_t timeout_ms) {
       call_timeout_ms_ = timeout_ms;
+  }
+  CallSptr MakeSharedCall(const std::string& method) const {
+    return MakeSharedCall(method, GetCq());
+  }
+  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const {
+    return GetChannel().MakeSharedCall(method, cq, GetCallTimeoutMs());
   }
 
  public:

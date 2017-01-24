@@ -60,7 +60,7 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
     ::helloworld::HelloReply* response) {
   assert(response);
   ::grpc_cb::CompletionQueue cq;
-  ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(method_names[0], cq));
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
@@ -72,8 +72,7 @@ void Stub::AsyncSayHello(
     const ::helloworld::HelloRequest& request,
     const SayHelloCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
-  ::grpc_cb::CallSptr call_sptr(
-      GetChannel().MakeSharedCall(method_names[0], GetCq()));
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
   using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
   CqTag* tag = new CqTag(call_sptr, cb, ecb);
   if (tag->Start(request)) return;

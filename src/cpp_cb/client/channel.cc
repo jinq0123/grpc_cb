@@ -24,11 +24,6 @@ Channel::~Channel() {
   assert(c_channel_uptr_);
 }
 
-CallSptr Channel::MakeSharedCall(const std::string& method,
-                                 CompletionQueue& cq) const {
-  return MakeSharedCall(method, cq, call_timeout_ms_);
-}
-
 CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
                                  int64_t timeout_ms) const {
   gpr_timespec deadline =

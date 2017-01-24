@@ -62,8 +62,7 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
     const ::routeguide::Point& request,
     ::routeguide::Feature* response) {
   ::grpc_cb::CompletionQueue cq;
-  ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(
-      method_names[0], cq, GetCallTimeoutMs()));
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");

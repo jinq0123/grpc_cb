@@ -30,10 +30,14 @@ class Channel : public GrpcLibrary,
 
  public:
   void SetCallTimeoutMs(int64_t timeout_ms) { call_timeout_ms_ = timeout_ms; }
+  // Stub will GetCallTimeoutMs().
   int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
 
  public:
-  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const;
+  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const {
+      return nullptr;  // XXX DEL
+  }
+
   CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq,
                           int64_t timeout_ms) const;
 
