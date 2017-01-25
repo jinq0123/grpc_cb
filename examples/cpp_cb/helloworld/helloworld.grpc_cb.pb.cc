@@ -96,7 +96,7 @@ void Service::CallMethod(
   assert(method_index < GetMethodCount());
   switch (method_index) {
     case 0:
-      assert(request_buffer);
+      if (!request_buffer) return;
       SayHello(*request_buffer,
           SayHello_Replier(call_sptr));
       return;

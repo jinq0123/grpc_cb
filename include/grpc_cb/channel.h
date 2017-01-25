@@ -35,7 +35,7 @@ class Channel : public GrpcLibrary,
 
  public:
   CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const {
-      return nullptr;  // XXX DEL
+      return MakeSharedCall(method, cq, GetCallTimeoutMs());  // XXX DEL
   }
 
   CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq,

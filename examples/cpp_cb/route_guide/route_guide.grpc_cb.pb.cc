@@ -154,12 +154,12 @@ void Service::CallMethod(
   assert(method_index < GetMethodCount());
   switch (method_index) {
     case 0:
-      assert(request_buffer);
+      if (!request_buffer) return;
       GetFeature(*request_buffer,
           GetFeature_Replier(call_sptr));
       return;
     case 1:
-      assert(request_buffer);
+      if (!request_buffer) return;
       ListFeatures(*request_buffer,
           ListFeatures_Writer(call_sptr));
       return;
