@@ -32,9 +32,10 @@ ServerMethodCallCqTag::ServerMethodCallCqTag(grpc_server* server,
   grpc_byte_buffer **optional_payload =
       service->IsMethodClientStreaming(method_index) ?
       nullptr : &payload_ptr_;
-  grpc_server_request_registered_call(server, registered_method, &call_ptr_,
+  grpc_call_error ret = grpc_server_request_registered_call(server, registered_method, &call_ptr_,
                                       &deadline_, &initial_metadata_array_,
                                       optional_payload, ccq, ccq, this);
+  assert(GRPC_CALL_OK == ret);
 }
 
 ServerMethodCallCqTag::~ServerMethodCallCqTag() {
