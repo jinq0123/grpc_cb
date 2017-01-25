@@ -76,3 +76,5 @@ Note: ```SetErrorCallback()``` and ```SetDefaultErrorCallback()``` are not threa
 
 * Set timeout on call
 	+ To be implemented
+	+ Use ClientContext
+	
