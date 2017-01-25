@@ -75,5 +75,4 @@ Note: ```SetErrorCallback()``` and ```SetDefaultErrorCallback()``` are not threa
 	```
 
 * Set timeout on call
-	+ Not supported
-	+ Set timeout on stub instead.
+	+ To be implemented
