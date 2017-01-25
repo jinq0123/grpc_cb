@@ -390,6 +390,8 @@ int main(int argc, char** argv) {
   ChannelSptr channel(new Channel("localhost:50051"));
   RouteGuideClient guide(channel, db);
 
+  TestRpcTimeout(channel);
+
   std::cout << "---- BlockingGetFeature --------------" << std::endl;
   guide.BlockingGetFeature();
   std::cout << "---- BlockingListFeatures --------------" << std::endl;
@@ -398,8 +400,6 @@ int main(int argc, char** argv) {
   guide.BlockingRecordRoute();
   std::cout << "---- BlockingRouteChat --------------" << std::endl;
   guide.BlockingRouteChat();
-
-  TestRpcTimeout(channel);
 
   std::cout << "---- GetFeatureAsync ----" << std::endl;
   GetFeatureAsync(channel);
