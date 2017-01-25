@@ -4,7 +4,8 @@
 #ifndef GRPC_CB_CLIENT_SYNC_READER_H
 #define GRPC_CB_CLIENT_SYNC_READER_H
 
-#include <cassert>     // for assert()
+#include <cassert>  // for assert()
+#include <cstdint>  // for int64_t
 
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
@@ -20,7 +21,8 @@ class ClientSyncReader GRPC_FINAL {
  public:
   // Todo: Also need to template request?
   inline ClientSyncReader(const ChannelSptr& channel, const std::string& method,
-                      const ::google::protobuf::Message& request);
+                          const ::google::protobuf::Message& request,
+                          int64_t timeout_ms);
 
  public:
   // Return false if error or end of stream.
@@ -47,11 +49,11 @@ class ClientSyncReader GRPC_FINAL {
 template <class Response>
 ClientSyncReader<Response>::ClientSyncReader(
     const ChannelSptr& channel, const std::string& method,
-    const ::google::protobuf::Message& request)
+    const ::google::protobuf::Message& request, int64_t timeout_ms)
     : data_sptr_(new ClientReaderData<Response>) {
   assert(channel);
   CompletionQueueSptr cq_sptr(new CompletionQueue);
-  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
+  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr, timeout_ms);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
 

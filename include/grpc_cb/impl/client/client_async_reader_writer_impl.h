@@ -24,6 +24,7 @@ class ClientAsyncReaderWriterImpl GRPC_FINAL {
   ClientAsyncReaderWriterImpl(const ChannelSptr& channel,
                               const std::string& method,
                               const CompletionQueueSptr& cq_sptr,
+                              int64_t timeout_ms,
                               const StatusCallback& on_status);
   ~ClientAsyncReaderWriterImpl();
 

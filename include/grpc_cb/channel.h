@@ -34,10 +34,6 @@ class Channel : public GrpcLibrary,
   int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
 
  public:
-  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const {
-      return MakeSharedCall(method, cq, GetCallTimeoutMs());  // XXX DEL
-  }
-
   CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq,
                           int64_t timeout_ms) const;
 

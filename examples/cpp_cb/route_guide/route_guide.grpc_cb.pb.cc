@@ -77,8 +77,7 @@ void Stub::AsyncGetFeature(
     const ::routeguide::Point& request,
     const GetFeatureCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
-  ::grpc_cb::CallSptr call_sptr(
-      GetChannel().MakeSharedCall(method_names[0], GetCq()));
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
   using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::routeguide::Feature>;
   CqTag* tag = new CqTag(call_sptr, cb, ecb);
   if (tag->Start(request)) return;
@@ -90,22 +89,22 @@ void Stub::AsyncGetFeature(
 ::grpc_cb::ClientSyncReader<::routeguide::Feature>
 Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
   return ::grpc_cb::ClientSyncReader<::routeguide::Feature>(
-      GetChannelSptr(), method_names[1], request);
+      GetChannelSptr(), method_names[1], request, GetCallTimeoutMs());
 }
 
-void Stub::AsyncListFeatures(
-    const ::routeguide::Rectangle& request,
-    const ListFeaturesMsgCb& on_msg,
-    const ::grpc_cb::StatusCallback& on_status) {
+void Stub::AsyncListFeatures(const ::routeguide::Rectangle& request,
+                             const ListFeaturesMsgCb& on_msg,
+                             const ::grpc_cb::StatusCallback& on_status) {
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
-      GetChannelSptr(), method_names[1], request, GetCqSptr());
+      GetChannelSptr(), method_names[1], request, GetCqSptr(),
+      GetCallTimeoutMs());
   reader.ReadEach(on_msg, on_status);
 }
 
 ::grpc_cb::ClientSyncWriter<::routeguide::Point>
 Stub::SyncRecordRoute() {
   return ::grpc_cb::ClientSyncWriter<::routeguide::Point>(
-      GetChannelSptr(), method_names[2]);
+      GetChannelSptr(), method_names[2], GetCallTimeoutMs());
 }
 
 ::grpc_cb::ClientAsyncWriter<
@@ -115,7 +114,7 @@ Stub::AsyncRecordRoute() {
   return ::grpc_cb::ClientAsyncWriter<
       ::routeguide::Point,
       ::routeguide::RouteSummary>(
-          GetChannelSptr(), method_names[2], GetCqSptr());
+          GetChannelSptr(), method_names[2], GetCqSptr(), GetCallTimeoutMs());
 }
 
 ::grpc_cb::ClientSyncReaderWriter<
@@ -125,7 +124,7 @@ Stub::SyncRouteChat() {
   return ::grpc_cb::ClientSyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>(
-          GetChannelSptr(), method_names[3]);
+          GetChannelSptr(), method_names[3], GetCallTimeoutMs());
 }
 
 ::grpc_cb::ClientAsyncReaderWriter<
@@ -136,7 +135,8 @@ Stub::AsyncRouteChat(
   return ::grpc_cb::ClientAsyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>(
-          GetChannelSptr(), method_names[3], GetCqSptr(), on_status);
+          GetChannelSptr(), method_names[3], GetCqSptr(),
+          GetCallTimeoutMs(), on_status);
 }
 
 Service::Service() {}

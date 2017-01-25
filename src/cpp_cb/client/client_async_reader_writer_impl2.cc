@@ -19,8 +19,9 @@ using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl2>;
 
 ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
     const ChannelSptr& channel, const std::string& method,
-    const CompletionQueueSptr& cq_sptr, const StatusCallback& on_status)
-    : call_sptr_(channel->MakeSharedCall(method, *cq_sptr)),
+    const CompletionQueueSptr& cq_sptr, int64_t timeout_ms,
+    const StatusCallback& on_status)
+    : call_sptr_(channel->MakeSharedCall(method, *cq_sptr, timeout_ms)),
       on_status_(on_status) {
   assert(cq_sptr);
   assert(call_sptr_);

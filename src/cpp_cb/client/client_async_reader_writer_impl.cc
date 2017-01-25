@@ -13,9 +13,10 @@ namespace grpc_cb {
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,
-    const CompletionQueueSptr& cq_sptr, const StatusCallback& on_status)
+    const CompletionQueueSptr& cq_sptr, int64_t timeout_ms,
+    const StatusCallback& on_status)
     : impl2_sptr_(new ClientAsyncReaderWriterImpl2(channel, method, cq_sptr,
-                                                   on_status)) {
+                                                   timeout_ms, on_status)) {
   assert(cq_sptr);
 }
 

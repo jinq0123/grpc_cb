@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_SYNC_READER_WRITER_H
 #define GRPC_CB_CLIENT_SYNC_READER_WRITER_H
 
+#include <cstdint>  // for int64_t
 #include <memory>  // for shared_ptr
 #include <string>
 
@@ -15,8 +16,8 @@ namespace grpc_cb {
 template <class Request, class Response>
 class ClientSyncReaderWriter GRPC_FINAL {
  public:
-  ClientSyncReaderWriter(const ChannelSptr& channel, const std::string& method)
-      : impl_sptr_(new Impl(channel, method)) {
+  ClientSyncReaderWriter(const ChannelSptr& channel, const std::string& method, int64_t timeout_ms)
+      : impl_sptr_(new Impl(channel, method, timeout_ms)) {
     assert(channel);
   }
 

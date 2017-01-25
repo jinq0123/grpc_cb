@@ -23,7 +23,7 @@ class ClientAsyncWriterImpl2;
 class ClientAsyncWriterImpl GRPC_FINAL {
  public:
   ClientAsyncWriterImpl(const ChannelSptr& channel, const std::string& method,
-                        const CompletionQueueSptr& cq_sptr);
+                        const CompletionQueueSptr& cq_sptr, int64_t timeout_ms);
   ~ClientAsyncWriterImpl();
 
   bool Write(const MessageSptr& request_sptr);

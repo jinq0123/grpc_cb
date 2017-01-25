@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
 #define GRPC_CB_CLIENT_CLIENT_ASYNC_READER_WRITER_IMPL2_H
 
+#include <cstdint>  // for int64_t
 #include <memory>  // for enable_shared_from_this<>
 #include <mutex>
 #include <string>
@@ -31,9 +32,10 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderWriterImpl2> {
  public:
   ClientAsyncReaderWriterImpl2(const ChannelSptr& channel,
-                              const std::string& method,
-                              const CompletionQueueSptr& cq_sptr,
-                              const StatusCallback& on_status);
+                               const std::string& method,
+                               const CompletionQueueSptr& cq_sptr,
+                               int64_t timeout_ms,
+                               const StatusCallback& on_status);
   ~ClientAsyncReaderWriterImpl2();
 
  public:

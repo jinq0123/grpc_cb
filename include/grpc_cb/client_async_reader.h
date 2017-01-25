@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_READER_H
 #define GRPC_CB_CLIENT_ASYNC_READER_H
 
+#include <cstdint>  // for int64_t
 #include <functional>  // for std::function
 #include <string>
 
@@ -22,9 +23,9 @@ class ClientAsyncReader GRPC_FINAL {
  public:
   ClientAsyncReader(const ChannelSptr& channel, const std::string& method,
                     const ::google::protobuf::Message& request,
-                    const CompletionQueueSptr& cq_sptr)
-      : impl_sptr_(
-            new ClientAsyncReaderImpl(channel, method, request, cq_sptr)) {}
+                    const CompletionQueueSptr& cq_sptr, int64_t timeout_ms)
+      : impl_sptr_(new ClientAsyncReaderImpl(channel, method, request, cq_sptr,
+                                             timeout_ms)) {}
 
  public:
   using OnMsg = std::function<void(const Response&)>;

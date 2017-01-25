@@ -4,7 +4,8 @@
 #ifndef GRPC_CB_CLIENT_SYNC_WRITER_H
 #define GRPC_CB_CLIENT_SYNC_WRITER_H
 
-#include <cassert>     // for assert()
+#include <cassert>  // for assert()
+#include <cstdint>  // for int64_t
 
 #include <grpc_cb/channel.h>                           // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>                    // for CallSptr
@@ -22,7 +23,8 @@ namespace grpc_cb {
 template <class Request>
 class ClientSyncWriter GRPC_FINAL {
  public:
-  inline ClientSyncWriter(const ChannelSptr& channel, const std::string& method);
+  inline ClientSyncWriter(const ChannelSptr& channel, const std::string& method,
+                          int64_t timeout_ms);
 
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
@@ -47,12 +49,13 @@ class ClientSyncWriter GRPC_FINAL {
 
 template <class Request>
 ClientSyncWriter<Request>::ClientSyncWriter(const ChannelSptr& channel,
-                                            const std::string& method)
+                                            const std::string& method,
+                                            int64_t timeout_ms)
     // Todo: same as ClientReader?
     : data_sptr_(new Data) {
   assert(channel);
   CompletionQueueSptr cq_sptr(new CompletionQueue);
-  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
+  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr, timeout_ms);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
   ClientSendInitMdCqTag tag(call_sptr);

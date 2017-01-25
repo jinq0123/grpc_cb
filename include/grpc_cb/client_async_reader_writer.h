@@ -5,6 +5,7 @@
 #define GRPC_CB_CLIENT_ASYNC_READER_WRITER_H
 
 #include <cassert>
+#include <cstdint>  // for int64_t
 
 #include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
 #include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
@@ -17,10 +18,12 @@ namespace grpc_cb {
 template <class Request, class Response>
 class ClientAsyncReaderWriter GRPC_FINAL {
  public:
+  // Todo: Move on_status to Set()
   ClientAsyncReaderWriter(const ChannelSptr& channel, const std::string& method,
                           const CompletionQueueSptr& cq_sptr,
+                          int64_t timeout_ms,
                           const StatusCallback& on_status = StatusCallback())
-      : impl_sptr_(new Impl(channel, method, cq_sptr, on_status)) {
+      : impl_sptr_(new Impl(channel, method, cq_sptr, timeout_ms, on_status)) {
     assert(cq_sptr);
     assert(channel);
   }

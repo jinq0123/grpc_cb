@@ -14,11 +14,11 @@
 
 namespace grpc_cb {
 
-ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(const ChannelSptr& channel,
-                                             const std::string& method,
-                                             const CompletionQueueSptr& cq_sptr)
+ClientAsyncWriterImpl2::ClientAsyncWriterImpl2(
+    const ChannelSptr& channel, const std::string& method,
+    const CompletionQueueSptr& cq_sptr, int64_t timeout_ms)
     : cq_sptr_(cq_sptr),
-      call_sptr_(channel->MakeSharedCall(method, *cq_sptr)) {
+      call_sptr_(channel->MakeSharedCall(method, *cq_sptr, timeout_ms)) {
   assert(cq_sptr);
   assert(channel);
   ClientSendInitMdCqTag* tag = new ClientSendInitMdCqTag(call_sptr_);

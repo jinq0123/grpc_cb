@@ -25,10 +25,9 @@ class ClientAsyncReaderHelper;
 class ClientAsyncReaderImpl GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncReaderImpl> {
  public:
-  ClientAsyncReaderImpl(const ChannelSptr& channel,
-                        const std::string& method,
+  ClientAsyncReaderImpl(const ChannelSptr& channel, const std::string& method,
                         const ::google::protobuf::Message& request,
-                        const CompletionQueueSptr& cq_sptr);
+                        const CompletionQueueSptr& cq_sptr, int64_t timeout_ms);
   ~ClientAsyncReaderImpl();
 
  public:

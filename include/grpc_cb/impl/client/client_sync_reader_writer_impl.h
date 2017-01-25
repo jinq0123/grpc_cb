@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_IMPL_H
 #define GRPC_CB_CLIENT_CLIENT_SYNC_READER_WRITER_IMPL_H
 
+#include <cstdint>  // for int64_t
 #include <string>
 
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
@@ -21,7 +22,8 @@ template <class Request, class Response>
 class ClientSyncReaderWriterImpl GRPC_FINAL {
  public:
   inline ClientSyncReaderWriterImpl(const ChannelSptr& channel,
-                                    const std::string& method);
+                                    const std::string& method,
+                                    int64_t timeout_ms);
   inline ~ClientSyncReaderWriterImpl();
 
  public:
@@ -52,12 +54,12 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
 
 template <class Request, class Response>
 ClientSyncReaderWriterImpl<Request, Response>::ClientSyncReaderWriterImpl(
-    const ChannelSptr& channel, const std::string& method)
+    const ChannelSptr& channel, const std::string& method, int64_t timeout_ms)
     // Todo: same as ClientReader?
     : data_sptr_(new Data) {
   assert(channel);
   CompletionQueueSptr cq_sptr(new CompletionQueue);
-  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr);
+  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr, timeout_ms);
   data_sptr_->cq_sptr = cq_sptr;
   data_sptr_->call_sptr = call_sptr;
   ClientSendInitMdCqTag tag(call_sptr);

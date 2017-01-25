@@ -5,6 +5,7 @@
 #define GRPC_CB_CLIENT_ASYNC_WRITER_H
 
 #include <cassert>  // for assert()
+#include <cstdint>  // for int64_t
 #include <string>
 
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
@@ -26,9 +27,11 @@ class ClientAsyncWriter GRPC_FINAL {
  public:
   inline ClientAsyncWriter(const ChannelSptr& channel,
                            const std::string& method,
-                           const CompletionQueueSptr& cq_sptr)
+                           const CompletionQueueSptr& cq_sptr,
+                           int64_t timeout_ms)
       // Todo: same as ClientReader?
-      : impl_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr)) {
+      : impl_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr,
+                                             timeout_ms)) {
     assert(channel);
     assert(cq_sptr);
   }

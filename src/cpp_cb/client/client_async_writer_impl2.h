@@ -4,6 +4,7 @@
 #ifndef GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H
 #define GRPC_CB_CLIENT_ASYNC_WRITER_IMPL2_H
 
+#include <cstdint>  // for int64_t
 #include <memory>  // for enable_shared_from_this<>
 #include <mutex>
 #include <string>
@@ -30,7 +31,7 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
     : public std::enable_shared_from_this<ClientAsyncWriterImpl2> {
  public:
   ClientAsyncWriterImpl2(const ChannelSptr& channel, const std::string& method,
-                        const CompletionQueueSptr& cq_sptr);
+                         const CompletionQueueSptr& cq_sptr, int64_t timeout_ms);
   ~ClientAsyncWriterImpl2();
 
   bool Write(const MessageSptr& request_sptr);
