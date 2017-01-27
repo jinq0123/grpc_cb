@@ -2,14 +2,6 @@
 
 C++ callback implementation of gRPC.
 
-# Todo
-* WriteOptions
-* Add interfaces for protobuf bytes message.
-* DoComplete(bool success) use success parameter.
-* Handle ServerReplier, ServerReader ServerWriter likely.
-* Examples of async server.
-* Examples of async client stream.
-
 # Design
 CompletionQueueTag is the element of CompletionQueue.
 On completion, ```CompletionQueueTag``` is poped, and ```DoComplete()``` is called,
