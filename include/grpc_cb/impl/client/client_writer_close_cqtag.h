@@ -6,18 +6,17 @@
 
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 
-#include <grpc_cb/impl/call.h>             // for StartBatch()
-#include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
-#include <grpc_cb/impl/call_op_data.h>     // for CodRecvMsg
-#include <grpc_cb/impl/call_operations.h>  // for CallOperations
+#include <grpc_cb/impl/call.h>                // for StartBatch()
+#include <grpc_cb/impl/call_op_data.h>        // for CodRecvMsg
+#include <grpc_cb/impl/call_operations.h>     // for CallOperations
+#include <grpc_cb/impl/general_call_cqtag.h>  // for GeneralCallCqTag
 
 namespace grpc_cb {
 
-// Base of ClientAsyncWriterCloseCqTag.
-class ClientWriterCloseCqTag : public CallCqTag {
+class ClientWriterCloseCqTag : public GeneralCallCqTag {
  public:
   explicit ClientWriterCloseCqTag(const CallSptr& call_sptr)
-      : CallCqTag(call_sptr) {}
+      : GeneralCallCqTag(call_sptr) {}
   virtual ~ClientWriterCloseCqTag() {}
 
   inline bool Start() GRPC_MUST_USE_RESULT;

@@ -20,7 +20,7 @@
 namespace grpc_cb {
 
 class ClientAsyncWriterHelper;
-class ClientAsyncWriterCloseCqTag;
+class ClientWriterCloseCqTag;
 
 // Impl of impl.
 // Impl1 is to make Writer copyable.
@@ -40,8 +40,8 @@ class ClientAsyncWriterImpl2 GRPC_FINAL
   void Close(const CloseHandlerSptr& handler_sptr = CloseHandlerSptr());
 
  private:
-  // for ClientAsyncWriterCloseCqTag
-  void OnClosed(ClientAsyncWriterCloseCqTag& tag);
+  // for ClientWriterCloseCqTag::OnComplete()
+  void OnClosed(bool success, ClientWriterCloseCqTag& tag);
 
   // Todo: Force to close, cancel all writing.
   // Todo: get queue size

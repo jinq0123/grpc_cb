@@ -8,8 +8,8 @@
 #include <grpc_cb/channel.h>  // for MakeSharedCall()
 #include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for OnClose()
 #include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // for ClientSendInitMdCqTag
+#include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
 
-#include "client_async_writer_close_cqtag.h"  // for ClientAsyncWriterCloseCqTag
 #include "client_async_writer_helper.h"       // for ClientAsyncWriterHelper
 
 namespace grpc_cb {
@@ -78,9 +78,9 @@ void ClientAsyncWriterImpl2::SendCloseIfNot() {
   if (has_sent_close_) return;
   has_sent_close_ = true;
   auto sptr = shared_from_this();
-  auto* tag = new ClientAsyncWriterCloseCqTag(call_sptr_);
-  tag->SetOnClosed([sptr, tag]() {
-    sptr->OnClosed(*tag);
+  auto* tag = new ClientWriterCloseCqTag(call_sptr_);
+  tag->SetOnComplete([sptr, tag](bool success) {
+    sptr->OnClosed(success, *tag);
   });
   if (tag->Start())
     return;
@@ -95,8 +95,8 @@ void ClientAsyncWriterImpl2::CallCloseHandler() {
   close_handler_sptr_.reset();
 }
 
-// Callback of ClientAsyncWriterCloseCqTag
-void ClientAsyncWriterImpl2::OnClosed(ClientAsyncWriterCloseCqTag& tag) {
+// Callback of ClientWriterCloseCqTag::OnComplete()
+void ClientAsyncWriterImpl2::OnClosed(bool success, ClientWriterCloseCqTag& tag) {
   Guard g(mtx_);
 
   // Todo: Get trailing metadata.
