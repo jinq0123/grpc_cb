@@ -51,7 +51,11 @@ bool ServerReaderWriterCqTag<Request>::Start() {
 
 template <class Request>
 void ServerReaderWriterCqTag<Request>::DoComplete(bool success) {
-  assert(success);
+  if (!success) {
+    reader_sptr_->OnError(Status::InternalError(
+        "ServerReaderWriterCqTag failed."));
+    return;
+  }
   const CallSptr& call_sptr = GetCallSptr();
   if (!cod_recv_msg_.HasGotMsg()) {
     reader_sptr_->OnEnd();
