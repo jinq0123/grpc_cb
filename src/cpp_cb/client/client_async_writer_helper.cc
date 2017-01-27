@@ -5,9 +5,8 @@
 
 #include <cassert>     // for assert()
 
-#include <grpc_cb/status.h>  // for Status::ok()
-
-#include "client_async_writer_send_msg_cqtag.h"  // for ClientAsyncWriterSendMsgCqTag
+#include <grpc_cb/impl/client/client_send_msg_cqtag.h>  // for ClientSendMsgCqTag
+#include <grpc_cb/status.h>                             // for Status::ok()
 
 namespace grpc_cb {
 
@@ -17,6 +16,7 @@ ClientAsyncWriterHelper::ClientAsyncWriterHelper(
     const CallSptr& call_sptr, const OnEnd& on_end)
     : call_sptr_(call_sptr), on_end_(on_end) {
   assert(call_sptr);
+  assert(on_end);
 }
 
 ClientAsyncWriterHelper::~ClientAsyncWriterHelper() {}
@@ -52,9 +52,11 @@ bool ClientAsyncWriterHelper::WriteNext() {
   msg_queue_.pop();  // may empty now but is_writing_
 
   assert(call_sptr_);
-  auto* tag = new ClientAsyncWriterSendMsgCqTag(call_sptr_);
+  auto* tag = new ClientSendMsgCqTag(call_sptr_);
   auto sptr = shared_from_this();
-  tag->SetOnWritten([sptr]() { sptr->OnWritten(); });
+  tag->SetOnComplete([sptr](bool success) {
+      sptr->OnWritten(success);
+  });
   if (tag->Start(*msg_sptr))
     return true;
 
@@ -64,10 +66,15 @@ bool ClientAsyncWriterHelper::WriteNext() {
   return false;
 }
 
-void ClientAsyncWriterHelper::OnWritten() {
+void ClientAsyncWriterHelper::OnWritten(bool success) {
   assert(status_.ok());
   assert(is_writing_);
   is_writing_ = false;
+  if (!success) {
+    status_.SetInternalError("ClientSendMsgCqTag failed in ClientAsyncWriterHelper.");
+    on_end_();  // error end
+    return;
+  }
   if (!msg_queue_.empty()) {
     WriteNext();
     return;

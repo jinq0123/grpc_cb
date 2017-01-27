@@ -258,9 +258,6 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_send_msg_cqtag.h">
-      <Filter>src\cpp_cb\client</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h">
       <Filter>src\cpp_cb\common</Filter>
     </ClInclude>
@@ -300,9 +297,6 @@
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl2.cc">
-      <Filter>src\cpp_cb\client</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_send_msg_cqtag.cc">
       <Filter>src\cpp_cb\client</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc">

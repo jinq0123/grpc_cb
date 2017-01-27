@@ -6,19 +6,18 @@
 
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 
-#include <grpc_cb/impl/call.h>             // for StartBatch()
-#include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
-#include <grpc_cb/impl/call_op_data.h>     // for CodSendMsg
-#include <grpc_cb/impl/call_operations.h>  // for CallOperations
+#include <grpc_cb/impl/call.h>                // for StartBatch()
+#include <grpc_cb/impl/call_op_data.h>        // for CodSendMsg
+#include <grpc_cb/impl/call_operations.h>     // for CallOperations
+#include <grpc_cb/impl/general_call_cqtag.h>  // for GeneralCallCqTag
+#include <grpc_cb/support/config.h>           // for GRPC_FINAL
 
 namespace grpc_cb {
 
-// Base of ClientAsyncWriterSendMsgCqTag.
-class ClientSendMsgCqTag : public CallCqTag {
+class ClientSendMsgCqTag GRPC_FINAL : public GeneralCallCqTag {
  public:
   explicit ClientSendMsgCqTag(const CallSptr& call_sptr)
-      : CallCqTag(call_sptr) {}
-  virtual ~ClientSendMsgCqTag() {}
+      : GeneralCallCqTag(call_sptr) {}
 
  public:
   inline bool Start(const ::google::protobuf::Message& message) GRPC_MUST_USE_RESULT;

@@ -41,7 +41,7 @@ class ClientAsyncWriterHelper GRPC_FINAL
   const Status& GetStatus() const { return status_; }
 
  public:
-  void OnWritten();
+  void OnWritten(bool success);
 
  private:
   bool WriteNext();

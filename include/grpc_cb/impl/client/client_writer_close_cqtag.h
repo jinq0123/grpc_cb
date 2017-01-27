@@ -10,14 +10,14 @@
 #include <grpc_cb/impl/call_op_data.h>        // for CodRecvMsg
 #include <grpc_cb/impl/call_operations.h>     // for CallOperations
 #include <grpc_cb/impl/general_call_cqtag.h>  // for GeneralCallCqTag
+#include <grpc_cb/support/config.h>           // for GRPC_FINAL
 
 namespace grpc_cb {
 
-class ClientWriterCloseCqTag : public GeneralCallCqTag {
+class ClientWriterCloseCqTag GRPC_FINAL : public GeneralCallCqTag {
  public:
   explicit ClientWriterCloseCqTag(const CallSptr& call_sptr)
       : GeneralCallCqTag(call_sptr) {}
-  virtual ~ClientWriterCloseCqTag() {}
 
   inline bool Start() GRPC_MUST_USE_RESULT;
   inline bool IsStatusOk() const {
