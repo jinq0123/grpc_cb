@@ -155,7 +155,6 @@
     <ClInclude Include="..\include\grpc_cb\support\time.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper_sptr.h" />
-    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_read_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_recv_status.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_writer_impl2.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
@@ -171,7 +170,6 @@
     <ClCompile Include="..\src\cpp_cb\client\channel.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_helper.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_impl.cc" />
-    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_read_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_recv_status.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl2.cc" />

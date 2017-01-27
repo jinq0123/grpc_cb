@@ -17,7 +17,7 @@
 
 namespace grpc_cb {
 
-class ClientAsyncReaderReadCqTag;
+class ClientReaderReadCqTag;
 
 // Used in ClientAsyncReader and ClientAsyncReaderWriter.
 class ClientAsyncReaderHelper GRPC_FINAL
@@ -35,9 +35,8 @@ class ClientAsyncReaderHelper GRPC_FINAL
   const Status& GetStatus() const { return status_; }
 
  public:
-  // for ClientAsyncReaderReadCqTag
-  void OnRead(bool success, ClientAsyncReaderReadCqTag& tag);
-  // DEL CallSptr GetCallSptr() const { return call_sptr_; }
+  // for ClientReaderReadCqTag::OnComplete()
+  void OnRead(bool success, ClientReaderReadCqTag& tag);
 
  private:
   void Next();

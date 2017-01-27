@@ -6,8 +6,7 @@
 #include <cassert>  // for assert()
 
 #include <grpc_cb/impl/client/client_async_read_handler.h>  // for HandleMsg()
-
-#include "client_async_reader_read_cqtag.h"  // for ClientAsyncReaderReadCqTag
+#include <grpc_cb/impl/client/client_reader_read_cqtag.h>  // for ClientReaderReadCqTag
 
 namespace grpc_cb {
 
@@ -36,9 +35,9 @@ void ClientAsyncReaderHelper::Next() {
   if (aborted_)  // Maybe writer failed.
     return;
 
-  auto* tag = new ClientAsyncReaderReadCqTag(call_sptr_);
+  auto* tag = new ClientReaderReadCqTag(call_sptr_);
   auto sptr = shared_from_this();
-  tag->SetOnRead([sptr, tag](bool success) {
+  tag->SetOnComplete([sptr, tag](bool success) {
       sptr->OnRead(success, *tag);
   });
   if (tag->Start()) return;
@@ -48,13 +47,13 @@ void ClientAsyncReaderHelper::Next() {
   on_end_();
 }
 
-void ClientAsyncReaderHelper::OnRead(bool success, ClientAsyncReaderReadCqTag& tag) {
+void ClientAsyncReaderHelper::OnRead(bool success, ClientReaderReadCqTag& tag) {
   if (aborted_)  // Maybe writer failed.
     return;
   assert(status_.ok());
   assert(on_end_);
   if (!success) {
-    status_.SetInternalError("ClientAsyncReaderReadCqTag failed.");
+    status_.SetInternalError("ClientReaderReadCqTag failed.");
     on_end_();
     return;
   }

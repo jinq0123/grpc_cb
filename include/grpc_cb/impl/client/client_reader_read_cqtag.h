@@ -6,22 +6,21 @@
 
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
 
-#include <grpc_cb/impl/call.h>             // for GetMaxMsgSize()
-#include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
-#include <grpc_cb/impl/call_op_data.h>     // for CodRecvMsg
-#include <grpc_cb/impl/call_operations.h>  // for CallOperations
-#include <grpc_cb/support/protobuf_fwd.h>  // for Message
+#include <grpc_cb/impl/call.h>                // for GetMaxMsgSize()
+#include <grpc_cb/impl/call_op_data.h>        // for CodRecvMsg
+#include <grpc_cb/impl/call_operations.h>     // for CallOperations
+#include <grpc_cb/impl/general_call_cqtag.h>  // for GeneralCallCqTag
+#include <grpc_cb/support/config.h>           // for GRPC_FINAL
+#include <grpc_cb/support/protobuf_fwd.h>     // for Message
 
 namespace grpc_cb {
 
-// Completion queue tag to read msg blockingly.
+// Completion queue tag to read msg.
 // For ClientReader and ClientReaderWriter.
-// Base class of ClientAsyncReaderReadCqTag.
-class ClientReaderReadCqTag : public CallCqTag {
+class ClientReaderReadCqTag GRPC_FINAL : public GeneralCallCqTag {
  public:
   explicit ClientReaderReadCqTag(const CallSptr& call_sptr)
-      : CallCqTag(call_sptr) {}
-  virtual ~ClientReaderReadCqTag() {}
+      : GeneralCallCqTag(call_sptr) {}
 
   inline bool Start() GRPC_MUST_USE_RESULT;
 
