@@ -32,7 +32,7 @@ class ServerReaderCqTag GRPC_FINAL : public CallCqTag {
   inline void DoComplete(bool success) GRPC_OVERRIDE;
  private:
   CodRecvMsg cod_recv_msg_;
-  ReaderSptr reader_sptr_;  // may be null XXX
+  ReaderSptr reader_sptr_;
 };  // class ServerReaderCqTag
 
 template <class MsgType>
