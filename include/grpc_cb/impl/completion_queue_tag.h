@@ -10,7 +10,7 @@ namespace grpc_cb {
 class CompletionQueueTag {
  public:
   virtual ~CompletionQueueTag() {}
-  virtual void DoComplete(bool success) {};  // Todo: What is the use of 'success'?
+  virtual void DoComplete(bool success) {};
 };
 
 }  // namespace grpc_cb
