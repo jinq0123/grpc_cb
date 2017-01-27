@@ -38,7 +38,9 @@ void ClientAsyncReaderHelper::Next() {
 
   auto* tag = new ClientAsyncReaderReadCqTag(call_sptr_);
   auto sptr = shared_from_this();
-  tag->SetOnRead([sptr, tag]() { sptr->OnRead(*tag); });
+  tag->SetOnRead([sptr, tag](bool success) {
+      sptr->OnRead(success, *tag);
+  });
   if (tag->Start()) return;
 
   delete tag;
@@ -46,11 +48,16 @@ void ClientAsyncReaderHelper::Next() {
   on_end_();
 }
 
-void ClientAsyncReaderHelper::OnRead(ClientAsyncReaderReadCqTag& tag) {
+void ClientAsyncReaderHelper::OnRead(bool success, ClientAsyncReaderReadCqTag& tag) {
   if (aborted_)  // Maybe writer failed.
     return;
   assert(status_.ok());
   assert(on_end_);
+  if (!success) {
+    status_.SetInternalError("ClientAsyncReaderReadCqTag failed.");
+    on_end_();
+    return;
+  }
   if (!tag.HasGotMsg()) {
     // End of read. Do not recv status in Reader. Do it after all reading and writing.
     on_end_();

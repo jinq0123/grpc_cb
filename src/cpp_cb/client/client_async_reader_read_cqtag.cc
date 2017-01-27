@@ -14,7 +14,7 @@ ClientAsyncReaderReadCqTag::ClientAsyncReaderReadCqTag(const CallSptr& call_sptr
 void ClientAsyncReaderReadCqTag::DoComplete(bool success) {
   // Todo: assert(success);
   if (on_read_)
-    on_read_();
+    on_read_(success);
 }
 
 }  // namespace grpc_cb

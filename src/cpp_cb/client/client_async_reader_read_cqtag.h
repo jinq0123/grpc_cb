@@ -14,7 +14,7 @@ class ClientAsyncReaderReadCqTag GRPC_FINAL : public ClientReaderReadCqTag {
  public:
   explicit ClientAsyncReaderReadCqTag(const CallSptr& call_sptr);
 
-  using OnRead = std::function<void()>;
+  using OnRead = std::function<void (bool success)>;
   void SetOnRead(const OnRead& on_read) { on_read_ = on_read; }
 
   void DoComplete(bool success) GRPC_OVERRIDE;
