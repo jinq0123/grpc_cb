@@ -13,6 +13,7 @@
 #include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
 #include <grpc_cb/impl/call_op_data.h>     // for CodSendInitMd
 #include <grpc_cb/impl/call_operations.h>  // for CallOperations
+#include <grpc_cb/server_reader.h>         // for ServerReader
 #include <grpc_cb/support/config.h>        // for GRPC_FINAL
 
 namespace grpc_cb {
@@ -31,7 +32,7 @@ class ServerReaderCqTag GRPC_FINAL : public CallCqTag {
   inline void DoComplete(bool success) GRPC_OVERRIDE;
  private:
   CodRecvMsg cod_recv_msg_;
-  ReaderSptr reader_sptr_;  // may be null
+  ReaderSptr reader_sptr_;  // may be null XXX
 };  // class ServerReaderCqTag
 
 template <class MsgType>
@@ -51,7 +52,10 @@ bool ServerReaderCqTag<MsgType>::Start() {
 
 template <class MsgType>
 void ServerReaderCqTag<MsgType>::DoComplete(bool success) {
-  assert(success);
+  if (!success) {
+    reader_sptr_->OnError(Status::InternalError("ServerReaderCqTag failed."));
+    return;
+  }
   if (!cod_recv_msg_.HasGotMsg()) {
     reader_sptr_->OnEnd();
     return;
