@@ -14,7 +14,8 @@ namespace ClientAsyncReader {
 void RecvStatus(const CallSptr& call_sptr, const StatusCallback& on_status) {
   assert(call_sptr);
 
-  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr, on_status);
+  auto* tag = new ClientReaderAsyncRecvStatusCqTag(call_sptr);
+  tag->SetOnStatus(on_status);
   if (tag->Start()) return;
 
   delete tag;

@@ -15,11 +15,13 @@ namespace grpc_cb {
 class ClientReaderAsyncRecvStatusCqTag GRPC_FINAL
     : public ClientReaderRecvStatusCqTag {
  public:
-  explicit ClientReaderAsyncRecvStatusCqTag(
-      const CallSptr& call_sptr,
-      const StatusCallback& on_status = StatusCallback())
-      : ClientReaderRecvStatusCqTag(call_sptr), on_status_(on_status) {
+  explicit ClientReaderAsyncRecvStatusCqTag(const CallSptr& call_sptr)
+      : ClientReaderRecvStatusCqTag(call_sptr) {
     assert(call_sptr);
+  }
+
+  void SetOnStatus(const StatusCallback& on_status) {
+    on_status_ = on_status;
   }
 
  public:
@@ -30,10 +32,12 @@ class ClientReaderAsyncRecvStatusCqTag GRPC_FINAL
 };  // class ClientReaderAsyncRecvStatusCqTag
 
 void ClientReaderAsyncRecvStatusCqTag::DoComplete(bool success) {
-  assert(success);
-
-  if (on_status_)
+  if (!on_status_) return;
+  if (success) {
     on_status_(GetStatus());
+    return;
+  }
+  on_status_(Status::InternalError("Failed to receive status."));
 }
 
 }  // namespace grpc_cb
