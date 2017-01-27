@@ -44,14 +44,13 @@ ServerMethodCallCqTag::~ServerMethodCallCqTag() {
 
 void ServerMethodCallCqTag::DoComplete(bool success)
 {
-  // TODO: check success
-
-  // Deal payload.
-  assert(service_);
-  // assert(payload_ptr_);
-  assert(call_ptr_);
-  CallSptr call_sptr(new Call(call_ptr_));  // destroys grpc_call
-  service_->CallMethod(method_index_, payload_ptr_, call_sptr);
+  if (success) {
+    // Deal payload.
+    assert(service_);
+    assert(call_ptr_);
+    CallSptr call_sptr(new Call(call_ptr_));  // destroys grpc_call
+    service_->CallMethod(method_index_, payload_ptr_, call_sptr);
+  }
 
   // Request the next method call.
   // Calls grpc_server_request_registered_call() in ctr().
