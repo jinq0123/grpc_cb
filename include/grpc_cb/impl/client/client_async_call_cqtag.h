@@ -6,37 +6,49 @@
 
 #include <grpc_cb/impl/client/client_call_cqtag.h>  // for ClientCallCqTag
 #include <grpc_cb/status_callback.h>                // for ErrorCallback
+#include <grpc_cb/support/config.h>                 // for GRPC_FINAL
 
 namespace grpc_cb {
 
 // Completion queue tag (CqTag) for client async call.
-// Derived from ClientCallCqTag, adding cb, ecb.
+// Derived from ClientCallCqTag, adding on_response, on_error.
 template <class ResponseType>
-class ClientAsyncCallCqTag : public ClientCallCqTag {
+class ClientAsyncCallCqTag GRPC_FINAL : public ClientCallCqTag {
  public:
-  using ResponseCallback = std::function<void (const ResponseType&)>;
+  explicit ClientAsyncCallCqTag(const CallSptr call_sptr)
+     : ClientCallCqTag(call_sptr) {}
 
  public:
-  ClientAsyncCallCqTag(const CallSptr call_sptr, const ResponseCallback& cb,
-                      const ErrorCallback& ecb)
-     : ClientCallCqTag(call_sptr), cb_(cb), ecb_(ecb) {}
-  virtual ~ClientAsyncCallCqTag() {}
+  using OnResponse = std::function<void (const ResponseType&)>;
+  void SetOnResponse(const OnResponse& on_response) {
+    on_response_ = on_response;
+  }
+  void SetOnError(const ErrorCallback& on_error) {
+    on_error_ = on_error;
+  }
 
  public:
   void DoComplete(bool success) GRPC_OVERRIDE {
-    assert(success);
+    if (!success) {
+      if (on_error_)
+        on_error_(Status::InternalError("ClientAsyncCallCqTag failed."));
+      return;
+    }
+
     ResponseType resp;
     Status status = GetResponse(resp);
     if (status.ok()) {
-      if (cb_) cb_(resp);
+      if (on_response_)
+        on_response_(resp);
       return;
     }
-    if (ecb_) ecb_(status);
-  };  // Todo: What is the use of 'success'?
+    if (on_error_)
+      on_error_(status);
+  };
 
  private:
-  ResponseCallback cb_;
-  ErrorCallback ecb_;
+  OnResponse on_response_;
+  ErrorCallback on_error_;
 };  // class ClientAsyncCallCqTag
 
 }  // namespace grpc_cb

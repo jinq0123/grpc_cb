@@ -12,7 +12,7 @@ ClientAsyncReaderReadCqTag::ClientAsyncReaderReadCqTag(const CallSptr& call_sptr
 }
 
 void ClientAsyncReaderReadCqTag::DoComplete(bool success) {
-  assert(success);
+  // Todo: assert(success);
   if (on_read_)
     on_read_();
 }

@@ -74,7 +74,9 @@ void Stub::AsyncSayHello(
     const ::grpc_cb::ErrorCallback& ecb) {
   ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
   using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
-  CqTag* tag = new CqTag(call_sptr, cb, ecb);
+  CqTag* tag = new CqTag(call_sptr);
+  tag->SetOnResponse(cb);
+  tag->SetOnError(ecb);
   if (tag->Start(request)) return;
   delete tag;
   if (ecb)
