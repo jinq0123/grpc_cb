@@ -52,7 +52,7 @@ class ServerWriterImpl GRPC_FINAL
     return closed_;
   }
 
- public:
+ private:
   void TryToWriteNext();  // for ServerWriterWriteCqTag::DoComplete()
 
  private:

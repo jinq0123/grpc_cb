@@ -4,38 +4,27 @@
 #ifndef GRPC_CB_SERVER_SERVER_WRITER_WRITE_CQTAG_H
 #define GRPC_CB_SERVER_SERVER_WRITER_WRITE_CQTAG_H
 
-#include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
+#include <grpc/support/port_platform.h>       // for GRPC_MUST_USE_RESULT
 
-#include <grpc_cb/impl/call.h>             // for StartBatch()
-#include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
-#include <grpc_cb/impl/call_op_data.h>     // for CodSendMsg
-#include <grpc_cb/impl/call_operations.h>  // for CallOperations
-#include <grpc_cb/support/config.h>        // for GRPC_FINAL
+#include <grpc_cb/impl/call_op_data.h>        // for CodSendMsg
+#include <grpc_cb/impl/general_call_cqtag.h>  // for GeneralCallCqTag
+#include <grpc_cb/support/config.h>           // for GRPC_FINAL
 
 namespace grpc_cb {
 
-class ServerWriterImpl;
-using ServerWriterImplSptr = std::shared_ptr<ServerWriterImpl>;
-
-class ServerWriterWriteCqTag GRPC_FINAL : public CallCqTag {
+class ServerWriterWriteCqTag GRPC_FINAL : public GeneralCallCqTag {
  public:
-  ServerWriterWriteCqTag(const CallSptr& call_sptr,
-      ServerWriterImplSptr writer_impl_sptr)
-      : CallCqTag(call_sptr), writer_impl_sptr_(writer_impl_sptr) {
+  explicit ServerWriterWriteCqTag(const CallSptr& call_sptr)
+      : GeneralCallCqTag(call_sptr) {
     assert(call_sptr);
-    assert(writer_impl_sptr);
   }
 
   bool Start(const ::google::protobuf::Message& message,
     bool send_init_md) GRPC_MUST_USE_RESULT;
 
- public:
-  void DoComplete(bool success) GRPC_OVERRIDE;
-
  private:
   CodSendInitMd cod_send_init_md_;
   CodSendMsg cod_send_msg_;
-  const ServerWriterImplSptr writer_impl_sptr_;
 };  // class ServerWriterWriteCqTag
 
 }  // namespace grpc_cb

@@ -3,7 +3,8 @@
 
 #include "server_writer_write_cqtag.h"
 
-#include <grpc_cb/impl/server/server_writer_impl.h>  // for TryToWriteNext()
+#include <grpc_cb/impl/call.h>                // for StartBatch()
+#include <grpc_cb/impl/call_operations.h>     // for CallOperations
 
 namespace grpc_cb {
 
@@ -16,11 +17,6 @@ bool ServerWriterWriteCqTag::Start(
   }
   ops.SendMsg(message, cod_send_msg_);
   return GetCallSptr()->StartBatch(ops, this);
-}
-
-void ServerWriterWriteCqTag::DoComplete(bool success) {
-  assert(success);
-  writer_impl_sptr_->TryToWriteNext();
 }
 
 }  // namespace grpc_cb

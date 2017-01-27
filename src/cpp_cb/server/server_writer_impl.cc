@@ -133,7 +133,12 @@ bool ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
 
   // CqTag shares this and will TryToWriteNext() on cq completion.
   using CqTag = ServerWriterWriteCqTag;
-  CqTag* tag = new CqTag(call_sptr_, shared_from_this());
+  CqTag* tag = new CqTag(call_sptr_);
+  auto sptr = shared_from_this();
+  tag->SetOnComplete([sptr](bool success) {
+    // Todo: check success
+    sptr->TryToWriteNext();
+  });
   if (tag->Start(msg, send_init_md_)) {
     send_init_md_ = false;
     return true;

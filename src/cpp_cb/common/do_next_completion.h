@@ -4,8 +4,6 @@
 #ifndef GRPC_CB_COMMON_DO_NEXT_COMPLETION_H
 #define GRPC_CB_COMMON_DO_NEXT_COMPLETION_H
 
-#include <grpc_cb/impl/server/server_writer_impl.h>  // for ServerWriterImpl
-
 namespace grpc_cb {
 
 class CompletionQueue;
