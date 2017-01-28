@@ -13,7 +13,6 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 * route_guide example
 
 ## Todo
-1. Timeout
 1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Connect and disconnect event.
 1. Export for unity.
