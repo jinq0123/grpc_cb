@@ -351,6 +351,10 @@ void AsyncWriteRouteNotes(Stub::RouteChat_AsyncReaderWriter async_reader_writer)
 
 void RouteChatAsync(const ChannelSptr& channel) {
   Stub stub(channel);
+  auto f_run = std::async(std::launch::async, [&stub]() { 
+    stub.BlockingRun();
+  });
+
   std::atomic_bool bReaderDone = false;
   auto async_reader_writer(
       stub.AsyncRouteChat([&bReaderDone](const Status& status) {
@@ -363,11 +367,7 @@ void RouteChatAsync(const ChannelSptr& channel) {
 
   async_reader_writer.ReadEach(
       [](const RouteNote& note) { PrintServerNote(note); });
-
-  auto f_write = std::async(std::launch::async, AsyncWriteRouteNotes, async_reader_writer);
-  auto f_run = std::async(std::launch::async, [&stub]() { 
-    stub.BlockingRun();
-  });
+  AsyncWriteRouteNotes(async_reader_writer);
 
   while (!bReaderDone)
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
