@@ -37,9 +37,9 @@
 #include <memory>
 
 #include "src/compiler/config.h"
-
-#include "src/compiler/cpp_cb_generator.h"
 #include "src/compiler/cpp_generator_helpers.h"
+
+#include "cpp_cb_generator.h"
 
 class CppcbGrpcGenerator : public grpc::protobuf::compiler::CodeGenerator {
  public:

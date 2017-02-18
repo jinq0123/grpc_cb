@@ -44,16 +44,15 @@ workspace "grpc_cb"
 		links {
 			"libprotobuf",
 		}
-	filter {}
-
-	if os.is("windows") then
+	filter "system:windows"
 		defines {
 			"_WIN32_WINNT=0x0600"  -- i.e. Windows 7 target
 		}
 		links {
 			"ws2_32",
 		}
-	end
+	filter {}
+
 
 project "grpc_cpp_cb_plugin"
 	kind "ConsoleApp"
@@ -61,12 +60,7 @@ project "grpc_cpp_cb_plugin"
 		"../src/compiler/**",
 	}
 	includedirs {
-		"..",
-		grpc_root,
-	}
-	libdirs {
-		grpc_root .. "/vsprojects/%{cfg.buildcfg}",  -- DEL
-		protobuf_root .. "/cmake/%{cfg.buildcfg}",  -- DEL
+		grpc_root,  -- for src/compiler/config.h
 	}
 	links {
 		"grpc_plugin_support",

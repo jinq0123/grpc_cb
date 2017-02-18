@@ -16,7 +16,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/grpc_cpp_cb_plugin
   OBJDIR = obj/Debug/grpc_cpp_cb_plugin
   DEFINES +=
-  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I.. -I../third_party/grpc
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../third_party/grpc
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g
@@ -24,7 +24,7 @@ ifeq ($(config),debug)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -llibprotobufd -lgrpc_plugin_support -llibprotocd
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Debug/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Debug/static -L../third_party/grpc/vsprojects/Debug -L../third_party/grpc/third_party/protobuf/cmake/Debug
+  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/Debug -L../third_party/grpc/third_party/protobuf/cmake/Debug -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Debug/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Debug/static
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
@@ -43,7 +43,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/grpc_cpp_cb_plugin
   OBJDIR = obj/Release/grpc_cpp_cb_plugin
   DEFINES += -DNDEBUG
-  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I.. -I../third_party/grpc
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../third_party/grpc
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2
@@ -51,7 +51,7 @@ ifeq ($(config),release)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -llibprotobuf -lgrpc_plugin_support -llibprotoc
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Release/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Release/static -L../third_party/grpc/vsprojects/Release -L../third_party/grpc/third_party/protobuf/cmake/Release -s
+  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/Release -L../third_party/grpc/third_party/protobuf/cmake/Release -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Release/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Release/static -s
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
