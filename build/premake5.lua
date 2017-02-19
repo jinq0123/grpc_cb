@@ -76,8 +76,23 @@ project "grpc_cpp_cb_plugin"
 		}
 	filter {}
 
-project "grpc_cb"
+project "grpc_cb_shared"
+	kind "SharedLib"
+	targetname "grpc_cb"
+	includedirs {
+		"../src/cpp_cb",
+	}
+	files {
+		"../include/grpc_cb/**.h",
+		"../src/cpp_cb/**",
+	}
+
+project "grpc_cb_static"
 	kind "StaticLib"
+	targetname "grpc_cb"
+	filter "system:windows"
+		targetprefix "lib"  -- libgrpc_cb.lib
+	filter {}
 	includedirs {
 		"../src/cpp_cb",
 	}
@@ -89,7 +104,7 @@ project "grpc_cb"
 group "examples"
 
 	examples_dep_libs = {
-		"grpc_cb",
+		"grpc_cb_static",
 		"grpc",
 		"gpr",
 		"zlib",
