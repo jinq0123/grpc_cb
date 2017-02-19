@@ -104,8 +104,8 @@
     <ClCompile Include="..\examples\cpp_cb\helloworld\helloworld.pb.cc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="grpc_cb_static.vcxproj">
-      <Project>{DC76A9DB-C844-9DE1-B1D8-0D089D457946}</Project>
+    <ProjectReference Include="grpc_cb.vcxproj">
+      <Project>{F5C97C0E-61A9-FBA9-6AC1-8680D61F620B}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

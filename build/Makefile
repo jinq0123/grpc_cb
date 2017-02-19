@@ -12,8 +12,7 @@ endif
 
 ifeq ($(config),debug)
   grpc_cpp_cb_plugin_config = debug
-  grpc_cb_shared_config = debug
-  grpc_cb_static_config = debug
+  grpc_cb_config = debug
   greeter_cb_client_config = debug
   greeter_cb_server_config = debug
   route_guide_cb_client_config = debug
@@ -21,15 +20,14 @@ ifeq ($(config),debug)
 endif
 ifeq ($(config),release)
   grpc_cpp_cb_plugin_config = release
-  grpc_cb_shared_config = release
-  grpc_cb_static_config = release
+  grpc_cb_config = release
   greeter_cb_client_config = release
   greeter_cb_server_config = release
   route_guide_cb_client_config = release
   route_guide_cb_server_config = release
 endif
 
-PROJECTS := grpc_cpp_cb_plugin grpc_cb_shared grpc_cb_static greeter_cb_client greeter_cb_server route_guide_cb_client route_guide_cb_server
+PROJECTS := grpc_cpp_cb_plugin grpc_cb greeter_cb_client greeter_cb_server route_guide_cb_client route_guide_cb_server
 
 .PHONY: all clean help $(PROJECTS) examples
 
@@ -43,37 +41,31 @@ ifneq (,$(grpc_cpp_cb_plugin_config))
 	@${MAKE} --no-print-directory -C . -f grpc_cpp_cb_plugin.make config=$(grpc_cpp_cb_plugin_config)
 endif
 
-grpc_cb_shared:
-ifneq (,$(grpc_cb_shared_config))
-	@echo "==== Building grpc_cb_shared ($(grpc_cb_shared_config)) ===="
-	@${MAKE} --no-print-directory -C . -f grpc_cb_shared.make config=$(grpc_cb_shared_config)
+grpc_cb:
+ifneq (,$(grpc_cb_config))
+	@echo "==== Building grpc_cb ($(grpc_cb_config)) ===="
+	@${MAKE} --no-print-directory -C . -f grpc_cb.make config=$(grpc_cb_config)
 endif
 
-grpc_cb_static:
-ifneq (,$(grpc_cb_static_config))
-	@echo "==== Building grpc_cb_static ($(grpc_cb_static_config)) ===="
-	@${MAKE} --no-print-directory -C . -f grpc_cb_static.make config=$(grpc_cb_static_config)
-endif
-
-greeter_cb_client: grpc_cb_static
+greeter_cb_client: grpc_cb
 ifneq (,$(greeter_cb_client_config))
 	@echo "==== Building greeter_cb_client ($(greeter_cb_client_config)) ===="
 	@${MAKE} --no-print-directory -C . -f greeter_cb_client.make config=$(greeter_cb_client_config)
 endif
 
-greeter_cb_server: grpc_cb_static
+greeter_cb_server: grpc_cb
 ifneq (,$(greeter_cb_server_config))
 	@echo "==== Building greeter_cb_server ($(greeter_cb_server_config)) ===="
 	@${MAKE} --no-print-directory -C . -f greeter_cb_server.make config=$(greeter_cb_server_config)
 endif
 
-route_guide_cb_client: grpc_cb_static
+route_guide_cb_client: grpc_cb
 ifneq (,$(route_guide_cb_client_config))
 	@echo "==== Building route_guide_cb_client ($(route_guide_cb_client_config)) ===="
 	@${MAKE} --no-print-directory -C . -f route_guide_cb_client.make config=$(route_guide_cb_client_config)
 endif
 
-route_guide_cb_server: grpc_cb_static
+route_guide_cb_server: grpc_cb
 ifneq (,$(route_guide_cb_server_config))
 	@echo "==== Building route_guide_cb_server ($(route_guide_cb_server_config)) ===="
 	@${MAKE} --no-print-directory -C . -f route_guide_cb_server.make config=$(route_guide_cb_server_config)
@@ -81,8 +73,7 @@ endif
 
 clean:
 	@${MAKE} --no-print-directory -C . -f grpc_cpp_cb_plugin.make clean
-	@${MAKE} --no-print-directory -C . -f grpc_cb_shared.make clean
-	@${MAKE} --no-print-directory -C . -f grpc_cb_static.make clean
+	@${MAKE} --no-print-directory -C . -f grpc_cb.make clean
 	@${MAKE} --no-print-directory -C . -f greeter_cb_client.make clean
 	@${MAKE} --no-print-directory -C . -f greeter_cb_server.make clean
 	@${MAKE} --no-print-directory -C . -f route_guide_cb_client.make clean
@@ -99,8 +90,7 @@ help:
 	@echo "   all (default)"
 	@echo "   clean"
 	@echo "   grpc_cpp_cb_plugin"
-	@echo "   grpc_cb_shared"
-	@echo "   grpc_cb_static"
+	@echo "   grpc_cb"
 	@echo "   greeter_cb_client"
 	@echo "   greeter_cb_server"
 	@echo "   route_guide_cb_client"
