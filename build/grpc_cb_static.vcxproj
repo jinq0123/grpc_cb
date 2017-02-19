@@ -1,0 +1,200 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DC76A9DB-C844-9DE1-B1D8-0D089D457946}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>grpc_cb_static</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\Debug\</OutDir>
+    <IntDir>obj\Debug\grpc_cb_static\</IntDir>
+    <TargetName>libgrpc_cb</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\Release\</OutDir>
+    <IntDir>obj\Release\grpc_cb_static\</IntDir>
+    <TargetName>libgrpc_cb</TargetName>
+    <TargetExt>.lib</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\third_party\grpc\include;..\third_party\grpc\third_party\protobuf\src;..\src\cpp_cb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>NDEBUG;_WIN32_WINNT=0x0600;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\include;..\third_party\grpc\include;..\third_party\grpc\third_party\protobuf\src;..\src\cpp_cb;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\grpc_cb\channel.h" />
+    <ClInclude Include="..\include\grpc_cb\client_async_reader.h" />
+    <ClInclude Include="..\include\grpc_cb\client_async_reader_writer.h" />
+    <ClInclude Include="..\include\grpc_cb\client_async_writer.h" />
+    <ClInclude Include="..\include\grpc_cb\client_sync_reader.h" />
+    <ClInclude Include="..\include\grpc_cb\client_sync_reader_writer.h" />
+    <ClInclude Include="..\include\grpc_cb\client_sync_writer.h" />
+    <ClInclude Include="..\include\grpc_cb\grpc_cb.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\call.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\call_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\call_op_data.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\call_operations.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\call_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\channel_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_call_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_read_handler.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_read_handler_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_reader_writer_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_close_handler_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_call_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_async_recv_status_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_data.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_init_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_read_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_recv_status_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_recv_init_md_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_send_close_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_send_init_md_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_send_msg_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_helper.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_writer_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_writer_helper.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_writer_close_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\completion_queue.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\completion_queue_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\completion_queue_tag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\general_call_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\grpc_library.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\message_queue.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\message_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\metadata_vector.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\proto_utils.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\server\server_reader_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\server\server_reader_writer_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\server\server_replier_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\server\server_replier_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\server\server_writer_impl.h" />
+    <ClInclude Include="..\include\grpc_cb\security\server_credentials.h" />
+    <ClInclude Include="..\include\grpc_cb\server.h" />
+    <ClInclude Include="..\include\grpc_cb\server_reader.h" />
+    <ClInclude Include="..\include\grpc_cb\server_reader_for_bidi_streaming.h" />
+    <ClInclude Include="..\include\grpc_cb\server_reader_for_client_only_streaming.h" />
+    <ClInclude Include="..\include\grpc_cb\server_replier.h" />
+    <ClInclude Include="..\include\grpc_cb\server_writer.h" />
+    <ClInclude Include="..\include\grpc_cb\service.h" />
+    <ClInclude Include="..\include\grpc_cb\service_stub.h" />
+    <ClInclude Include="..\include\grpc_cb\status.h" />
+    <ClInclude Include="..\include\grpc_cb\status_callback.h" />
+    <ClInclude Include="..\include\grpc_cb\support\config.h" />
+    <ClInclude Include="..\include\grpc_cb\support\noncopyable.h" />
+    <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h" />
+    <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
+    <ClInclude Include="..\include\grpc_cb\support\time.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper_sptr.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_recv_status.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_reader_writer_impl2.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper_sptr.h" />
+    <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h" />
+    <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
+    <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
+    <ClInclude Include="..\src\cpp_cb\server\server_writer_send_status_cqtag.h" />
+    <ClInclude Include="..\src\cpp_cb\server\server_writer_write_cqtag.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\cpp_cb\client\channel.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_helper.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_impl.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_recv_status.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_reader_writer_impl2.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_helper.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_async_writer_impl2.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\client\service_stub.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\call.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\call_op_data.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\proto_utils.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\status.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\string_ref.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_credentials.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_method_call_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_replier_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_writer_impl.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\server_writer_write_cqtag.cc" />
+    <ClCompile Include="..\src\cpp_cb\server\service.cc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
