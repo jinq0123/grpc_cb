@@ -86,6 +86,11 @@ project "grpc_cb_shared"
 		"../include/grpc_cb/**.h",
 		"../src/cpp_cb/**",
 	}
+	filter { "system:windows" }
+		links { "grpc_dll" }
+	filter { "system:not windows"}
+		links { "grpc" }
+	filter {}
 
 project "grpc_cb_static"
 	kind "StaticLib"
