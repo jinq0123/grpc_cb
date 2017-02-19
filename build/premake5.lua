@@ -14,6 +14,14 @@ platform_dir = "v140/Win32"  -- $(PlatformToolset)\$(Platform)
 zlib_libdir = grpc_vs_packages .. "/grpc.dependencies.zlib.1.2.8.10/build/native/lib/" .. platform_dir .. "/%{cfg.buildcfg}/static/cdecl"
 openssl_libdir = grpc_vs_packages .. "/grpc.dependencies.openssl.1.0.204.1/build/native/lib/" .. platform_dir .. "/%{cfg.buildcfg}/static"
 
+grpc_libs = {
+	"grpc",
+	"gpr",
+	"zlib",
+	"ssleay32",
+	"libeay32",
+}
+
 workspace "grpc_cb"
 	configurations { "Debug", "Release" }
 	language "C++"
@@ -53,7 +61,6 @@ workspace "grpc_cb"
 		}
 	filter {}
 
-
 project "grpc_cpp_cb_plugin"
 	kind "ConsoleApp"
 	files {
@@ -86,11 +93,7 @@ project "grpc_cb_shared"
 		"../include/grpc_cb/**.h",
 		"../src/cpp_cb/**",
 	}
-	filter { "system:windows" }
-		links { "grpc_dll" }
-	filter { "system:not windows"}
-		links { "grpc" }
-	filter {}
+	links(grpc_libs)
 
 project "grpc_cb_static"
 	kind "StaticLib"
@@ -110,11 +113,7 @@ group "examples"
 
 	examples_dep_libs = {
 		"grpc_cb_static",
-		"grpc",
-		"gpr",
-		"zlib",
-		"ssleay32",
-		"libeay32",
+		unpack(grpc_libs)
 	}
 
 	project "greeter_cb_client"
