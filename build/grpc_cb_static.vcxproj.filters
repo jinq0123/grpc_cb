@@ -225,6 +225,9 @@
     <ClInclude Include="..\include\grpc_cb\support\config.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\support\grpc_cb_api.h">
+      <Filter>include\grpc_cb\support</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\support\noncopyable.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>

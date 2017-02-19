@@ -157,6 +157,7 @@
     <ClInclude Include="..\include\grpc_cb\status.h" />
     <ClInclude Include="..\include\grpc_cb\status_callback.h" />
     <ClInclude Include="..\include\grpc_cb\support\config.h" />
+    <ClInclude Include="..\include\grpc_cb\support\grpc_cb_api.h" />
     <ClInclude Include="..\include\grpc_cb\support\noncopyable.h" />
     <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h" />
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
