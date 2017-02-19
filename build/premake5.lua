@@ -86,6 +86,9 @@ project "grpc_cpp_cb_plugin"
 project "grpc_cb_shared"
 	kind "SharedLib"
 	targetname "grpc_cb"
+	defines {
+		"GRPC_CB_DLL_EXPORT",
+	}
 	includedirs {
 		"../src/cpp_cb",
 	}

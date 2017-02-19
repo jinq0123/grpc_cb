@@ -15,7 +15,7 @@ ifeq ($(config),debug)
   TARGETDIR = bin/Debug
   TARGET = $(TARGETDIR)/libgrpc_cb.so
   OBJDIR = obj/Debug/grpc_cb_shared
-  DEFINES +=
+  DEFINES += -DGRPC_CB_DLL_EXPORT
   INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../src/cpp_cb
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
@@ -42,7 +42,7 @@ ifeq ($(config),release)
   TARGETDIR = bin/Release
   TARGET = $(TARGETDIR)/libgrpc_cb.so
   OBJDIR = obj/Release/grpc_cb_shared
-  DEFINES += -DNDEBUG
+  DEFINES += -DNDEBUG -DGRPC_CB_DLL_EXPORT
   INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../src/cpp_cb
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
