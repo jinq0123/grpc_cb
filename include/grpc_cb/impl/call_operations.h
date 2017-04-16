@@ -92,7 +92,7 @@ Status CallOperations::SendMsg(
   assert(nops_ < MAX_OPS);
   grpc_op& op = ops_[nops_++];
   InitOp(op, GRPC_OP_SEND_MESSAGE);
-  op.data.send_message = cod_send_msg.GetSendBuf();
+  op.data.send_message.send_message = cod_send_msg.GetSendBuf();
   // Todo: op->flags = write_options_.flags();
   return status;
 }
@@ -110,14 +110,14 @@ void CallOperations::RecvInitMd(grpc_metadata_array* init_metadata) {
   assert(nops_ < MAX_OPS);
   grpc_op& op = ops_[nops_++];
   InitOp(op, GRPC_OP_RECV_INITIAL_METADATA);  // Todo
-  op.data.recv_initial_metadata = init_metadata;
+  op.data.recv_initial_metadata.recv_initial_metadata = init_metadata;
 }
 
 void CallOperations::RecvMsg(grpc_byte_buffer** recv_buf) {
   assert(nops_ < MAX_OPS);
   grpc_op& op = ops_[nops_++];
   InitOp(op, GRPC_OP_RECV_MESSAGE);
-  op.data.recv_message = recv_buf;
+  op.data.recv_message.recv_message = recv_buf;
 }
 
 void CallOperations::ClientSendClose() {
@@ -141,9 +141,9 @@ void CallOperations::ClientRecvStatus(grpc_metadata_array* trailing_metadata,
   InitOp(op, GRPC_OP_RECV_STATUS_ON_CLIENT);
   op.data.recv_status_on_client.trailing_metadata = trailing_metadata;
   op.data.recv_status_on_client.status = status_code;
-  op.data.recv_status_on_client.status_details = status_details;
-  op.data.recv_status_on_client.status_details_capacity =
-      status_details_capacity;
+  // XXX op.data.recv_status_on_client.status_details = status_details;
+  // XXX op.data.recv_status_on_client.status_details_capacity =
+      // status_details_capacity;
 }
 
 void CallOperations::ServerSendStatus(const Status& status,
@@ -162,7 +162,7 @@ void CallOperations::ServerSendStatus(
   op.data.send_status_from_server.trailing_metadata_count = trail_md_count,
   op.data.send_status_from_server.trailing_metadata = trail_md;
   op.data.send_status_from_server.status = status_code;
-  op.data.send_status_from_server.status_details = status_details;
+  // XXX op.data.send_status_from_server.status_details = status_details;
 }
 
 }  // namespace grpb_cb

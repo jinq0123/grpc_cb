@@ -9,6 +9,7 @@
 
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/completion_queue.h>  // for CompletionQueue
+#include <grpc_cb/support/slice.h>  // for SliceFromCopiedString()
 
 namespace grpc_cb {
 
@@ -36,7 +37,7 @@ CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
                                  const gpr_timespec& deadline) const {
   grpc_call* c_call = grpc_channel_create_call(
       c_channel_uptr_.get(), nullptr, GRPC_PROPAGATE_DEFAULTS, &cq.c_cq(),
-      method.c_str(), nullptr, deadline, nullptr);
+      SliceFromCopiedString(method), nullptr, deadline, nullptr);
   return CallSptr(new Call(c_call));  // shared_ptr
 }
 

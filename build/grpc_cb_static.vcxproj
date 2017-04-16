@@ -152,6 +152,7 @@
     <ClInclude Include="..\include\grpc_cb\support\grpc_cb_api.h" />
     <ClInclude Include="..\include\grpc_cb\support\noncopyable.h" />
     <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h" />
+    <ClInclude Include="..\include\grpc_cb\support\slice.h" />
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h" />
     <ClInclude Include="..\include\grpc_cb\support\time.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_reader_helper.h" />

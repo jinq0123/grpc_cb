@@ -234,6 +234,9 @@
     <ClInclude Include="..\include\grpc_cb\support\protobuf_fwd.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\support\slice.h">
+      <Filter>include\grpc_cb\support</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\support\string_ref.h">
       <Filter>include\grpc_cb\support</Filter>
     </ClInclude>

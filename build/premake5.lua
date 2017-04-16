@@ -36,7 +36,7 @@ workspace "grpc_cb"
 	}
 	libdirs {
 		grpc_root .. "/vsprojects/%{cfg.buildcfg}",
-		protobuf_root .. "/cmake/%{cfg.buildcfg}",
+		protobuf_root .. "/cmake/build/solution/%{cfg.buildcfg}",
 		zlib_libdir,
 		openssl_libdir,
 	}

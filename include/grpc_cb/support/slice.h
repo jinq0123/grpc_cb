@@ -1,4 +1,5 @@
 /*
+ *
  * Copyright 2015, Google Inc.
  * All rights reserved.
  *
@@ -30,44 +31,32 @@
  *
  */
 
-#include <grpc_cb/impl/completion_queue.h>
+#ifndef GRPC_CB_SUPPORT_SLICE_H
+#define GRPC_CB_SUPPORT_SLICE_H
 
-#include <cassert>
-#include <memory>
-
-#include <grpc/grpc.h>
-#include <grpc_cb/support/time.h>
+#include <grpc_cb/support/string_ref.h>
 
 namespace grpc_cb {
 
-// XXX Add CompletionQueueForPluck.
-
-CompletionQueue::CompletionQueue()
-    : c_cq_uptr_(grpc_completion_queue_create_for_next(nullptr),
-                 grpc_completion_queue_destroy) {
-  assert(c_cq_uptr_);
+inline grpc_cb::string_ref StringRefFromSlice(const grpc_slice* slice) {
+  return grpc_cb::string_ref(
+      reinterpret_cast<const char*>(GRPC_SLICE_START_PTR(*slice)),
+      GRPC_SLICE_LENGTH(*slice));
 }
 
-CompletionQueue::CompletionQueue(grpc_completion_queue* take)
-    : c_cq_uptr_(take, grpc_completion_queue_destroy) {
-  assert(c_cq_uptr_);
+inline std::string StringFromCopiedSlice(grpc_slice slice) {
+  return std::string(reinterpret_cast<char*>(GRPC_SLICE_START_PTR(slice)),
+                      GRPC_SLICE_LENGTH(slice));
 }
 
-CompletionQueue::~CompletionQueue() {
-  assert(c_cq_uptr_);
+inline grpc_slice SliceReferencingString(const std::string& str) {
+  return grpc_slice_from_static_buffer(str.data(), str.length());
 }
 
-void CompletionQueue::Shutdown() {
-  assert(c_cq_uptr_);
-  grpc_completion_queue_shutdown(c_cq_uptr_.get());
-}
-
-grpc_event CompletionQueue::NextInternal(gpr_timespec deadline) {
-  return grpc_completion_queue_next(c_cq_uptr_.get(), deadline, nullptr);
-}
-
-grpc_event CompletionQueue::PluckInternal(void* tag, gpr_timespec deadline) {
-  return grpc_completion_queue_pluck(c_cq_uptr_.get(), tag, deadline, nullptr);
+inline grpc_slice SliceFromCopiedString(const std::string& str) {
+  return grpc_slice_from_copied_buffer(str.data(), str.length());
 }
 
 }  // namespace grpc_cb
+
+#endif  // GRPC_CB_SUPPORT_SLICE_H

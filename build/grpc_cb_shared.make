@@ -24,7 +24,7 @@ ifeq ($(config),debug)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -llibprotobufd -lgrpc -lgpr -lzlib -lssleay32 -llibeay32
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/Debug -L../third_party/grpc/third_party/protobuf/cmake/Debug -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Debug/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Debug/static -shared
+  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/Debug -L../third_party/grpc/third_party/protobuf/cmake/build/solution/Debug -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Debug/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Debug/static -shared
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef
@@ -51,7 +51,7 @@ ifeq ($(config),release)
   ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
   LIBS += -llibprotobuf -lgrpc -lgpr -lzlib -lssleay32 -llibeay32
   LDDEPS +=
-  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/Release -L../third_party/grpc/third_party/protobuf/cmake/Release -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Release/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Release/static -s -shared
+  ALL_LDFLAGS += $(LDFLAGS) -L../third_party/grpc/vsprojects/Release -L../third_party/grpc/third_party/protobuf/cmake/build/solution/Release -L../third_party/grpc/vsprojects/packages/grpc.dependencies.zlib.1.2.8.10/build/native/lib/v140/Win32/Release/static/cdecl -L../third_party/grpc/vsprojects/packages/grpc.dependencies.openssl.1.0.204.1/build/native/lib/v140/Win32/Release/static -s -shared
   LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
   define PREBUILDCMDS
   endef

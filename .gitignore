@@ -37,3 +37,4 @@
 /build/obj
 /build/*.sdf
 /build/*.user
+/examples/protos/*.bat
