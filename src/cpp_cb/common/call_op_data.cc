@@ -4,12 +4,12 @@
 #include <grpc_cb/impl/call_op_data.h>
 
 #include <grpc_cb/status.h>  // for Status
+#include <grpc_cb/support/slice.h>  // for StringFromCopiedSlice()
 
 namespace grpc_cb {
 
 Status CodClientRecvStatus::GetStatus() const {
-  return Status(status_code_,
-                status_details_ ? std::string(status_details_) : "");
+  return Status(status_code_, StringFromCopiedSlice(status_details_));
 }
 
 }  // namespace grpc_cb

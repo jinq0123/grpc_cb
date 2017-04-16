@@ -4,6 +4,7 @@
 
 #include <cassert>
 
+#include <grpc/slice.h>                  // for grpc_slice
 #include <grpc/support/alloc.h>          // for gpr_free()
 #include <grpc/support/port_platform.h>  // for GRPC_MUST_USE_RESULT
 
@@ -114,19 +115,18 @@ class CodRecvMsg GRPC_FINAL : noncopyable {
 // Cod for client to receive status.
 class CodClientRecvStatus : noncopyable {
  public:
-  CodClientRecvStatus() {
+  CodClientRecvStatus() : status_details_(grpc_empty_slice()) {
     grpc_metadata_array_init(&recv_trail_md_arr_);
   }
   ~CodClientRecvStatus() {
     grpc_metadata_array_destroy(&recv_trail_md_arr_);
-    gpr_free(status_details_);
+    grpc_slice_unref(status_details_);
   }
 
  public:
   grpc_metadata_array* GetTrailMdArrPtr() { return &recv_trail_md_arr_; }
   grpc_status_code* GetStatusCodePtr() { return &status_code_; }
-  char** GetStatusDetailsBufPtr() { return &status_details_; }
-  size_t* GetStatusDetailsCapacityPtr() { return &status_details_capacity_; }
+  grpc_slice* GetStatusDetailsPtr() { return &status_details_; }
 
  public:
   bool IsStatusOk() const { return status_code_ == GRPC_STATUS_OK; }
@@ -139,8 +139,7 @@ class CodClientRecvStatus : noncopyable {
   // Metadata array to receive trailing metadata.
   grpc_metadata_array recv_trail_md_arr_;
   grpc_status_code status_code_ = GRPC_STATUS_OK;
-  char* status_details_ = nullptr;
-  size_t status_details_capacity_ = 0;
+  grpc_slice status_details_;
 };
 
 // Cod for server to send status.

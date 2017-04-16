@@ -15,6 +15,8 @@
 #include <grpc_cb/support/config.h>        // for GRPC_FINAL
 #include <grpc_cb/support/protobuf_fwd.h>  // for Message
 
+struct grpc_slice;
+
 namespace grpc_cb {
 
 // Like grpc++ CallOpSet<>.
@@ -58,8 +60,8 @@ class CallOperations GRPC_FINAL {
   inline void ClientSendClose();
   inline void ClientRecvStatus(CodClientRecvStatus& cod_client_recv_status);
   inline void ClientRecvStatus(grpc_metadata_array* trailing_metadata,
-                        grpc_status_code* status_code, char** status_details,
-                        size_t* status_details_capacity);
+                               grpc_status_code* status_code,
+                               grpc_slice* status_details);
 
   inline void ServerSendStatus(const Status& status,
                                CodServerSendStatus& cod_server_send_status);
@@ -128,22 +130,18 @@ void CallOperations::ClientSendClose() {
 
 void CallOperations::ClientRecvStatus(CodClientRecvStatus& cod) {
   ClientRecvStatus(cod.GetTrailMdArrPtr(), cod.GetStatusCodePtr(),
-                   cod.GetStatusDetailsBufPtr(),
-                   cod.GetStatusDetailsCapacityPtr());
+                   cod.GetStatusDetailsPtr());
 }
 
 void CallOperations::ClientRecvStatus(grpc_metadata_array* trailing_metadata,
                                       grpc_status_code* status_code,
-                                      char** status_details,
-                                      size_t* status_details_capacity) {
+                                      grpc_slice* status_details) {
   assert(nops_ < MAX_OPS);
   grpc_op& op = ops_[nops_++];
   InitOp(op, GRPC_OP_RECV_STATUS_ON_CLIENT);
   op.data.recv_status_on_client.trailing_metadata = trailing_metadata;
   op.data.recv_status_on_client.status = status_code;
-  // XXX op.data.recv_status_on_client.status_details = status_details;
-  // XXX op.data.recv_status_on_client.status_details_capacity =
-      // status_details_capacity;
+  op.data.recv_status_on_client.status_details = status_details;
 }
 
 void CallOperations::ServerSendStatus(const Status& status,
