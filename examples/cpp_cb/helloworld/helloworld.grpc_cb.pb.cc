@@ -59,12 +59,12 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
     const ::helloworld::HelloRequest& request,
     ::helloworld::HelloReply* response) {
   assert(response);
-  ::grpc_cb::CompletionQueue cq;
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq));
+  ::grpc_cb::CQueueForPluck cq4p;
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq4p));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
-  cq.Pluck(&tag);
+  cq4p.Pluck(&tag);
   return tag.GetResponse(*response);
 }
 

@@ -37,6 +37,7 @@
 #define GRPC_CB_COMPLETION_QUEUE_H
 
 #include <cassert>
+#include <memory>  // for unique_ptr<>
 
 #include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/impl/grpc_library.h>           // for GrpcLibrary
@@ -47,15 +48,11 @@ struct grpc_event;
 
 namespace grpc_cb {
 
-/// A thin wrapper around \a grpc_completion_queue (see / \a
-/// src/core/surface/completion_queue.h).
+/// A thin wrapper around grpc_completion_queue (see grpc
+///  src/core/surface/completion_queue.h).
 /// Thread-safe.
 class CompletionQueue : public GrpcLibrary {
  public:
-  /// Default constructor. Implicitly creates a \a grpc_completion_queue
-  /// instance.
-  CompletionQueue();
-
   /// Wrap \a take, taking ownership of the instance.
   ///
   /// \param take The completion queue instance to wrap. Ownership is taken.
@@ -65,40 +62,6 @@ class CompletionQueue : public GrpcLibrary {
   virtual ~CompletionQueue() GRPC_OVERRIDE;
 
  public:
-  /// Wraps \a grpc_completion_queue_next.
-  /// \param deadline[in] How long to block in wait for an event.
-  template <typename T>
-  grpc_event Next(const T& deadline) {
-    TimePoint<T> deadline_tp(deadline);
-    return NextInternal(deadline_tp.raw_time());
-  }
-
-  grpc_event Next() {
-    return NextInternal(gpr_inf_future(GPR_CLOCK_REALTIME));
-  }
-  grpc_event TryNext() {
-    return NextInternal(gpr_time_0(GPR_CLOCK_REALTIME));
-  }
-
-  /// Wraps \a grpc_completion_queue_pluck.
-  /// \warning Must not be mixed with calls to \a Next.
-  template <typename T>
-  grpc_event Pluck(void* tag, const T& deadline) {
-    TimePoint<T> deadline_tp(deadline);
-    return PluckInternal(tag, deadline_tp.raw_time());
-  }
-
-  /// Wraps \a grpc_completion_queue_pluck.
-  /// \warning Must not be mixed with calls to \a Next.
-  grpc_event Pluck(void* tag) {
-    return PluckInternal(tag, gpr_inf_future(GPR_CLOCK_REALTIME));
-  }
-
-  /// Performs a single polling pluck on \a tag.
-  grpc_event TryPluck(void* tag) {
-    return PluckInternal(tag, gpr_time_0(GPR_CLOCK_REALTIME));
-  }
-
   /// Request the shutdown of the queue.
   ///
   /// \warning This method must be called at some point. Once invoked, \a Next
@@ -114,10 +77,6 @@ class CompletionQueue : public GrpcLibrary {
     assert(c_cq_uptr_);
     return *c_cq_uptr_;
   }
-
- private:
-  grpc_event NextInternal(gpr_timespec deadline);
-  grpc_event PluckInternal(void* tag, gpr_timespec deadline);
 
  private:
   const std::unique_ptr<grpc_completion_queue, void (*)(grpc_completion_queue*)>

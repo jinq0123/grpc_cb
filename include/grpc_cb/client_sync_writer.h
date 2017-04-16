@@ -29,7 +29,7 @@ class ClientSyncWriter GRPC_FINAL {
   // Todo: BlockingGetInitMd();
   bool Write(const Request& request) const {
     Data& d = *data_sptr_;
-    return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, d.cq_sptr,
+    return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, d.cq4p_sptr,
                                                  request, d.status);
   }
 
@@ -38,7 +38,7 @@ class ClientSyncWriter GRPC_FINAL {
  private:
   // Wrap all data in shared struct pointer to make copy quick.
   struct Data {
-    CompletionQueueSptr cq_sptr;
+    CQueueForPluckSptr cq4p_sptr;
     CallSptr call_sptr;
     Status status;
   };
@@ -54,13 +54,13 @@ ClientSyncWriter<Request>::ClientSyncWriter(const ChannelSptr& channel,
     // Todo: same as ClientReader?
     : data_sptr_(new Data) {
   assert(channel);
-  CompletionQueueSptr cq_sptr(new CompletionQueue);
-  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr, timeout_ms);
-  data_sptr_->cq_sptr = cq_sptr;
+  CQueueForPluckSptr cq4p_sptr(new CQueueForPluck);
+  CallSptr call_sptr = channel->MakeSharedCall(method, *cq4p_sptr, timeout_ms);
+  data_sptr_->cq4p_sptr = cq4p_sptr;
   data_sptr_->call_sptr = call_sptr;
   ClientSendInitMdCqTag tag(call_sptr);
   if (tag.Start()) {
-    cq_sptr->Pluck(&tag);
+    cq4p_sptr->Pluck(&tag);
     return;
   }
 
@@ -74,7 +74,7 @@ Status ClientSyncWriter<Request>::Close(
   assert(data_sptr_);
   Data& data = *data_sptr_;
   assert(data.call_sptr);
-  assert(data.cq_sptr);
+  assert(data.cq4p_sptr);
 
   Status& status = data.status;
   if (!status.ok()) return status;
@@ -84,7 +84,7 @@ Status ClientSyncWriter<Request>::Close(
     return status;
   }
 
-  data.cq_sptr->Pluck(&tag);
+  data.cq4p_sptr->Pluck(&tag);
 
   // Todo: Get trailing metadata.
   if (tag.IsStatusOk())

@@ -8,7 +8,7 @@
 #include <grpc/grpc.h>
 #include <grpc/grpc_security.h>  // for grpc_server_add_secure_http2_port()
 
-#include <grpc_cb/impl/completion_queue.h>        // for CompletionQueue
+#include <grpc_cb/impl/cqueue_for_next.h>        // for CQueueForNext
 #include <grpc_cb/security/server_credentials.h>  // for InsecureServerCredentials
 #include <grpc_cb/service.h>
 
@@ -18,12 +18,12 @@
 namespace grpc_cb {
 
 Server::Server()
-    : cq_sptr_(new CompletionQueue),  // shared_ptr
+    : cq4n_sptr_(new CQueueForNext),  // shared_ptr
       started_(false),
       shutdown_(false),
       c_server_uptr_(MakeUniqueGrpcServer()) {
-  assert(cq_sptr_ && c_server_uptr_);
-  grpc_server_register_completion_queue(c_server_uptr_.get(), &cq_sptr_->c_cq(),
+  assert(cq4n_sptr_ && c_server_uptr_);
+  grpc_server_register_completion_queue(c_server_uptr_.get(), &cq4n_sptr_->c_cq(),
                                         nullptr);
 }
 
@@ -75,10 +75,10 @@ void Server::ShutdownInternal(gpr_timespec deadline) {
   if (shutdown_) return;
   shutdown_ = true;
 
-  assert(cq_sptr_);
-  grpc_server_shutdown_and_notify(c_server_uptr_.get(), &cq_sptr_->c_cq(), this);
-  cq_sptr_->Pluck(this);
-  cq_sptr_->Shutdown();
+  assert(cq4n_sptr_);
+  grpc_server_shutdown_and_notify(c_server_uptr_.get(), &cq4n_sptr_->c_cq(), this);
+  // XXX cq_sptr_->Pluck(this);
+  cq4n_sptr_->Shutdown();
 }
 
 void Server::BlockingRun() {
@@ -89,9 +89,9 @@ void Server::BlockingRun() {
   grpc_server_start(c_server_uptr_.get());
   RequestMethodsCalls();
 
-  assert(cq_sptr_);
-  CompletionQueue& cq = *cq_sptr_;
-  while (DoNextCompletion(cq))
+  assert(cq4n_sptr_);
+  CQueueForNext& cq4n = *cq4n_sptr_;
+  while (DoNextCompletion(cq4n))
     ;
 }
 
@@ -109,7 +109,7 @@ void Server::RequestServiceMethodsCalls(const RegisteredService& rs) const {
     if (!rms[i]) continue;
     // Delete in Run(). Calls grpc_server_request_registered_call() in ctr().
     new ServerMethodCallCqTag(c_server_uptr_.get(), rs.service, i, rms[i],
-                              cq_sptr_);
+                              cq4n_sptr_);
   }
 }
 

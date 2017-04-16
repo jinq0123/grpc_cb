@@ -8,7 +8,7 @@
 #include <cstdint>  // for int64_t
 
 #include <grpc_cb/channel.h>                         // for MakeSharedCall()
-#include <grpc_cb/impl/client/client_reader_data.h>  // for ClientReaderDataSptr
+#include <grpc_cb/impl/client/client_sync_reader_data.h>  // for ClientSyncReaderDataSptr
 #include <grpc_cb/impl/client/client_reader_init_cqtag.h>  // for ClientReaderInitCqTag
 #include <grpc_cb/impl/client/client_sync_reader_helper.h>  // for ClientSyncReaderHelper
 #include <grpc_cb/status.h>                                 // for Status
@@ -29,20 +29,20 @@ class ClientSyncReader GRPC_FINAL {
   inline bool ReadOne(Response* response) const {
     assert(response);
     Data& d = *data_sptr_;
-    return ClientSyncReaderHelper::BlockingReadOne(d.call_sptr, d.cq_sptr,
+    return ClientSyncReaderHelper::BlockingReadOne(d.call_sptr, d.cq4p_sptr,
                                                    *response, d.status);
   }
 
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
     if (!d.status.ok()) return d.status;
-    return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq_sptr);
+    return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq4p_sptr);
   }
 
  private:
   // Wrap all data in shared struct pointer to make copy quick.
-  using Data = ClientReaderData<Response>;
-  using DataSptr = ClientReaderDataSptr<Response>;
+  using Data = ClientSyncReaderData<Response>;
+  using DataSptr = ClientSyncReaderDataSptr<Response>;
   DataSptr data_sptr_;
 };  // class ClientSyncReader<>
 
@@ -50,16 +50,16 @@ template <class Response>
 ClientSyncReader<Response>::ClientSyncReader(
     const ChannelSptr& channel, const std::string& method,
     const ::google::protobuf::Message& request, int64_t timeout_ms)
-    : data_sptr_(new ClientReaderData<Response>) {
+    : data_sptr_(new ClientSyncReaderData<Response>) {
   assert(channel);
-  CompletionQueueSptr cq_sptr(new CompletionQueue);
-  CallSptr call_sptr = channel->MakeSharedCall(method, *cq_sptr, timeout_ms);
-  data_sptr_->cq_sptr = cq_sptr;
+  CQueueForPluckSptr cq4p_sptr(new CQueueForPluck);
+  CallSptr call_sptr = channel->MakeSharedCall(method, *cq4p_sptr, timeout_ms);
+  data_sptr_->cq4p_sptr = cq4p_sptr;
   data_sptr_->call_sptr = call_sptr;
 
   ClientReaderInitCqTag tag(call_sptr);
   if (tag.Start(request)) {
-    cq_sptr->Pluck(&tag);
+    cq4p_sptr->Pluck(&tag);
     return;
   }
 

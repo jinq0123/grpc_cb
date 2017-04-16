@@ -9,7 +9,7 @@
 #include <grpc_cb/impl/call_sptr.h>                              // for CallSptr
 #include <grpc_cb/impl/client/client_reader_read_cqtag.h>  // for ClientReaderReadCqTag
 #include <grpc_cb/impl/client/client_reader_recv_status_cqtag.h>  // for ClientReaderRecvStatusCqTag
-#include <grpc_cb/impl/completion_queue.h>  // for CompletionQueue::Pluck()
+#include <grpc_cb/impl/cqueue_for_pluck.h>  // for Pluck()
 #include <grpc_cb/status.h>                 // for Status
 
 namespace grpc_cb {
@@ -18,19 +18,19 @@ namespace ClientSyncReaderHelper {
 
 inline bool BlockingReadOne(
     const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr,
+    const CQueueForPluckSptr& cq4p_sptr,
     ::google::protobuf::Message& response,
     Status& status);
 
 inline Status BlockingRecvStatus(
     const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr);
+    const CQueueForPluckSptr& cq4p_sptr);
 
 // Todo: move to cpp file.
 
 inline bool BlockingReadOne(
     const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr,
+    const CQueueForPluckSptr& cq4p_sptr,
     ::google::protobuf::Message& response,
     Status& status) {
   if (!status.ok()) return false;
@@ -42,7 +42,7 @@ inline bool BlockingReadOne(
   }
 
   // tag.Start() has queued the tag. Wait for completion.
-  cq_sptr->Pluck(&tag);
+  cq4p_sptr->Pluck(&tag);
   if (!tag.HasGotMsg())
       return false;  // Need to set EndOfStream?
   status = tag.GetResultMsg(response);
@@ -51,13 +51,13 @@ inline bool BlockingReadOne(
 
 inline Status BlockingRecvStatus(
     const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr) {
+    const CQueueForPluckSptr& cq4p_sptr) {
   assert(call_sptr);
-  assert(cq_sptr);
+  assert(cq4p_sptr);
   ClientReaderRecvStatusCqTag tag(call_sptr);
   if (!tag.Start())
       return Status::InternalError("Failed to receive status.");
-  cq_sptr->Pluck(&tag);
+  cq4p_sptr->Pluck(&tag);
   return tag.GetStatus();
 }
 

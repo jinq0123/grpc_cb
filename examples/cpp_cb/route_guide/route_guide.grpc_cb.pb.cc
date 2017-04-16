@@ -9,7 +9,7 @@
 
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
-#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue
+#include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck
 #include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
 #include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 #include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
@@ -61,12 +61,12 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
 ::grpc_cb::Status Stub::BlockingGetFeature(
     const ::routeguide::Point& request,
     ::routeguide::Feature* response) {
-  ::grpc_cb::CompletionQueue cq;
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq));
+  ::grpc_cb::CQueueForPluck cq4p;
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq4p));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
-  cq.Pluck(&tag);
+  cq4p.Pluck(&tag);
 
   if (response) return tag.GetResponse(*response);
   ::routeguide::Feature ingnored_resp;
@@ -98,7 +98,7 @@ void Stub::AsyncListFeatures(const ::routeguide::Rectangle& request,
                              const ListFeaturesMsgCb& on_msg,
                              const ::grpc_cb::StatusCallback& on_status) {
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
-      GetChannelSptr(), method_names[1], request, GetCqSptr(),
+      GetChannelSptr(), method_names[1], request, GetCq4nSptr(),
       GetCallTimeoutMs());
   reader.ReadEach(on_msg, on_status);
 }
@@ -116,7 +116,7 @@ Stub::AsyncRecordRoute() {
   return ::grpc_cb::ClientAsyncWriter<
       ::routeguide::Point,
       ::routeguide::RouteSummary>(
-          GetChannelSptr(), method_names[2], GetCqSptr(), GetCallTimeoutMs());
+          GetChannelSptr(), method_names[2], GetCq4nSptr(), GetCallTimeoutMs());
 }
 
 ::grpc_cb::ClientSyncReaderWriter<
@@ -137,7 +137,7 @@ Stub::AsyncRouteChat(
   return ::grpc_cb::ClientAsyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>(
-          GetChannelSptr(), method_names[3], GetCqSptr(),
+          GetChannelSptr(), method_names[3], GetCq4nSptr(),
           GetCallTimeoutMs(), on_status);
 }
 

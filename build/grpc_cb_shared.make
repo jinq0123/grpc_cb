@@ -81,6 +81,8 @@ OBJECTS := \
 	$(OBJDIR)/call_op_data.o \
 	$(OBJDIR)/call_operations.o \
 	$(OBJDIR)/completion_queue.o \
+	$(OBJDIR)/cqueue_for_next.o \
+	$(OBJDIR)/cqueue_for_pluck.o \
 	$(OBJDIR)/do_next_completion.o \
 	$(OBJDIR)/proto_utils.o \
 	$(OBJDIR)/status.o \
@@ -195,6 +197,12 @@ $(OBJDIR)/call_operations.o: ../src/cpp_cb/common/call_operations.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/completion_queue.o: ../src/cpp_cb/common/completion_queue.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/cqueue_for_next.o: ../src/cpp_cb/common/cqueue_for_next.cc
+	@echo $(notdir $<)
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/cqueue_for_pluck.o: ../src/cpp_cb/common/cqueue_for_pluck.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/do_next_completion.o: ../src/cpp_cb/common/do_next_completion.cc

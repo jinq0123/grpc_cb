@@ -111,7 +111,6 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_async_writer_impl.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_call_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_async_recv_status_cqtag.h" />
-    <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_data.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_init_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_read_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_reader_recv_status_cqtag.h" />
@@ -119,6 +118,7 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_send_close_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_send_init_md_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_send_msg_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_data.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_helper.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_writer_impl.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_writer_helper.h" />
@@ -126,6 +126,10 @@
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_tag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\cqueue_for_next.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\cqueue_for_next_sptr.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\cqueue_for_pluck.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\cqueue_for_pluck_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\impl\general_call_cqtag.h" />
     <ClInclude Include="..\include\grpc_cb\impl\grpc_library.h" />
     <ClInclude Include="..\include\grpc_cb\impl\message_queue.h" />
@@ -184,6 +188,8 @@
     <ClCompile Include="..\src\cpp_cb\common\call_op_data.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />
     <ClCompile Include="..\src\cpp_cb\common\completion_queue.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\cqueue_for_next.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\cqueue_for_pluck.cc" />
     <ClCompile Include="..\src\cpp_cb\common\do_next_completion.cc" />
     <ClCompile Include="..\src\cpp_cb\common\proto_utils.cc" />
     <ClCompile Include="..\src\cpp_cb\common\status.cc" />

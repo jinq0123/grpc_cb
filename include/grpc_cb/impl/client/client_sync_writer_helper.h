@@ -17,17 +17,17 @@ namespace ClientSyncWriterHelper {
 
 inline bool BlockingWrite(
     const CallSptr& call_sptr,
-    const CompletionQueueSptr& cq_sptr,
+    const CQueueForPluckSptr& cq4p_sptr,
     const ::google::protobuf::Message& request,
     Status& status) {
   assert(call_sptr);
-  assert(cq_sptr);
+  assert(cq4p_sptr);
   if (!status.ok())
     return false;
 
   ClientSendMsgCqTag tag(call_sptr);
   if (tag.Start(request)) {
-    cq_sptr->Pluck(&tag);
+    cq4p_sptr->Pluck(&tag);
     return true;
   }
 

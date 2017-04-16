@@ -11,7 +11,8 @@
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
-#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/impl/cqueue_for_next_sptr.h>   // for CQueueForNextSptr
+#include <grpc_cb/impl/cqueue_for_next.h>   // to convert GetCq4n() to CompletionQueue
 #include <grpc_cb/impl/completion_queue_tag.h>   // for CompletionQueueTag
 #include <grpc_cb/status_callback.h>             // for StatusCallback
 #include <grpc_cb/support/config.h>              // for GRPC_OVERRIDE
@@ -40,17 +41,17 @@ class GRPC_CB_API ServiceStub {
   inline void SetErrorCallback(const ErrorCallback& cb) {
     error_callback_ = cb;
   }
-  inline CompletionQueue& GetCq() const {
-    assert(cq_sptr_);
-    return *cq_sptr_;
+  inline CQueueForNext& GetCq4n() const {
+    assert(cq4n_sptr_);
+    return *cq4n_sptr_;
   }
-  inline CompletionQueueSptr GetCqSptr() const { return cq_sptr_; }
+  inline CQueueForNextSptr GetCq4nSptr() const { return cq4n_sptr_; }
   inline int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
   inline void SetCallTimeoutMs(int64_t timeout_ms) {
       call_timeout_ms_ = timeout_ms;
   }
   CallSptr MakeSharedCall(const std::string& method) const {
-    return MakeSharedCall(method, GetCq());
+    return MakeSharedCall(method, GetCq4n());
   }
   CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const {
     return GetChannel().MakeSharedCall(method, cq, GetCallTimeoutMs());
@@ -72,7 +73,7 @@ class GRPC_CB_API ServiceStub {
 
  private:
   const ChannelSptr channel_sptr_;
-  const CompletionQueueSptr cq_sptr_;
+  const CQueueForNextSptr cq4n_sptr_;
 
   ErrorCallback error_callback_;
   std::atomic_int64_t call_timeout_ms_;

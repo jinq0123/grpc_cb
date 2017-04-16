@@ -9,7 +9,7 @@
 #include <grpc/grpc.h>          // for grpc_metadata_array
 #include <grpc/support/time.h>  // for gpr_timespec
 
-#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/impl/cqueue_for_next_sptr.h>  // for CQueueForNextSptr
 #include <grpc_cb/impl/completion_queue_tag.h>   // for CompletionQueueTag
 #include <grpc_cb/support/config.h>              // for GRPC_FINAL
 
@@ -25,7 +25,7 @@ class ServerMethodCallCqTag GRPC_FINAL : public CompletionQueueTag {
   // registered_method is the return of grpc_server_register_method().
   ServerMethodCallCqTag(grpc_server* server, Service* service,
                         size_t method_index, void* registered_method,
-                        const CompletionQueueSptr& cq_sptr);
+                        const CQueueForNextSptr& cq4n_sptr);
 
   virtual ~ServerMethodCallCqTag() GRPC_OVERRIDE;
 
@@ -38,7 +38,7 @@ class ServerMethodCallCqTag GRPC_FINAL : public CompletionQueueTag {
   Service* const service_;
   const size_t method_index_;
   void* const registered_method_;
-  const CompletionQueueSptr cq_sptr_;
+  const CQueueForNextSptr cq4n_sptr_;
 
   grpc_call* call_ptr_ = nullptr;
   gpr_timespec deadline_;
