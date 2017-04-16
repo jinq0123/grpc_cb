@@ -6,6 +6,7 @@
 
 #include <cassert>
 #include <cstring>  // for memset()
+#include <string>
 
 #include <grpc/impl/codegen/grpc_types.h>  // for grpc_op
 #include <grpc/support/port_platform.h>    // for GRPC_MUST_USE_RESULT
@@ -14,6 +15,7 @@
 #include <grpc_cb/status.h>                // for Status
 #include <grpc_cb/support/config.h>        // for GRPC_FINAL
 #include <grpc_cb/support/protobuf_fwd.h>  // for Message
+#include <grpc_cb/support/slice.h>         // for SliceFromCopiedString()
 
 struct grpc_slice;
 
@@ -26,10 +28,14 @@ namespace grpc_cb {
 //   which are kept in CallCqTag, because this object is transient.
 class CallOperations GRPC_FINAL {
  public:
-  CallOperations() {
+  CallOperations() : send_status_details_(grpc_empty_slice()) {
     static_assert(std::is_pod<grpc_op>::value, "grpc_op is not pod.");
     std::memset(ops_, 0, sizeof(ops_));
   }
+  ~CallOperations() {
+    grpc_slice_unref(send_status_details_);
+  }
+
 
   inline size_t GetOpsNum() const {
     assert(nops_ <= MAX_OPS);
@@ -67,13 +73,14 @@ class CallOperations GRPC_FINAL {
                                CodServerSendStatus& cod_server_send_status);
   inline void ServerSendStatus(grpc_metadata* trail_md, size_t trail_md_count,
                                const grpc_status_code& status_code,
-                               const char* status_details);
+                               const std::string& status_details);
 
  private:
   static const size_t MAX_OPS = 8;
 
   size_t nops_ = 0;
   grpc_op ops_[MAX_OPS];
+  grpc_slice send_status_details_;
 };  // class CallOperations
 
 static inline void InitOp(grpc_op& op, grpc_op_type type, uint32_t flags = 0) {
@@ -153,14 +160,15 @@ void CallOperations::ServerSendStatus(const Status& status,
 
 void CallOperations::ServerSendStatus(
     grpc_metadata* trail_md, size_t trail_md_count,
-    const grpc_status_code& status_code, const char* status_details) {
+    const grpc_status_code& status_code, const std::string& status_details) {
   assert(nops_ < MAX_OPS);
   grpc_op& op = ops_[nops_++];
   InitOp(op, GRPC_OP_SEND_STATUS_FROM_SERVER);
   op.data.send_status_from_server.trailing_metadata_count = trail_md_count,
   op.data.send_status_from_server.trailing_metadata = trail_md;
   op.data.send_status_from_server.status = status_code;
-  // XXX op.data.send_status_from_server.status_details = status_details;
+  send_status_details_ = SliceFromCopiedString(status_details);
+  op.data.send_status_from_server.status_details = &send_status_details_;
 }
 
 }  // namespace grpb_cb
