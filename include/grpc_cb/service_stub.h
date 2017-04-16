@@ -15,13 +15,14 @@
 #include <grpc_cb/impl/completion_queue_tag.h>   // for CompletionQueueTag
 #include <grpc_cb/status_callback.h>             // for StatusCallback
 #include <grpc_cb/support/config.h>              // for GRPC_OVERRIDE
+#include <grpc_cb/support/grpc_cb_api.h>  // for GRPC_CB_API
 
 namespace grpc_cb {
 
 // The base of generated service stubs.
 // Copyable.
 // Thread-safe except for SetErrorCallback() and SetDefaultErrorCallback().
-class ServiceStub {
+class GRPC_CB_API ServiceStub {
  public:
   explicit ServiceStub(const ChannelSptr& channel_sptr);
   virtual ~ServiceStub();
