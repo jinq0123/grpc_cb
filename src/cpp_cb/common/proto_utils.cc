@@ -109,8 +109,7 @@ class GrpcBufferReader final
  public:
   explicit GrpcBufferReader(grpc_byte_buffer* buffer)
       : byte_count_(0), backup_count_(0), status_() {
-    if (!grpc_byte_buffer_reader_init(&reader_,
-                                                                buffer)) {
+    if (!grpc_byte_buffer_reader_init(&reader_, buffer)) {
       status_ = Status::InternalError("Couldn't initialize byte buffer reader");
     }
   }
