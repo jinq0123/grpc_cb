@@ -5,6 +5,7 @@
 
 #include <grpc_cb/channel.h>  // for GetCallTimeoutMs()
 #include <grpc_cb/impl/call.h>
+#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>  // for ClientCallCqTag
 #include <grpc_cb/impl/cqueue_for_next.h>  // for CQueueForNext
 #include <grpc_cb/impl/cqueue_for_pluck.h>  // for CQueueForPluck
@@ -35,13 +36,23 @@ Status ServiceStub::BlockingRequest(const string& method, const string& request,
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
   cq4p.Pluck(&tag);
-  return tag.GetResponseString(response);
+  return tag.GetResponse(response);
 }
 
 void ServiceStub::AsyncRequest(const string& method, const string& request,
-                               const OnResponse& on_resonse,
+                               const OnResponse& on_response,
                                const ErrorCallback& on_error) {
-  // XXX
+  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method));
+  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<std::string>;
+  CqTag* tag = new CqTag(call_sptr);
+  tag->SetOnResponse(on_response);
+  tag->SetOnError(on_error);
+  if (tag->Start(request))
+    return;
+
+  delete tag;
+  if (on_error)
+    on_error(::grpc_cb::Status::InternalError("Failed to async request."));
 }
 
 // Blocking run stub.

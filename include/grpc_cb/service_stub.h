@@ -76,9 +76,9 @@ class GRPC_CB_API ServiceStub {
   Status BlockingRequest(const string& method, const string& request,
                          string& response);
 
-  using OnResponse = std::function<const string&>;
+  using OnResponse = std::function<void (const string&)>;
   void AsyncRequest(const string& method, const string& request,
-                    const OnResponse& on_resonse,
+                    const OnResponse& on_response,
                     const ErrorCallback& on_error = GetDefaultErrorCallback());
 
  public:
