@@ -33,8 +33,7 @@ class ClientCallCqTag : public CallCqTag {
     // Todo: Get trailing metadata.
     if (!cod_client_recv_status_.IsStatusOk())
       return cod_client_recv_status_.GetStatus();
-    return cod_recv_msg_.GetResultMsg(message,
-                                        GetCallSptr()->GetMaxMsgSize());
+    return cod_recv_msg_.GetResultMsg(message, GetCallSptr()->GetMaxMsgSize());
   }
 
  private:
