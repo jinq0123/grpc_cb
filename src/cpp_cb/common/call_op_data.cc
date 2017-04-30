@@ -18,9 +18,10 @@ void CodSendMsg::SetMsgStr(const std::string& sMsg)
 {
     assert(!send_buf_);
     // send_buf_ is created here and destroyed in dtr().
-
-    // XXX
+    grpc_slice slice = SliceFromCopiedString(sMsg);
+    send_buf_ = grpc_raw_byte_buffer_create(&slice, 1);
     assert(send_buf_);
+    grpc_slice_unref(slice);
 }
 
 Status CodRecvMsg::GetResultString(std::string& result) const {

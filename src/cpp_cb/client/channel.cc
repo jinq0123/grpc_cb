@@ -35,9 +35,11 @@ CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
 
 CallSptr Channel::MakeSharedCall(const std::string& method, CompletionQueue& cq,
                                  const gpr_timespec& deadline) const {
+  grpc_slice method_slice = SliceFromCopiedString(method);
   grpc_call* c_call = grpc_channel_create_call(
       c_channel_uptr_.get(), nullptr, GRPC_PROPAGATE_DEFAULTS, &cq.c_cq(),
-      SliceFromCopiedString(method), nullptr, deadline, nullptr);
+      method_slice, nullptr, deadline, nullptr);
+  grpc_slice_unref(method_slice);
   return CallSptr(new Call(c_call));  // shared_ptr
 }
 
