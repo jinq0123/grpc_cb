@@ -8,7 +8,7 @@
 namespace grpc_cb {
 
 CQueueForPluck::CQueueForPluck()
-    : CompletionQueue(grpc_completion_queue_create_for_next(nullptr)) {
+    : CompletionQueue(grpc_completion_queue_create_for_pluck(nullptr)) {
 }
 
 CQueueForPluck::CQueueForPluck(grpc_completion_queue* take)
