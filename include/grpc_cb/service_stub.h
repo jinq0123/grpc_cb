@@ -33,6 +33,7 @@ class GRPC_CB_API ServiceStub {
       assert(channel_sptr_);
       return *channel_sptr_;
   }
+  // Non-null channel sptr.
   inline ChannelSptr GetChannelSptr() const { return channel_sptr_; }
   inline const ErrorCallback& GetErrorCallback() const {
     return error_callback_;
@@ -46,6 +47,8 @@ class GRPC_CB_API ServiceStub {
     return *cq4n_sptr_;
   }
   inline CQueueForNextSptr GetCq4nSptr() const { return cq4n_sptr_; }
+
+  // ServiceStub can set timeout for all methods calls.
   inline int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
   inline void SetCallTimeoutMs(int64_t timeout_ms) {
       call_timeout_ms_ = timeout_ms;
