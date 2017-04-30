@@ -25,6 +25,17 @@ ServiceStub::~ServiceStub() {
   assert(cq4n_sptr_);
 }
 
+std::string ServiceStub::BlockingRequest(const string& method,
+                                         const string& request) {
+  // XXX
+  return "";
+}
+
+void ServiceStub::AsyncRequest(const string& method, const string& request,
+                               const OnResponse& on_resonse) {
+  // XXX
+}
+
 // Blocking run stub.
 void ServiceStub::BlockingRun() {
   assert(cq4n_sptr_);

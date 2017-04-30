@@ -29,6 +29,9 @@ class GRPC_CB_API ServiceStub {
   virtual ~ServiceStub();
 
  public:
+  using string = std::string;
+
+ public:
   inline Channel& GetChannel() const {
       assert(channel_sptr_);
       return *channel_sptr_;
@@ -53,10 +56,10 @@ class GRPC_CB_API ServiceStub {
   inline void SetCallTimeoutMs(int64_t timeout_ms) {
       call_timeout_ms_ = timeout_ms;
   }
-  CallSptr MakeSharedCall(const std::string& method) const {
+  CallSptr MakeSharedCall(const string& method) const {
     return MakeSharedCall(method, GetCq4n());
   }
-  CallSptr MakeSharedCall(const std::string& method, CompletionQueue& cq) const {
+  CallSptr MakeSharedCall(const string& method, CompletionQueue& cq) const {
     return GetChannel().MakeSharedCall(method, cq, GetCallTimeoutMs());
   }
 
@@ -68,6 +71,13 @@ class GRPC_CB_API ServiceStub {
   static inline void SetDefaultErrorCallback(const ErrorCallback cb) {
     default_error_callback_ = cb;
   }
+
+ public:
+  string BlockingRequest(const string& method, const string& request);
+
+  using OnResponse = std::function<const string&>;
+  void AsyncRequest(const string& method, const string& request,
+                    const OnResponse& on_resonse);
 
  public:
   void BlockingRun();
