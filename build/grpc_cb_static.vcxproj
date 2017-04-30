@@ -166,6 +166,7 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_helper_sptr.h" />
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h" />
+    <ClInclude Include="..\src\cpp_cb\common\byte_buffer.h" />
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_method_call_cqtag.h" />
     <ClInclude Include="..\src\cpp_cb\server\server_writer_send_status_cqtag.h" />
@@ -184,6 +185,7 @@
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\service_stub.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\byte_buffer.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call_op_data.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call_operations.cc" />

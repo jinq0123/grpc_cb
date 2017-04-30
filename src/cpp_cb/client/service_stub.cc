@@ -35,7 +35,7 @@ Status ServiceStub::BlockingRequest(const string& method, const string& request,
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
   cq4p.Pluck(&tag);
-  return tag.GetResponse(response);
+  return tag.GetResponseString(response);
 }
 
 void ServiceStub::AsyncRequest(const string& method, const string& request,

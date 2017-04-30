@@ -109,6 +109,7 @@ class CodRecvMsg GRPC_FINAL : noncopyable {
   Status GetResultMsg(::google::protobuf::Message& message, int max_msg_size) {
     return Proto::Deserialize(recv_buf_, &message, max_msg_size);
   }
+  Status GetResultString(std::string& result) const;
 
  private:
   grpc_byte_buffer* recv_buf_ = nullptr;  // owned

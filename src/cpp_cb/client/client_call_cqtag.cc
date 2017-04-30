@@ -5,4 +5,11 @@
 
 namespace grpc_cb {
 
+Status ClientCallCqTag::GetResponseString(std::string& response) const {
+    // Todo: Get trailing metadata.
+    if (!cod_client_recv_status_.IsStatusOk())
+      return cod_client_recv_status_.GetStatus();
+    return cod_recv_msg_.GetResultString(response);
+}
+
 }  // namespace grpc_cb

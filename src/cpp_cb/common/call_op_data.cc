@@ -6,6 +6,8 @@
 #include <grpc_cb/status.h>  // for Status
 #include <grpc_cb/support/slice.h>  // for StringFromCopiedSlice()
 
+#include "byte_buffer.h"  // for ByteBufferToString()
+
 namespace grpc_cb {
 
 Status CodClientRecvStatus::GetStatus() const {
@@ -19,6 +21,11 @@ void CodSendMsg::SetMsgStr(const std::string& sMsg)
 
     // XXX
     assert(send_buf_);
+}
+
+Status CodRecvMsg::GetResultString(std::string& result) const {
+  assert(recv_buf_);
+  return ByteBuffer::ByteBufferToString(*recv_buf_, result);
 }
 
 }  // namespace grpc_cb

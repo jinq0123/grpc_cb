@@ -276,6 +276,9 @@
     <ClInclude Include="..\src\cpp_cb\client\client_async_writer_impl2.h">
       <Filter>src\cpp_cb\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\cpp_cb\common\byte_buffer.h">
+      <Filter>src\cpp_cb\common</Filter>
+    </ClInclude>
     <ClInclude Include="..\src\cpp_cb\common\do_next_completion.h">
       <Filter>src\cpp_cb\common</Filter>
     </ClInclude>
@@ -325,6 +328,9 @@
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\service_stub.cc">
       <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\common\byte_buffer.cc">
+      <Filter>src\cpp_cb\common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\common\call.cc">
       <Filter>src\cpp_cb\common</Filter>
