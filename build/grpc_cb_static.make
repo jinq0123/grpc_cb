@@ -77,7 +77,7 @@ OBJECTS := \
 	$(OBJDIR)/client_call_cqtag.o \
 	$(OBJDIR)/client_reader_init_cqtag.o \
 	$(OBJDIR)/service_stub.o \
-	$(OBJDIR)/byte_buffer.o \
+	$(OBJDIR)/byte_buffer_to_string.o \
 	$(OBJDIR)/call.o \
 	$(OBJDIR)/call_op_data.o \
 	$(OBJDIR)/call_operations.o \
@@ -188,7 +188,7 @@ $(OBJDIR)/client_reader_init_cqtag.o: ../src/cpp_cb/client/client_reader_init_cq
 $(OBJDIR)/service_stub.o: ../src/cpp_cb/client/service_stub.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/byte_buffer.o: ../src/cpp_cb/common/byte_buffer.cc
+$(OBJDIR)/byte_buffer_to_string.o: ../src/cpp_cb/common/byte_buffer_to_string.cc
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/call.o: ../src/cpp_cb/common/call.cc
