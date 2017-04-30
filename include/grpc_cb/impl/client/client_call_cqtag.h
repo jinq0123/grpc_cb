@@ -26,8 +26,9 @@ class ClientCallCqTag : public CallCqTag {
 
  public:
   inline bool Start(const ::google::protobuf::Message& request) GRPC_MUST_USE_RESULT;
+  inline bool Start(const std::string& request) GRPC_MUST_USE_RESULT;
 
-public:
+ public:
   Status GetResponse(::google::protobuf::Message& message) {
     // Todo: Get trailing metadata.
     if (!cod_client_recv_status_.IsStatusOk())
@@ -35,6 +36,9 @@ public:
     return cod_recv_msg_.GetResultMsg(message,
                                         GetCallSptr()->GetMaxMsgSize());
   }
+
+ private:
+  inline bool StartOps(CallOperations& ops);
 
  private:
   CodSendInitMd cod_send_init_md_;  // Todo: set init metadata
@@ -48,7 +52,10 @@ bool ClientCallCqTag::Start(const ::google::protobuf::Message& request) {
   CallOperations ops;
   Status status = ops.SendMsg(request, cod_send_msg_);
   if (!status.ok()) return false;
+  return StartOps(ops);
+}
 
+bool ClientCallCqTag::StartOps(CallOperations& ops) {
   // Todo: Fill send_init_md_array_ -> FillMetadataVector()
   ops.SendInitMd(cod_send_init_md_);
   ops.RecvInitMd(cod_recv_init_md_);
@@ -56,6 +63,12 @@ bool ClientCallCqTag::Start(const ::google::protobuf::Message& request) {
   ops.ClientSendClose();
   ops.ClientRecvStatus(cod_client_recv_status_);
   return GetCallSptr()->StartBatch(ops, this);
+}
+
+bool ClientCallCqTag::Start(const std::string& request) {
+  CallOperations ops;
+  ops.SendMsg(request, cod_send_msg_);
+  return StartOps(ops);
 }
 
 }  // namespace grpc_cb

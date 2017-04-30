@@ -68,6 +68,7 @@ class Status {
   /// Return the instance's error message.
   std::string GetDetails() const { return details_; }
 
+  // Todo: change to operator bool()
   /// Is the status OK?
   bool ok() const { return code_ == GRPC_STATUS_OK; }
 

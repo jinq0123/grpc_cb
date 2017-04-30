@@ -129,8 +129,7 @@ class GrpcBufferReader final
       backup_count_ = 0;
       return true;
     }
-    if (!grpc_byte_buffer_reader_next(&reader_,
-                                                                &slice_)) {
+    if (!grpc_byte_buffer_reader_next(&reader_, &slice_)) {
       return false;
     }
     grpc_slice_unref(slice_);

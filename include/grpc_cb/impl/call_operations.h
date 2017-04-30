@@ -50,8 +50,9 @@ class CallOperations GRPC_FINAL {
   }
   inline void SendInitMd(MetadataVector& init_metadata);
   inline Status SendMsg(const ::google::protobuf::Message& message,
-                            CodSendMsg& cod_send_msg)
+                        CodSendMsg& cod_send_msg)
       GRPC_MUST_USE_RESULT;
+  inline void SendMsg(const std::string& message, CodSendMsg& cod_send_msg);
 
   // Receive initial metadata.
   inline void RecvInitMd(CodRecvInitMd& cod_recv_init_md) {
@@ -76,6 +77,9 @@ class CallOperations GRPC_FINAL {
                                const std::string& status_details);
 
  private:
+  inline void SendMsg(const CodSendMsg& cod_send_msg) GRPC_MUST_USE_RESULT;
+
+ private:
   static const size_t MAX_OPS = 8;
 
   size_t nops_ = 0;
@@ -90,20 +94,30 @@ static inline void InitOp(grpc_op& op, grpc_op_type type, uint32_t flags = 0) {
 }
 
 // Todo: Set write options.
+void CallOperations::SendMsg(const std::string& message,
+                             CodSendMsg& cod_send_msg) {
+  cod_send_msg.SetMsgStr(message);
+  SendMsg(cod_send_msg);
+}
+
+// Todo: Set write options.
 Status CallOperations::SendMsg(
     const ::google::protobuf::Message& message,
     CodSendMsg& cod_send_msg) {
   Status status = cod_send_msg.SerializeMsg(message);
   if (!status.ok()) return status;
-  if (nullptr == cod_send_msg.GetSendBuf())
-      return status;
+  SendMsg(cod_send_msg);
+  return Status::OK;
+}
 
+// Todo: Set write options.
+void CallOperations::SendMsg(const CodSendMsg& cod_send_msg) {
+  assert(cod_send_msg.GetSendBuf());
   assert(nops_ < MAX_OPS);
   grpc_op& op = ops_[nops_++];
   InitOp(op, GRPC_OP_SEND_MESSAGE);
   op.data.send_message.send_message = cod_send_msg.GetSendBuf();
   // Todo: op->flags = write_options_.flags();
-  return status;
 }
 
 void CallOperations::SendInitMd(MetadataVector& init_metadata) {

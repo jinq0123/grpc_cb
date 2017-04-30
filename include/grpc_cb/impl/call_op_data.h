@@ -61,11 +61,15 @@ class CodSendMsg GRPC_FINAL : noncopyable {
 
   Status SerializeMsg(const ::google::protobuf::Message& message)
       GRPC_MUST_USE_RESULT {
+    assert(!send_buf_);
     // send_buf_ is created here and destroyed in dtr().
-    return Proto::Serialize(message, &send_buf_);
+    Status status = Proto::Serialize(message, &send_buf_);
+    assert(send_buf_ || !status.ok());
+    return status;
   }
+  void SetMsgStr(const std::string& sMsg);
 
-  grpc_byte_buffer* GetSendBuf() { return send_buf_; }
+  grpc_byte_buffer* GetSendBuf() const { return send_buf_; }
 
  private:
   // send_buf_ is created in SerializeMsg() and destroyed in dtr().

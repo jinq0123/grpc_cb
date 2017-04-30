@@ -3,9 +3,11 @@
 
 #include <grpc_cb/service_stub.h>
 
-#include <grpc_cb/impl/call.h>
-#include <grpc_cb/impl/cqueue_for_next.h>  // for CQueueForNext
 #include <grpc_cb/channel.h>  // for GetCallTimeoutMs()
+#include <grpc_cb/impl/call.h>
+#include <grpc_cb/impl/client/client_call_cqtag.h>  // for ClientCallCqTag
+#include <grpc_cb/impl/cqueue_for_next.h>  // for CQueueForNext
+#include <grpc_cb/impl/cqueue_for_pluck.h>  // for CQueueForPluck
 
 #include "common/do_next_completion.h"  // for DoNextCompletion()
 
@@ -27,8 +29,13 @@ ServiceStub::~ServiceStub() {
 
 Status ServiceStub::BlockingRequest(const string& method, const string& request,
                                     string& response) {
-  // XXX
-  return Status::UNIMPLEMENTED;
+  CQueueForPluck cq4p;
+  CallSptr call_sptr(MakeSharedCall(method, cq4p));
+  ClientCallCqTag tag(call_sptr);
+  if (!tag.Start(request))
+    return ::grpc_cb::Status::InternalError("Failed to request.");
+  cq4p.Pluck(&tag);
+  return tag.GetResponse(response);
 }
 
 void ServiceStub::AsyncRequest(const string& method, const string& request,
