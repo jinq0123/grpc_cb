@@ -39,7 +39,8 @@ Status ServiceStub::BlockingRequest(const string& method, const string& request,
 }
 
 void ServiceStub::AsyncRequest(const string& method, const string& request,
-                               const OnResponse& on_resonse) {
+                               const OnResponse& on_resonse,
+                               const ErrorCallback& on_error) {
   // XXX
 }
 
