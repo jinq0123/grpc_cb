@@ -25,10 +25,10 @@ ServiceStub::~ServiceStub() {
   assert(cq4n_sptr_);
 }
 
-std::string ServiceStub::BlockingRequest(const string& method,
-                                         const string& request) {
+Status ServiceStub::BlockingRequest(const string& method, const string& request,
+                                    string& response) {
   // XXX
-  return "";
+  return Status::UNIMPLEMENTED;
 }
 
 void ServiceStub::AsyncRequest(const string& method, const string& request,
