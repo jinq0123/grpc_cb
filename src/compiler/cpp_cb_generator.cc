@@ -293,7 +293,8 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
       "class Stub : public ::grpc_cb::ServiceStub {\n"
       " public:\n");
   printer->Indent();
-  printer->Print("explicit Stub(const ::grpc_cb::ChannelSptr& channel);\n");
+  printer->Print("explicit Stub(const ::grpc_cb::ChannelSptr& channel,\n");
+  printer->Print("    const CompletionQueueForNextSptr& cq4n_sptr = nullptr);\n");
   printer->Print("\n");
   for (int i = 0; i < service->method_count(); ++i) {
     PrintHeaderClientMethodPublic(printer, service->method(i), vars);
@@ -852,8 +853,9 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
                  "}\n\n");
 
   printer->Print(*vars,
-                 "Stub::Stub(const ::grpc_cb::ChannelSptr& channel)\n"
-                 "    : ::grpc_cb::ServiceStub(channel) {}\n\n");
+                 "Stub::Stub(const ::grpc_cb::ChannelSptr& channel,\n"
+                 "    const CompletionQueueForNextSptr& cq4n_sptr)\n"
+                 "    : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}\n\n");
 
   for (int i = 0; i < service->method_count(); ++i) {
     (*vars)["Idx"] = as_string(i);
