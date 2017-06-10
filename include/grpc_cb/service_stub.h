@@ -13,10 +13,8 @@
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/impl/cqueue_for_next_sptr.h>   // for CQueueForNextSptr
 #include <grpc_cb/impl/cqueue_for_next.h>   // to convert GetCq4n() to CompletionQueue
-#include <grpc_cb/impl/completion_queue_tag.h>   // for CompletionQueueTag
-#include <grpc_cb/status_callback.h>             // for StatusCallback
-#include <grpc_cb/support/config.h>              // for GRPC_OVERRIDE
-#include <grpc_cb/support/grpc_cb_api.h>  // for GRPC_CB_API
+#include <grpc_cb/status_callback.h>        // for ErrorCallback
+#include <grpc_cb/support/grpc_cb_api.h>    // for GRPC_CB_API
 
 namespace grpc_cb {
 
@@ -32,45 +30,37 @@ class GRPC_CB_API ServiceStub {
   using string = std::string;
 
  public:
-  inline Channel& GetChannel() const {
+  Channel& GetChannel() const {
       assert(channel_sptr_);
       return *channel_sptr_;
   }
   // Non-null channel sptr.
-  inline ChannelSptr GetChannelSptr() const { return channel_sptr_; }
-  inline const ErrorCallback& GetErrorCallback() const {
+  ChannelSptr GetChannelSptr() const { return channel_sptr_; }
+  const ErrorCallback& GetErrorCallback() const {
     return error_callback_;
   }
   // non-thread-safe
-  inline void SetErrorCallback(const ErrorCallback& cb) {
+  void SetErrorCallback(const ErrorCallback& cb) {
     error_callback_ = cb;
   }
-  inline CQueueForNext& GetCq4n() const {
+  CQueueForNext& GetCq4n() const {
     assert(cq4n_sptr_);
     return *cq4n_sptr_;
   }
-  inline CQueueForNextSptr GetCq4nSptr() const { return cq4n_sptr_; }
+  CQueueForNextSptr GetCq4nSptr() const { return cq4n_sptr_; }
 
   // ServiceStub can set timeout for all methods calls.
-  inline int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
-  inline void SetCallTimeoutMs(int64_t timeout_ms) {
+  int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
+  void SetCallTimeoutMs(int64_t timeout_ms) {
       call_timeout_ms_ = timeout_ms;
   }
 
- protected:
-  CallSptr MakeSharedCall(const string& method) const {
-    return MakeSharedCall(method, GetCq4n());
-  }
-  CallSptr MakeSharedCall(const string& method, CompletionQueue& cq) const {
-    return GetChannel().MakeSharedCall(method, cq, GetCallTimeoutMs());
-  }
-
  public:
-  static inline ErrorCallback& GetDefaultErrorCallback() {
+  static ErrorCallback& GetDefaultErrorCallback() {
     return default_error_callback_;
   }
   // non-thread-safe
-  static inline void SetDefaultErrorCallback(const ErrorCallback cb) {
+  static void SetDefaultErrorCallback(const ErrorCallback cb) {
     default_error_callback_ = cb;
   }
 
@@ -87,6 +77,14 @@ class GRPC_CB_API ServiceStub {
   void BlockingRun();
   // Request the shutdown of all runs.
   void Shutdown();
+
+ protected:
+  CallSptr MakeSharedCall(const string& method) const {
+    return MakeSharedCall(method, GetCq4n());
+  }
+  CallSptr MakeSharedCall(const string& method, CompletionQueue& cq) const {
+    return GetChannel().MakeSharedCall(method, cq, GetCallTimeoutMs());
+  }
 
  private:
   const ChannelSptr channel_sptr_;
