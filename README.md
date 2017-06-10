@@ -17,6 +17,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 1. Connect and disconnect event.
 1. Export for unity.
 1. Run multi stubs in one thread.
+	* Make completion queue a singleton.
 1. Compression
 1. Security
 1. Metadata

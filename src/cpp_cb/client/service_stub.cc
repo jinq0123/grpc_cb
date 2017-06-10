@@ -3,14 +3,13 @@
 
 #include <grpc_cb/service_stub.h>
 
+#include <grpc_cb/blocking_run.h>  // for BlockingRun()
 #include <grpc_cb/channel.h>  // for GetCallTimeoutMs()
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>  // for ClientCallCqTag
 #include <grpc_cb/impl/cqueue_for_next.h>  // for CQueueForNext
 #include <grpc_cb/impl/cqueue_for_pluck.h>  // for CQueueForPluck
-
-#include "common/do_next_completion.h"  // for DoNextCompletion()
 
 namespace grpc_cb {
 
@@ -58,9 +57,7 @@ void ServiceStub::AsyncRequest(const string& method, const string& request,
 // Blocking run stub.
 void ServiceStub::BlockingRun() {
   assert(cq4n_sptr_);
-  CQueueForNext& cq4n = *cq4n_sptr_;
-  while (DoNextCompletion(cq4n))
-    ;
+  grpc_cb::BlockingRun(cq4n_sptr_);
 }
 
 void ServiceStub::Shutdown() {

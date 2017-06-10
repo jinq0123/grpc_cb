@@ -95,6 +95,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\grpc_cb\blocking_run.h" />
     <ClInclude Include="..\include\grpc_cb\channel.h" />
     <ClInclude Include="..\include\grpc_cb\client_async_reader.h" />
     <ClInclude Include="..\include\grpc_cb\client_async_reader_writer.h" />
@@ -102,6 +103,8 @@
     <ClInclude Include="..\include\grpc_cb\client_sync_reader.h" />
     <ClInclude Include="..\include\grpc_cb\client_sync_reader_writer.h" />
     <ClInclude Include="..\include\grpc_cb\client_sync_writer.h" />
+    <ClInclude Include="..\include\grpc_cb\completion_queue_for_next.h" />
+    <ClInclude Include="..\include\grpc_cb\completion_queue_for_next_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\grpc_cb.h" />
     <ClInclude Include="..\include\grpc_cb\impl\call.h" />
     <ClInclude Include="..\include\grpc_cb\impl\call_cqtag.h" />
@@ -193,6 +196,7 @@
     <ClCompile Include="..\src\cpp_cb\client\client_call_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\client_reader_init_cqtag.cc" />
     <ClCompile Include="..\src\cpp_cb\client\service_stub.cc" />
+    <ClCompile Include="..\src\cpp_cb\common\blocking_run.cc" />
     <ClCompile Include="..\src\cpp_cb\common\byte_buffer_to_string.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call.cc" />
     <ClCompile Include="..\src\cpp_cb\common\call_op_data.cc" />

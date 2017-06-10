@@ -39,6 +39,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\grpc_cb\blocking_run.h">
+      <Filter>include\grpc_cb</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\channel.h">
       <Filter>include\grpc_cb</Filter>
     </ClInclude>
@@ -58,6 +61,12 @@
       <Filter>include\grpc_cb</Filter>
     </ClInclude>
     <ClInclude Include="..\include\grpc_cb\client_sync_writer.h">
+      <Filter>include\grpc_cb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\completion_queue_for_next.h">
+      <Filter>include\grpc_cb</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\completion_queue_for_next_sptr.h">
       <Filter>include\grpc_cb</Filter>
     </ClInclude>
     <ClInclude Include="..\include\grpc_cb\grpc_cb.h">
@@ -328,6 +337,9 @@
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\client\service_stub.cc">
       <Filter>src\cpp_cb\client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\cpp_cb\common\blocking_run.cc">
+      <Filter>src\cpp_cb\common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\cpp_cb\common\byte_buffer_to_string.cc">
       <Filter>src\cpp_cb\common</Filter>

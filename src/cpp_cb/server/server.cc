@@ -8,11 +8,11 @@
 #include <grpc/grpc.h>
 #include <grpc/grpc_security.h>  // for grpc_server_add_secure_http2_port()
 
+#include <grpc_cb/blocking_run.h>  // for BlockingRun()
 #include <grpc_cb/impl/cqueue_for_next.h>        // for CQueueForNext
 #include <grpc_cb/security/server_credentials.h>  // for InsecureServerCredentials
 #include <grpc_cb/service.h>
 
-#include "common/do_next_completion.h"  // for DoNextCompletion()
 #include "server_method_call_cqtag.h"   // for ServerMethodCallCqTag
 
 namespace grpc_cb {
@@ -89,10 +89,7 @@ void Server::BlockingRun() {
   grpc_server_start(c_server_uptr_.get());
   RequestMethodsCalls();
 
-  assert(cq4n_sptr_);
-  CQueueForNext& cq4n = *cq4n_sptr_;
-  while (DoNextCompletion(cq4n))
-    ;
+  grpc_cb::BlockingRun(cq4n_sptr_);
 }
 
 void Server::RequestMethodsCalls() const {

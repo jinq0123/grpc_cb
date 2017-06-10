@@ -4,13 +4,16 @@
 #ifndef GRPC_CB_GRPC_CB_H
 #define GRPC_CB_GRPC_CB_H
 
-#include <grpc_cb/channel.h>          // for Channel
+#include <grpc_cb/blocking_run.h>  // for BlockingRun()
+#include <grpc_cb/channel.h>       // for Channel
 #include <grpc_cb/client_async_reader.h>
 #include <grpc_cb/client_async_reader_writer.h>
 #include <grpc_cb/client_async_writer.h>
 #include <grpc_cb/client_sync_reader.h>
 #include <grpc_cb/client_sync_reader_writer.h>
 #include <grpc_cb/client_sync_writer.h>
+#include <grpc_cb/completion_queue_for_next.h>  // for CompletionQueueForNext
+#include <grpc_cb/completion_queue_for_next_sptr.h>  // for CompletionQueueForNextSptr
 #include <grpc_cb/server.h>           // for Server
 #include <grpc_cb/server_reader.h>    // for ServerReader<>
 #include <grpc_cb/server_reader_for_bidi_streaming.h>
