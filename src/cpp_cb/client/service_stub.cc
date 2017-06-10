@@ -15,12 +15,16 @@ namespace grpc_cb {
 
 ErrorCallback ServiceStub::default_error_callback_;  // Default empty.
 
-ServiceStub::ServiceStub(const ChannelSptr& channel_sptr)
+ServiceStub::ServiceStub(const ChannelSptr& channel_sptr,
+    const CompletionQueueForNextSptr& cq4n_sptr/* = nullptr */)
     : channel_sptr_(channel_sptr),  // copy shared_ptr
-    cq4n_sptr_(new CQueueForNext),  // shared_ptr
+    cq4n_sptr_(cq4n_sptr),
     error_callback_(default_error_callback_),
     call_timeout_ms_(channel_sptr->GetCallTimeoutMs()) {
   assert(channel_sptr);
+  // Use an internal cq if no external cq.
+  if (!cq4n_sptr_)
+    cq4n_sptr_.reset(new CQueueForNext);
 }
 
 ServiceStub::~ServiceStub() {

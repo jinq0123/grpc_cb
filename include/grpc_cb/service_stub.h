@@ -21,10 +21,11 @@ namespace grpc_cb {
 
 // The base of generated service stubs.
 // Copyable.
-// Thread-safe except for SetErrorCallback() and SetDefaultErrorCallback().
+// Thread-safe except for set methods.
 class GRPC_CB_API ServiceStub {
  public:
-  explicit ServiceStub(const ChannelSptr& channel_sptr);
+  explicit ServiceStub(const ChannelSptr& channel_sptr,
+      const CompletionQueueForNextSptr& cq4n_sptr = nullptr);
   virtual ~ServiceStub();
 
  public:
