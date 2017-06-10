@@ -56,6 +56,8 @@ class GRPC_CB_API ServiceStub {
   inline void SetCallTimeoutMs(int64_t timeout_ms) {
       call_timeout_ms_ = timeout_ms;
   }
+
+ protected:
   CallSptr MakeSharedCall(const string& method) const {
     return MakeSharedCall(method, GetCq4n());
   }
