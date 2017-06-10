@@ -2,14 +2,12 @@
 For basic usage, see tutorial in [../README.md](../README.md).
 
 ## Run multi stubs in one thread
-Todo: Use TryNext()
+Work in progress...
 ```
-Svc1::Stub stub1(channel);
-Svc2::Stub stub2(channel);
-StubRunner runner;
-runner.AddStub(stub1);
-runner.AddStub(stub2);
-runner.BlockingRun();
+auto cq = std::make_shared<CQueueForNext>();
+Svc1::Stub stub1(channel, cq);
+Svc2::Stub stub2(channel, cq);
+BlockingRun(cq);
 ```
 
 ## Run a stub in multi threads
