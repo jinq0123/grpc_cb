@@ -17,16 +17,12 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor();
 
 class Stub : public ::grpc_cb::ServiceStub {
  public:
-  explicit Stub(const ::grpc_cb::ChannelSptr& channel);
+  explicit Stub(const ::grpc_cb::ChannelSptr& channel,
+      const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr = nullptr);
 
-  inline ::grpc_cb::Status BlockingSayHello(
-       const ::helloworld::HelloRequest& request) {
-    ::helloworld::HelloReply response;
-    return BlockingSayHello(request, &response);  // Ignore response.
-  }
   ::grpc_cb::Status BlockingSayHello(
       const ::helloworld::HelloRequest& request,
-      ::helloworld::HelloReply* response);
+      ::helloworld::HelloReply* response = nullptr);
 
   using SayHelloCallback =
       std::function<void (const ::helloworld::HelloReply& response)>;

@@ -9,7 +9,7 @@
 
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
-#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue
+#include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck
 #include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
 #include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 #include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
@@ -52,20 +52,23 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor() {
   return *service_descriptor_Greeter;
 }
 
-Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
-    : ::grpc_cb::ServiceStub(channel) {}
+Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
+    const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr)
+    : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}
 
 ::grpc_cb::Status Stub::BlockingSayHello(
     const ::helloworld::HelloRequest& request,
     ::helloworld::HelloReply* response) {
-  assert(response);
   ::grpc_cb::CQueueForPluck cq4p;
   ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq4p));
   ::grpc_cb::ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
     return ::grpc_cb::Status::InternalError("Failed to request.");
   cq4p.Pluck(&tag);
-  return tag.GetResponse(*response);
+
+  if (response) return tag.GetResponse(*response);
+  ::helloworld::HelloReply ingnored_resp;
+  return tag.GetResponse(ingnored_resp);
 }
 
 void Stub::AsyncSayHello(

@@ -140,7 +140,7 @@ class HelloRequest : public ::google::protobuf::Message /* @@protoc_insertion_po
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   mutable int _cached_size_;
-  friend struct protobuf_helloworld_2eproto::TableStruct;
+  friend struct  protobuf_helloworld_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
@@ -231,7 +231,7 @@ class HelloReply : public ::google::protobuf::Message /* @@protoc_insertion_poin
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr message_;
   mutable int _cached_size_;
-  friend struct protobuf_helloworld_2eproto::TableStruct;
+  friend struct  protobuf_helloworld_2eproto::TableStruct;
 };
 // ===================================================================
 
@@ -258,7 +258,7 @@ inline void HelloRequest::set_name(const ::std::string& value) {
 inline void HelloRequest::set_name(::std::string&& value) {
   
   name_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:helloworld.HelloRequest.name)
 }
 #endif
@@ -314,7 +314,7 @@ inline void HelloReply::set_message(const ::std::string& value) {
 inline void HelloReply::set_message(::std::string&& value) {
   
   message_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:helloworld.HelloReply.message)
 }
 #endif

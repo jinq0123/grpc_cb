@@ -153,14 +153,9 @@ void PrintHeaderClientMethodPublic(
 
   if (NoStreaming(method)) {
       printer->Print(*vars,
-          "inline ::grpc_cb::Status Blocking$Method$(\n"
-          "     const $Request$& request) {\n"
-          "  $Response$ response;\n"
-          "  return Blocking$Method$(request, &response);  // Ignore response.\n"
-          "}\n"
           "::grpc_cb::Status Blocking$Method$(\n"
           "    const $Request$& request,\n"
-          "    $Response$* response);\n"
+          "    $Response$* response = nullptr);\n"
           "\n"
           "using $Method$Callback =\n"
           "    std::function<void (const $Response$& response)>;\n"
@@ -294,7 +289,7 @@ void PrintHeaderService(grpc::protobuf::io::Printer *printer,
       " public:\n");
   printer->Indent();
   printer->Print("explicit Stub(const ::grpc_cb::ChannelSptr& channel,\n");
-  printer->Print("    const CompletionQueueForNextSptr& cq4n_sptr = nullptr);\n");
+  printer->Print("    const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr = nullptr);\n");
   printer->Print("\n");
   for (int i = 0; i < service->method_count(); ++i) {
     PrintHeaderClientMethodPublic(printer, service->method(i), vars);
@@ -422,7 +417,7 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("\n");
     printer.Print("#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag\n");
     printer.Print("#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag\n");
-    printer.Print("#include <grpc_cb/impl/completion_queue.h>                // for CompletionQueue\n");
+    printer.Print("#include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck\n");
     printer.Print("#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()\n");
     printer.Print("#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag\n");
     printer.Print("#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag\n");
@@ -536,14 +531,16 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "::grpc_cb::Status Stub::Blocking$Method$(\n"
         "    const $Request$& request,\n"
         "    $Response$* response) {\n"
-        "  assert(response);\n"
-        "  ::grpc_cb::CompletionQueue cq;\n"
-        "  ::grpc_cb::CallSptr call_sptr(GetChannel().MakeSharedCall(method_names[$Idx$], cq));\n"
+        "  ::grpc_cb::CQueueForPluck cq4p;\n"
+        "  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[$Idx$], cq4p));\n"
         "  ::grpc_cb::ClientCallCqTag tag(call_sptr);\n"
         "  if (!tag.Start(request))\n"
         "    return ::grpc_cb::Status::InternalError(\"Failed to request.\");\n"
-        "  cq.Pluck(&tag);\n"
-        "  return tag.GetResponse(*response);\n"
+        "  cq4p.Pluck(&tag);\n"
+        "\n"
+        "  if (response) return tag.GetResponse(*response);\n"
+        "  $Response$ ingnored_resp;\n"
+        "  return tag.GetResponse(ingnored_resp);\n"
         "}\n"
         "\n");
     printer->Print(*vars,
@@ -551,10 +548,11 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "    const $Request$& request,\n"
         "    const $Method$Callback& cb,\n"
         "    const ::grpc_cb::ErrorCallback& ecb) {\n"
-        "  ::grpc_cb::CallSptr call_sptr(\n"
-        "      GetChannel().MakeSharedCall(method_names[$Idx$], GetCq()));\n"
+        "  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[$Idx$]));\n"
         "  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<$Response$>;\n"
-        "  CqTag* tag = new CqTag(call_sptr, cb, ecb);\n"
+        "  CqTag* tag = new CqTag(call_sptr);\n"
+        "  tag->SetOnResponse(cb);\n"
+        "  tag->SetOnError(ecb);\n"
         "  if (tag->Start(request)) return;\n"
         "  delete tag;\n"
         "  if (ecb)\n"
@@ -566,7 +564,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "::grpc_cb::ClientSyncWriter<$Request$>\n"
                    "Stub::Sync$Method$() {\n"
                    "  return ::grpc_cb::ClientSyncWriter<$Request$>(\n"
-                   "      GetChannelSptr(), method_names[$Idx$]);\n"
+                   "      GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
                    "::grpc_cb::ClientAsyncWriter<\n"
@@ -576,14 +574,15 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "  return ::grpc_cb::ClientAsyncWriter<\n"
                    "      $Request$,\n"
                    "      $Response$>(\n"
-                   "          GetChannelSptr(), method_names[$Idx$], GetCqSptr());\n"
+                   "          GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
+                   "          GetCallTimeoutMs());\n"
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
                    "::grpc_cb::ClientSyncReader<$Response$>\n"
                    "Stub::Sync$Method$(const $Request$& request) {\n"
                    "  return ::grpc_cb::ClientSyncReader<$Response$>(\n"
-                   "      GetChannelSptr(), method_names[$Idx$], request);\n"
+                   "      GetChannelSptr(), method_names[$Idx$], request, GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
                    "void Stub::Async$Method$(\n"
@@ -591,7 +590,8 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "    const $Method$MsgCb& on_msg,\n"
                    "    const ::grpc_cb::StatusCallback& on_status) {\n"
                    "  ::grpc_cb::ClientAsyncReader<$Response$> reader(\n"
-                   "      GetChannelSptr(), method_names[$Idx$], request, GetCqSptr());\n"
+                   "      GetChannelSptr(), method_names[$Idx$], request, GetCompletionQueue(),\n"
+                   "      GetCallTimeoutMs());\n"
                    "  reader.ReadEach(on_msg, on_status);\n"
                    "}\n\n");
   } else if (BidiStreaming(method)) {
@@ -603,7 +603,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "  return ::grpc_cb::ClientSyncReaderWriter<\n"
                    "      $Request$,\n"
                    "      $Response$>(\n"
-                   "          GetChannelSptr(), method_names[$Idx$]);\n"
+                   "          GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
                    "::grpc_cb::ClientAsyncReaderWriter<\n"
@@ -614,7 +614,8 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "  return ::grpc_cb::ClientAsyncReaderWriter<\n"
                    "      $Request$,\n"
                    "      $Response$>(\n"
-                   "          GetChannelSptr(), method_names[$Idx$], GetCqSptr(), on_status);\n"
+                   "          GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
+                   "          GetCallTimeoutMs(), on_status);\n"
                    "}\n\n");
   }  // if
 }
@@ -806,12 +807,12 @@ static void PrintCallMethod(grpc::protobuf::io::Printer *printer,
 
     if (NoStreaming(method)) {
       printer->Print(*vars,
-                 "      assert(request_buffer);\n"
+                 "      if (!request_buffer) return;\n"
                  "      $Method$(*request_buffer,\n"
                  "          $Method$_Replier(call_sptr));\n");
     } else if (ServerOnlyStreaming(method)) {
       printer->Print(*vars,
-                 "      assert(request_buffer);\n"
+                 "      if (!request_buffer) return;\n"
                  "      $Method$(*request_buffer,\n"
                  "          $Method$_Writer(call_sptr));\n");
     } else {
@@ -854,7 +855,7 @@ void PrintSourceService(grpc::protobuf::io::Printer *printer,
 
   printer->Print(*vars,
                  "Stub::Stub(const ::grpc_cb::ChannelSptr& channel,\n"
-                 "    const CompletionQueueForNextSptr& cq4n_sptr)\n"
+                 "    const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr)\n"
                  "    : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}\n\n");
 
   for (int i = 0; i < service->method_count(); ++i) {

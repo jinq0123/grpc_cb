@@ -148,7 +148,7 @@ class Point : public ::google::protobuf::Message /* @@protoc_insertion_point(cla
   ::google::protobuf::int32 latitude_;
   ::google::protobuf::int32 longitude_;
   mutable int _cached_size_;
-  friend struct protobuf_route_5fguide_2eproto::TableStruct;
+  friend struct  protobuf_route_5fguide_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
@@ -244,7 +244,7 @@ class Rectangle : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::routeguide::Point* lo_;
   ::routeguide::Point* hi_;
   mutable int _cached_size_;
-  friend struct protobuf_route_5fguide_2eproto::TableStruct;
+  friend struct  protobuf_route_5fguide_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
@@ -345,7 +345,7 @@ class Feature : public ::google::protobuf::Message /* @@protoc_insertion_point(c
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::routeguide::Point* location_;
   mutable int _cached_size_;
-  friend struct protobuf_route_5fguide_2eproto::TableStruct;
+  friend struct  protobuf_route_5fguide_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
@@ -446,7 +446,7 @@ class RouteNote : public ::google::protobuf::Message /* @@protoc_insertion_point
   ::google::protobuf::internal::ArenaStringPtr message_;
   ::routeguide::Point* location_;
   mutable int _cached_size_;
-  friend struct protobuf_route_5fguide_2eproto::TableStruct;
+  friend struct  protobuf_route_5fguide_2eproto::TableStruct;
 };
 // -------------------------------------------------------------------
 
@@ -550,7 +550,7 @@ class RouteSummary : public ::google::protobuf::Message /* @@protoc_insertion_po
   ::google::protobuf::int32 distance_;
   ::google::protobuf::int32 elapsed_time_;
   mutable int _cached_size_;
-  friend struct protobuf_route_5fguide_2eproto::TableStruct;
+  friend struct  protobuf_route_5fguide_2eproto::TableStruct;
 };
 // ===================================================================
 
@@ -691,7 +691,7 @@ inline void Feature::set_name(const ::std::string& value) {
 inline void Feature::set_name(::std::string&& value) {
   
   name_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:routeguide.Feature.name)
 }
 #endif
@@ -825,7 +825,7 @@ inline void RouteNote::set_message(const ::std::string& value) {
 inline void RouteNote::set_message(::std::string&& value) {
   
   message_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:routeguide.RouteNote.message)
 }
 #endif

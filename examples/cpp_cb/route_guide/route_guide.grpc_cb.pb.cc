@@ -55,8 +55,9 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor() {
   return *service_descriptor_RouteGuide;
 }
 
-Stub::Stub(const ::grpc_cb::ChannelSptr& channel)
-    : ::grpc_cb::ServiceStub(channel) {}
+Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
+    const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr)
+    : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}
 
 ::grpc_cb::Status Stub::BlockingGetFeature(
     const ::routeguide::Point& request,
@@ -94,9 +95,10 @@ Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
       GetChannelSptr(), method_names[1], request, GetCallTimeoutMs());
 }
 
-void Stub::AsyncListFeatures(const ::routeguide::Rectangle& request,
-                             const ListFeaturesMsgCb& on_msg,
-                             const ::grpc_cb::StatusCallback& on_status) {
+void Stub::AsyncListFeatures(
+    const ::routeguide::Rectangle& request,
+    const ListFeaturesMsgCb& on_msg,
+    const ::grpc_cb::StatusCallback& on_status) {
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
       GetChannelSptr(), method_names[1], request, GetCompletionQueue(),
       GetCallTimeoutMs());

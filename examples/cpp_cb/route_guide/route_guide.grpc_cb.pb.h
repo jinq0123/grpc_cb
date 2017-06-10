@@ -17,7 +17,8 @@ const ::google::protobuf::ServiceDescriptor& GetServiceDescriptor();
 
 class Stub : public ::grpc_cb::ServiceStub {
  public:
-  explicit Stub(const ::grpc_cb::ChannelSptr& channel);
+  explicit Stub(const ::grpc_cb::ChannelSptr& channel,
+      const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr = nullptr);
 
   ::grpc_cb::Status BlockingGetFeature(
       const ::routeguide::Point& request,
