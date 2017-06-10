@@ -17,7 +17,7 @@ ErrorCallback ServiceStub::default_error_callback_;  // Default empty.
 
 ServiceStub::ServiceStub(const ChannelSptr& channel_sptr)
     : channel_sptr_(channel_sptr),  // copy shared_ptr
-    cq4n_sptr_(new CQueueForNext),
+    cq4n_sptr_(new CQueueForNext),  // shared_ptr
     error_callback_(default_error_callback_),
     call_timeout_ms_(channel_sptr->GetCallTimeoutMs()) {
   assert(channel_sptr);

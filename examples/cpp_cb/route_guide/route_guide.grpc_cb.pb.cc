@@ -98,7 +98,7 @@ void Stub::AsyncListFeatures(const ::routeguide::Rectangle& request,
                              const ListFeaturesMsgCb& on_msg,
                              const ::grpc_cb::StatusCallback& on_status) {
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
-      GetChannelSptr(), method_names[1], request, GetCq4nSptr(),
+      GetChannelSptr(), method_names[1], request, GetCompletionQueue(),
       GetCallTimeoutMs());
   reader.ReadEach(on_msg, on_status);
 }
@@ -116,7 +116,8 @@ Stub::AsyncRecordRoute() {
   return ::grpc_cb::ClientAsyncWriter<
       ::routeguide::Point,
       ::routeguide::RouteSummary>(
-          GetChannelSptr(), method_names[2], GetCq4nSptr(), GetCallTimeoutMs());
+          GetChannelSptr(), method_names[2], GetCompletionQueue(),
+          GetCallTimeoutMs());
 }
 
 ::grpc_cb::ClientSyncReaderWriter<
@@ -137,7 +138,7 @@ Stub::AsyncRouteChat(
   return ::grpc_cb::ClientAsyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>(
-          GetChannelSptr(), method_names[3], GetCq4nSptr(),
+          GetChannelSptr(), method_names[3], GetCompletionQueue(),
           GetCallTimeoutMs(), on_status);
 }
 

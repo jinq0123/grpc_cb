@@ -8,10 +8,11 @@
 #include <cassert>
 #include <unordered_map>
 
+#include <grpc_cb/completion_queue_for_next.h>  // for CompletionQueueForNext
+#include <grpc_cb/completion_queue_for_next_sptr.h>  // for CompletionQueueForNextSptr
 #include <grpc_cb/channel.h>         // for MakeSharedCall()
 #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
-#include <grpc_cb/impl/cqueue_for_next_sptr.h>   // for CQueueForNextSptr
 #include <grpc_cb/impl/cqueue_for_next.h>   // to convert GetCq4n() to CompletionQueue
 #include <grpc_cb/status_callback.h>        // for ErrorCallback
 #include <grpc_cb/support/grpc_cb_api.h>    // for GRPC_CB_API
@@ -43,11 +44,16 @@ class GRPC_CB_API ServiceStub {
   void SetErrorCallback(const ErrorCallback& cb) {
     error_callback_ = cb;
   }
-  CQueueForNext& GetCq4n() const {
+
+  CompletionQueueForNextSptr GetCompletionQueue() const {
     assert(cq4n_sptr_);
-    return *cq4n_sptr_;
+    return cq4n_sptr_;
   }
-  CQueueForNextSptr GetCq4nSptr() const { return cq4n_sptr_; }
+  // non-thread-safe
+  void SetCompletionQueue(const CompletionQueueForNextSptr& cq4n_sptr) {
+    if (cq4n_sptr)
+      cq4n_sptr_ = cq4n_sptr;
+  }
 
   // ServiceStub can set timeout for all methods calls.
   int64_t GetCallTimeoutMs() const { return call_timeout_ms_; }
@@ -80,7 +86,8 @@ class GRPC_CB_API ServiceStub {
 
  protected:
   CallSptr MakeSharedCall(const string& method) const {
-    return MakeSharedCall(method, GetCq4n());
+    assert(cq4n_sptr_);
+    return MakeSharedCall(method, *cq4n_sptr_);
   }
   CallSptr MakeSharedCall(const string& method, CompletionQueue& cq) const {
     return GetChannel().MakeSharedCall(method, cq, GetCallTimeoutMs());
@@ -88,7 +95,7 @@ class GRPC_CB_API ServiceStub {
 
  private:
   const ChannelSptr channel_sptr_;
-  const CQueueForNextSptr cq4n_sptr_;
+  CompletionQueueForNextSptr cq4n_sptr_;
 
   ErrorCallback error_callback_;
   std::atomic_int64_t call_timeout_ms_;
