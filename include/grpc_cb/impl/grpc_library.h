@@ -36,9 +36,11 @@
 
 #include <grpc/grpc.h>
 
+#include <grpc_cb/support/grpc_cb_api.h>  // for GRPC_CB_API
+
 namespace grpc_cb {
 
-class GrpcLibrary {
+class GRPC_CB_API GrpcLibrary {
  public:
   GrpcLibrary() { grpc_init(); }
   virtual ~GrpcLibrary() { grpc_shutdown(); }

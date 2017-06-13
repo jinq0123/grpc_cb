@@ -38,10 +38,12 @@
 
 #include <grpc/status.h>
 
+#include <grpc_cb/support/grpc_cb_api.h>  // for GRPC_CB_API
+
 namespace grpc_cb {
 
 // Non-thread-safe.
-class Status {
+class GRPC_CB_API Status {
  public:
   /// Construct an OK instance.
   Status() : code_(GRPC_STATUS_OK) {}
