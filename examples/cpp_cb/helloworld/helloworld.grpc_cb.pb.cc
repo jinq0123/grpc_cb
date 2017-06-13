@@ -59,16 +59,15 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
 ::grpc_cb::Status Stub::BlockingSayHello(
     const ::helloworld::HelloRequest& request,
     ::helloworld::HelloReply* response) {
-  ::grpc_cb::CQueueForPluck cq4p;
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq4p));
-  ::grpc_cb::ClientCallCqTag tag(call_sptr);
-  if (!tag.Start(request))
-    return ::grpc_cb::Status::InternalError("Failed to request.");
-  cq4p.Pluck(&tag);
-
-  if (response) return tag.GetResponse(*response);
-  ::helloworld::HelloReply ingnored_resp;
-  return tag.GetResponse(ingnored_resp);
+  std::string req_str(request.SerializeAsString());
+  const std::string& method = method_names[0];
+  std::string resp_str;
+  ::grpc_cb::Status status = BlockingRequest(method, req_str, resp_str);
+  if (!status.ok() || !response)
+    return status;
+  if (response->ParseFromString(resp_str))
+    return status;
+  return status.InternalError("Failed to parse response.");
 }
 
 void Stub::AsyncSayHello(
