@@ -59,10 +59,9 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
 ::grpc_cb::Status Stub::BlockingSayHello(
     const ::helloworld::HelloRequest& request,
     ::helloworld::HelloReply* response) {
-  std::string req_str(request.SerializeAsString());
-  const std::string& method = method_names[0];
   std::string resp_str;
-  ::grpc_cb::Status status = BlockingRequest(method, req_str, resp_str);
+  ::grpc_cb::Status status = BlockingRequest(method_names[0],
+      request.SerializeAsString(), resp_str);
   if (!status.ok() || !response)
     return status;
   if (response->ParseFromString(resp_str))
@@ -74,15 +73,27 @@ void Stub::AsyncSayHello(
     const ::helloworld::HelloRequest& request,
     const SayHelloCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
-  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
-  CqTag* tag = new CqTag(call_sptr);
-  tag->SetOnResponse(cb);
-  tag->SetOnError(ecb);
-  if (tag->Start(request)) return;
-  delete tag;
-  if (ecb)
-    ecb(::grpc_cb::Status::InternalError("Failed to async request."));
+  AsyncRequest(method_names[0], request.SerializeAsString(),
+      ((!cb) ? OnResponse() :
+      [cb, ecb](const std::string& resp_str) {
+        ::helloworld::HelloReply response;
+        if (response.ParseFromString(resp_str)) {
+          cb(response);
+          return;
+        }
+        if (ecb)
+          ecb(::grpc_cb::Status::InternalError("Failed to parse response."));
+      }), ecb);
+  //::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
+  //using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
+  //CqTag* tag = new CqTag(call_sptr);
+  //tag->SetOnResponse(cb);
+  //tag->SetOnError(ecb);
+  //if (tag->Start(request.SerializeAsString()))
+  //  return;
+  //delete tag;
+  //if (ecb)
+  //  ecb(::grpc_cb::Status::InternalError("Failed to async request."));
 }
 
 Service::Service() {}
