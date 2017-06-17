@@ -12,6 +12,7 @@
 #include <grpc_cb/completion_queue_for_next_sptr.h>  // for CompletionQueueForNextSptr
 #include <grpc_cb/impl/grpc_library.h>  // for GrpcLibrary
 #include <grpc_cb/support/config.h>  // for GRPC_FINAL
+#include <grpc_cb/support/grpc_cb_api.h>  // for GRPC_CB_API
 #include <grpc_cb/support/time.h>  // for TimePoint
 
 struct grpc_server;
@@ -23,7 +24,7 @@ class ServerCredentials;
 class Service;
 
 /// Models a gRPC server.
-class Server GRPC_FINAL : public GrpcLibrary {
+class GRPC_CB_API Server GRPC_FINAL : public GrpcLibrary {
  public:
   Server();
   ~Server();
