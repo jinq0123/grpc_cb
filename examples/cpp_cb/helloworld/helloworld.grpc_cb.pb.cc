@@ -7,10 +7,7 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
-#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
-#include <grpc_cb/impl/client/wrap_response_callback.h>   // for WrapResponseCallback()
-#include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck
+#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
 #include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
 #include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 #include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
@@ -60,22 +57,16 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
 ::grpc_cb::Status Stub::BlockingSayHello(
     const ::helloworld::HelloRequest& request,
     ::helloworld::HelloReply* response) {
-  std::string resp_str;
-  ::grpc_cb::Status status = BlockingRequest(method_names[0],
-      request.SerializeAsString(), resp_str);
-  if (!status.ok() || !response)
-    return status;
-  if (response->ParseFromString(resp_str))
-    return status;
-  return status.InternalError("Failed to parse response.");
+  return ::grpc_cb::StubHelper(*this).BlockingRequest(
+      method_names[0], request, response);
 }
 
 void Stub::AsyncSayHello(
     const ::helloworld::HelloRequest& request,
     const SayHelloCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
-  AsyncRequest(method_names[0], request.SerializeAsString(),
-      ::grpc_cb::WrapResponseCallback(cb, ecb), ecb);
+  ::grpc_cb::StubHelper(*this).AsyncRequest(
+      method_names[0], request, cb, ecb);
 }
 
 Service::Service() {}

@@ -134,6 +134,7 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_reader_writer_impl.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_sync_writer_helper.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\client_writer_close_cqtag.h" />
+    <ClInclude Include="..\include\grpc_cb\impl\client\stub_helper.h" />
     <ClInclude Include="..\include\grpc_cb\impl\client\wrap_response_callback.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue.h" />
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue_sptr.h" />
