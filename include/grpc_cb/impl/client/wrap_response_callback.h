@@ -18,7 +18,7 @@ namespace grpc_cb {
 template <class Msg>
 inline
 std::function<void (const std::string&)>
-wrap_response_callback(
+WrapResponseCallback(
     const std::function<void (const Msg&)>& cb,
     const ErrorCallback& ecb) {
   if (!cb) return nullptr;
@@ -31,7 +31,7 @@ wrap_response_callback(
     if (ecb)
       ecb(Status::InternalError("Failed to parse response."));
   };  // return
-}  // wrap_response_callback()
+}  // WrapResponseCallback()
 
 }  // namespace grpc_cb
 #endif  // GRPC_CB_IMPL_CLIENT_WRAP_RESPONSE_CALLBACK_H
