@@ -9,6 +9,7 @@
 
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
 #include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
+#include <grpc_cb/impl/client/wrap_response_callback.h>
 #include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck
 #include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
 #include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
@@ -74,26 +75,7 @@ void Stub::AsyncSayHello(
     const SayHelloCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
   AsyncRequest(method_names[0], request.SerializeAsString(),
-      ((!cb) ? OnResponse() :
-      [cb, ecb](const std::string& resp_str) {
-        ::helloworld::HelloReply response;
-        if (response.ParseFromString(resp_str)) {
-          cb(response);
-          return;
-        }
-        if (ecb)
-          ecb(::grpc_cb::Status::InternalError("Failed to parse response."));
-      }), ecb);
-  //::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
-  //using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::helloworld::HelloReply>;
-  //CqTag* tag = new CqTag(call_sptr);
-  //tag->SetOnResponse(cb);
-  //tag->SetOnError(ecb);
-  //if (tag->Start(request.SerializeAsString()))
-  //  return;
-  //delete tag;
-  //if (ecb)
-  //  ecb(::grpc_cb::Status::InternalError("Failed to async request."));
+      ::grpc_cb::wrap_response_callback(cb, ecb), ecb);
 }
 
 Service::Service() {}

@@ -156,6 +156,9 @@
     <ClInclude Include="..\include\grpc_cb\impl\client\client_writer_close_cqtag.h">
       <Filter>include\grpc_cb\impl\client</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\grpc_cb\impl\client\wrap_response_callback.h">
+      <Filter>include\grpc_cb\impl\client</Filter>
+    </ClInclude>
     <ClInclude Include="..\include\grpc_cb\impl\completion_queue.h">
       <Filter>include\grpc_cb\impl</Filter>
     </ClInclude>
