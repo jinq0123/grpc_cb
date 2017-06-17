@@ -415,9 +415,7 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("#include <google/protobuf/descriptor.h>\n");
     printer.Print("#include <google/protobuf/stubs/once.h>\n");
     printer.Print("\n");
-    printer.Print("#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag\n");
-    printer.Print("#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag\n");
-    printer.Print("#include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck\n");
+    printer.Print("#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper\n");
     printer.Print("#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()\n");
     printer.Print("#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag\n");
     printer.Print("#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag\n");
@@ -531,16 +529,8 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "::grpc_cb::Status Stub::Blocking$Method$(\n"
         "    const $Request$& request,\n"
         "    $Response$* response) {\n"
-        "  ::grpc_cb::CQueueForPluck cq4p;\n"
-        "  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[$Idx$], cq4p));\n"
-        "  ::grpc_cb::ClientCallCqTag tag(call_sptr);\n"
-        "  if (!tag.Start(request))\n"
-        "    return ::grpc_cb::Status::InternalError(\"Failed to request.\");\n"
-        "  cq4p.Pluck(&tag);\n"
-        "\n"
-        "  if (response) return tag.GetResponse(*response);\n"
-        "  $Response$ ingnored_resp;\n"
-        "  return tag.GetResponse(ingnored_resp);\n"
+        "  return ::grpc_cb::StubHelper(*this).BlockingRequest(\n"
+        "      method_names[0], request, response);\n"
         "}\n"
         "\n");
     printer->Print(*vars,
@@ -548,15 +538,8 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "    const $Request$& request,\n"
         "    const $Method$Callback& cb,\n"
         "    const ::grpc_cb::ErrorCallback& ecb) {\n"
-        "  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[$Idx$]));\n"
-        "  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<$Response$>;\n"
-        "  CqTag* tag = new CqTag(call_sptr);\n"
-        "  tag->SetOnResponse(cb);\n"
-        "  tag->SetOnError(ecb);\n"
-        "  if (tag->Start(request)) return;\n"
-        "  delete tag;\n"
-        "  if (ecb)\n"
-        "    ecb(::grpc_cb::Status::InternalError(\"Failed to async request.\"));\n"
+        "  ::grpc_cb::StubHelper(*this).AsyncRequest(\n"
+        "      method_names[0], request, cb, ecb);\n"
         "}\n"
         "\n");
   } else if (ClientOnlyStreaming(method)) {

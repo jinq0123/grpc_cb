@@ -7,9 +7,7 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-#include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
-#include <grpc_cb/impl/client/client_call_cqtag.h>        // for ClientCallCqTag
-#include <grpc_cb/impl/cqueue_for_pluck.h>                // for CQueueForPluck
+#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
 #include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
 #include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 #include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
@@ -62,31 +60,16 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
 ::grpc_cb::Status Stub::BlockingGetFeature(
     const ::routeguide::Point& request,
     ::routeguide::Feature* response) {
-  ::grpc_cb::CQueueForPluck cq4p;
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0], cq4p));
-  ::grpc_cb::ClientCallCqTag tag(call_sptr);
-  if (!tag.Start(request))
-    return ::grpc_cb::Status::InternalError("Failed to request.");
-  cq4p.Pluck(&tag);
-
-  if (response) return tag.GetResponse(*response);
-  ::routeguide::Feature ingnored_resp;
-  return tag.GetResponse(ingnored_resp);
+  return ::grpc_cb::StubHelper(*this).BlockingRequest(
+      method_names[0], request, response);
 }
 
 void Stub::AsyncGetFeature(
     const ::routeguide::Point& request,
     const GetFeatureCallback& cb,
     const ::grpc_cb::ErrorCallback& ecb) {
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method_names[0]));
-  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<::routeguide::Feature>;
-  CqTag* tag = new CqTag(call_sptr);
-  tag->SetOnResponse(cb);
-  tag->SetOnError(ecb);
-  if (tag->Start(request)) return;
-  delete tag;
-  if (ecb)
-    ecb(::grpc_cb::Status::InternalError("Failed to async request."));
+  ::grpc_cb::StubHelper(*this).AsyncRequest(
+      method_names[0], request, cb, ecb);
 }
 
 ::grpc_cb::ClientSyncReader<::routeguide::Feature>
