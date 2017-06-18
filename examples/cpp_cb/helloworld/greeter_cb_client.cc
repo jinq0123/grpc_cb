@@ -36,7 +36,7 @@ class GreeterClient {
     if (status.ok()) {
       return reply.message();
     } else {
-      return "RPC failed";
+      return "RPC failed: " + status.GetDetails();
     }
   }
 
