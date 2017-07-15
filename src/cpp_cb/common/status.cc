@@ -6,8 +6,8 @@
 namespace grpc_cb {
 
 const Status& Status::OK = Status();
-const Status& Status::CANCELLED = Status(GRPC_STATUS_CANCELLED, "");
-const Status& Status::UNIMPLEMENTED = Status(GRPC_STATUS_UNIMPLEMENTED, "");
+const Status& Status::CANCELLED = Status(GRPC_STATUS_CANCELLED, "Cancelled");
+const Status& Status::UNIMPLEMENTED = Status(GRPC_STATUS_UNIMPLEMENTED, "Unimplemented");
 
 Status Status::InternalError(const std::string& details) {
   return Status(GRPC_STATUS_INTERNAL, details);
