@@ -34,8 +34,6 @@
 #include <map>
 #include <sstream>
 
-#include <google/protobuf/stubs/strutil.h>  // for CEscape()
-
 #include "cpp_generator_helpers.h"
 #include "config.h"
 

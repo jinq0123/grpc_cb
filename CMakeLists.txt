@@ -24,4 +24,4 @@ target_link_libraries(grpc_cb ${CONAN_LIBS})
 
 file(GLOB_RECURSE PLUGIN_SRC_LIST "src/compiler/*.cc")  
 add_executable(grpc_cpp_cb_plugin ${PLUGIN_SRC_LIST})
-target_link_libraries(grpc_cpp_cb_plugin ${CONAN_LIBS})
+target_link_libraries(grpc_cpp_cb_plugin ${CONAN_LIBS} libprotoc)
