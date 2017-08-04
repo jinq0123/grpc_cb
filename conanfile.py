@@ -9,6 +9,12 @@ class GrpccbConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = "shared=False"
+    
+    # conan remote add jinq0123 https://api.bintray.com/conan/jinq0123/test
+    # before install, or create from:
+    # https://github.com/jinq0123/conan-grpc
+    requires = "gRPC/1.4.2@jinq0123/stable"
+    
     generators = "cmake"
     exports_sources = "src*", "include*"
 
