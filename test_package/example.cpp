@@ -1,6 +1,7 @@
 #include <iostream>
-#include "hello.h"
+#include "grpc_cb/grpc_cb.h"
 
 int main() {
-    hello();
+    grpc_cb::Server server;
+    return 0;
 }

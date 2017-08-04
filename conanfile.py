@@ -16,11 +16,11 @@ class GrpccbConan(ConanFile):
     requires = "gRPC/1.4.2@jinq0123/stable"
     
     generators = "cmake"
-    exports_sources = "src*", "include*"
+    exports_sources = "src*", "include*", "CMakeLists.txt"
 
     def build(self):
         cmake = CMake(self)
-        self.run('cmake %s/src %s' % (self.source_folder, cmake.command_line))
+        self.run('cmake %s %s' % (self.source_folder, cmake.command_line))
         self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):

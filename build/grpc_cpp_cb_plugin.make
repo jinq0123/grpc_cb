@@ -16,7 +16,7 @@ ifeq ($(config),debug)
   TARGET = $(TARGETDIR)/grpc_cpp_cb_plugin
   OBJDIR = obj/Debug/grpc_cpp_cb_plugin
   DEFINES +=
-  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../third_party/grpc
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -g
@@ -43,7 +43,7 @@ ifeq ($(config),release)
   TARGET = $(TARGETDIR)/grpc_cpp_cb_plugin
   OBJDIR = obj/Release/grpc_cpp_cb_plugin
   DEFINES += -DNDEBUG
-  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src -I../third_party/grpc
+  INCLUDES += -I../include -I../third_party/grpc/include -I../third_party/grpc/third_party/protobuf/src
   FORCE_INCLUDE +=
   ALL_CPPFLAGS += $(CPPFLAGS) -MMD -MP $(DEFINES) $(INCLUDES)
   ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -O2

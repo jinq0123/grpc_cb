@@ -34,7 +34,7 @@
 #ifndef GRPC_INTERNAL_COMPILER_CPP_GENERATOR_H
 #define GRPC_INTERNAL_COMPILER_CPP_GENERATOR_H
 
-#include "src/compiler/config.h"
+#include "config.h"
 
 namespace grpc_cpp_cb_generator {
 

@@ -36,8 +36,8 @@
 
 #include <google/protobuf/stubs/strutil.h>  // for CEscape()
 
-#include "src/compiler/cpp_generator_helpers.h"
-#include "src/compiler/config.h"
+#include "cpp_generator_helpers.h"
+#include "config.h"
 
 #include "cpp_cb_generator.h"
 

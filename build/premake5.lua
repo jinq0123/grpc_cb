@@ -66,9 +66,6 @@ project "grpc_cpp_cb_plugin"
 	files {
 		"../src/compiler/**",
 	}
-	includedirs {
-		grpc_root,  -- for src/compiler/config.h
-	}
 	links {
 		"grpc_plugin_support",
 	}

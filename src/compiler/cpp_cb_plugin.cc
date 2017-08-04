@@ -36,8 +36,8 @@
 
 #include <memory>
 
-#include "src/compiler/config.h"
-#include "src/compiler/cpp_generator_helpers.h"
+#include "config.h"
+#include "cpp_generator_helpers.h"
 
 #include "cpp_cb_generator.h"
 
