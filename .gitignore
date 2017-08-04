@@ -38,3 +38,7 @@
 /build/*.sdf
 /build/*.user
 /examples/protos/*.bat
+
+*.pyc
+test_package/build
+
