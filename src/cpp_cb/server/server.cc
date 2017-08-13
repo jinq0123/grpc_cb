@@ -52,6 +52,12 @@ void Server::RegisterService(Service& service) {
   }
 }
 
+void Server::RegisterService(const ServiceSptr& service_sptr) {
+  if (!service_sptr) return;
+  services_.push_back(service_sptr);
+  RegisterService(*service_sptr);
+}
+
 int Server::AddListeningPort(const std::string& addr,
                              const ServerCredentials& creds) {
   assert(!started_);

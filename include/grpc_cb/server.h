@@ -11,6 +11,7 @@
 
 #include <grpc_cb/completion_queue_for_next_sptr.h>  // for CompletionQueueForNextSptr
 #include <grpc_cb/impl/grpc_library.h>  // for GrpcLibrary
+#include <grpc_cb/service_sptr.h>  // for ServiceSptr
 #include <grpc_cb/support/config.h>  // for GRPC_FINAL
 #include <grpc_cb/support/grpc_cb_api.h>  // for GRPC_CB_API
 #include <grpc_cb/support/time.h>  // for TimePoint
@@ -52,6 +53,7 @@ class GRPC_CB_API Server GRPC_FINAL : public GrpcLibrary {
   /// The service must exist for the lifetime of the Server instance.
   // bool RegisterService(/*const std::string* host, RpcService* service*/);
   void RegisterService(Service& service);
+  void RegisterService(const ServiceSptr& service_sptr);
 
   /// Tries to bind \a server to the given \a addr.
   ///
@@ -91,6 +93,9 @@ class GRPC_CB_API Server GRPC_FINAL : public GrpcLibrary {
   // Sever status
   bool started_;
   bool shutdown_;
+
+  // Save all registered service shared ptr.
+  std::list<ServiceSptr> services_;
 
   // Pointer to the c grpc server. Owned.
   const std::unique_ptr<grpc_server, void (*)(grpc_server*)> c_server_uptr_;

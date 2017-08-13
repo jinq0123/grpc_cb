@@ -21,6 +21,7 @@
 #include <grpc_cb/server_replier.h>   // for ServerReplier<>
 #include <grpc_cb/server_writer.h>    // for ServerWriter<>
 #include <grpc_cb/service.h>          // for Service
+#include <grpc_cb/service_sptr.h>     // for ServiceSptr
 #include <grpc_cb/service_stub.h>     // for ServiceStub
 #include <grpc_cb/status.h>           // for Status
 #include <grpc_cb/status_callback.h>  // for StatusCallback

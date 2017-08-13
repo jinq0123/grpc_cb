@@ -154,6 +154,7 @@
     <ClInclude Include="..\include\grpc_cb\server_replier.h" />
     <ClInclude Include="..\include\grpc_cb\server_writer.h" />
     <ClInclude Include="..\include\grpc_cb\service.h" />
+    <ClInclude Include="..\include\grpc_cb\service_sptr.h" />
     <ClInclude Include="..\include\grpc_cb\service_stub.h" />
     <ClInclude Include="..\include\grpc_cb\status.h" />
     <ClInclude Include="..\include\grpc_cb\status_callback.h" />
