@@ -40,6 +40,7 @@ ServerMethodCallCqTag::ServerMethodCallCqTag(grpc_server* server,
 
 ServerMethodCallCqTag::~ServerMethodCallCqTag() {
   grpc_metadata_array_destroy(&initial_metadata_array_);
+  grpc_byte_buffer_destroy(payload_ptr_);
 }
 
 void ServerMethodCallCqTag::DoComplete(bool success)
