@@ -17,6 +17,10 @@ workspace "grpc_cb"
 
 	require("conanpremake_multi")  -- for third-party libs
 
+	includedirs {
+		"../include",
+	}
+
 	filter "configurations:Debug"
 		flags { "Symbols" }
 		links {
