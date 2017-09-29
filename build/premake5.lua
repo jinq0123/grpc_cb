@@ -23,7 +23,9 @@ grpc_libs = {
 }
 
 workspace "grpc_cb"
-	configurations { "Debug", "Release" }
+	location (_ACTION)  -- subdir vs2015 (or gmake, ...)
+	configurations { "Release", "Debug" }
+	platforms { "x64", "x32" }
 	language "C++"
 	flags {
 		"C++11",
