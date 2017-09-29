@@ -37,6 +37,9 @@
 /premake/obj
 /premake/*.sdf
 /premake/*.user
+/premake/vs20*
+/premake/gmake
+
 /examples/protos/*.bat
 
 *.pyc
