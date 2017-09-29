@@ -14,7 +14,7 @@ Status CodClientRecvStatus::GetStatus() const {
   return Status(status_code_, StringFromCopiedSlice(status_details_));
 }
 
-void CodSendMsg::SetMsgStr(const std::string& sMsg)
+void CodSendMsg::CopyMsgStr(const std::string& sMsg)
 {
     assert(!send_buf_);
     // send_buf_ is created here and destroyed in dtr().

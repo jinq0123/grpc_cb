@@ -67,7 +67,7 @@ class CodSendMsg GRPC_FINAL : noncopyable {
     assert(send_buf_ || !status.ok());
     return status;
   }
-  void SetMsgStr(const std::string& sMsg);
+  void CopyMsgStr(const std::string& sMsg);
 
   grpc_byte_buffer* GetSendBuf() const { return send_buf_; }
 

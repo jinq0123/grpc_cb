@@ -27,6 +27,7 @@ class ServerReplierImpl GRPC_FINAL {
   };
 
  public:
+  // XXX Reply(string)
   template <class ResponseType>
   void Reply(const ResponseType& response) {
     if (replied_) return;

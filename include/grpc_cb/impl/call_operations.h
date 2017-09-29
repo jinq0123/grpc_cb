@@ -96,7 +96,7 @@ static inline void InitOp(grpc_op& op, grpc_op_type type, uint32_t flags = 0) {
 // Todo: Set write options.
 void CallOperations::SendMsg(const std::string& message,
                              CodSendMsg& cod_send_msg) {
-  cod_send_msg.SetMsgStr(message);
+  cod_send_msg.CopyMsgStr(message);
   SendMsg(cod_send_msg);
 }
 

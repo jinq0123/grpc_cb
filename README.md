@@ -2,11 +2,16 @@
 C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc but not on grpc++. It is a replacement of grpc++. Easier to use.
 
 ## Build
-TODO: build with conan
 
 1. Copy [grpc](https://github.com/grpc/grpc) as third-party/grpc, and build grpc.
 	* To ease the building on Windows: [plasticbox/grpc-windows](https://github.com/plasticbox/grpc-windows)
 2. Use build/grpc_cb.sln or build/Makefile to build grpc_cb.
+
+### Build with conan
+1. Install [conan](http://docs.conan.io/en/latest/installation.html).
+1. `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test`
+1. `conan create user/channel --build missing`
+    * The result `grpc_lua.dll`/`grpc_lua.so` is in `~/.conan/data/grpc-lua/0.1/user/channel/package/`...
 
 ## Done
 * grpc_cpp_cb_plugin
