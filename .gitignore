@@ -39,6 +39,12 @@
 /premake/*.user
 /premake/vs20*
 /premake/gmake
+/premake/conanpremake_debug_x32.lua
+/premake/conanpremake_debug_x64.lua
+/premake/conanpremake_release_x32.lua
+/premake/conanpremake_release_x64.lua
+/premake/conanbuildinfo.cmake
+/premake/conaninfo.txt
 
 /examples/protos/*.bat
 

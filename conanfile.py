@@ -15,7 +15,8 @@ class GrpccbConan(ConanFile):
     # https://github.com/jinq0123/conan-grpc
     requires = "gRPC/1.4.2@jinq0123/stable"
     
-    generators = "cmake"
+    generators = "cmake", "Premake"  # A custom generator: PremakeGen/0.1@memsharded/testing
+    build_requires = "PremakeGen/0.1@memsharded/testing"
     exports_sources = "src*", "include*", "CMakeLists.txt"
 
     def build(self):
