@@ -11,7 +11,7 @@ C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc 
 1. Install [conan](http://docs.conan.io/en/latest/installation.html).
 1. `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test`
 1. `conan create user/channel --build missing`
-    * The result `grpc_lua.dll`/`grpc_lua.so` is in `~/.conan/data/grpc-lua/0.1/user/channel/package/`...
+    * The result `grpc_cb.lib` is in `~/.conan/data/grpc_cb/0.1/user/channel/package/`...
 
 ## Done
 * grpc_cpp_cb_plugin
