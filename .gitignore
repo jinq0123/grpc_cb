@@ -30,13 +30,13 @@
 
 /third_party/grpc
 
-/build/*.db
-/build/*.opendb
-/build/.vs
-/build/bin
-/build/obj
-/build/*.sdf
-/build/*.user
+/premake/*.db
+/premake/*.opendb
+/premake/.vs
+/premake/bin
+/premake/obj
+/premake/*.sdf
+/premake/*.user
 /examples/protos/*.bat
 
 *.pyc
