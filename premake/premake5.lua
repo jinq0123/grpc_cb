@@ -31,6 +31,9 @@ workspace "grpc_cb"
 		"C++11",
 		"StaticRuntime",
 	}
+
+	require("conanpremake_multi")  -- for third-party libs
+
 	includedirs {
 		"../include",
 		grpc_root .. "/include",
