@@ -4,6 +4,8 @@
 #ifndef CPP_CB_SERVER_SERVER_REPLIER_CQTAT_H
 #define CPP_CB_SERVER_SERVER_REPLIER_CQTAT_H
 
+#include <string>
+
 #include <grpc_cb/impl/call.h>             // for Call
 #include <grpc_cb/impl/call_cqtag.h>       // for CallCqTag
 #include <grpc_cb/impl/call_op_data.h>     // for CodSendInitMd
@@ -19,7 +21,8 @@ class ServerReplierCqTag GRPC_FINAL : public CallCqTag {
   ServerReplierCqTag(const CallSptr& call_sptr, bool send_init_md)
     : CallCqTag(call_sptr), send_init_md_(send_init_md) {}
 
-  inline bool StartReply(const ::google::protobuf::Message& msg) GRPC_MUST_USE_RESULT;
+  template <class MsgType>  // ::google::protobuf::Message or std::string
+  inline bool StartReply(const MsgType& msg) GRPC_MUST_USE_RESULT;
   inline bool StartReplyError(const Status& status) GRPC_MUST_USE_RESULT;
 
  private:
@@ -29,7 +32,8 @@ class ServerReplierCqTag GRPC_FINAL : public CallCqTag {
   bool send_init_md_ = false;  // need to send initial metadata
 };
 
-bool ServerReplierCqTag::StartReply(const ::google::protobuf::Message& msg) {
+template <class MsgType>  // ::google::protobuf::Message or std::string
+bool ServerReplierCqTag::StartReply(const MsgType& msg) {
   CallOperations ops;
   if (send_init_md_) {  // Todo: use CodSendInitMd uptr?
     ops.SendInitMd(cod_send_init_md_);  // Todo: init metadata
