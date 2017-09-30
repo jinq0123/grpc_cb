@@ -13,7 +13,7 @@ class GrpccbConan(ConanFile):
     # conan remote add jinq0123 https://api.bintray.com/conan/jinq0123/test
     # before install, or create from:
     # https://github.com/jinq0123/conan-grpc
-    requires = "gRPC/1.4.2@jinq0123/stable"
+    requires = "gRPC/1.4.2@jinq0123/stable", "Protobuf/3.4.1@jinq0123/testing"
     
     generators = "cmake", "Premake"  # A custom generator: PremakeGen/0.1@memsharded/testing
     build_requires = "PremakeGen/0.1@memsharded/testing"
