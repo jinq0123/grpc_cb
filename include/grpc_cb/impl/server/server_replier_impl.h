@@ -9,6 +9,7 @@
 
 #include <grpc_cb/impl/call_sptr.h>                   // for CallSptr
 #include <grpc_cb/impl/server/server_replier_cqtag.h>  // for ServerReplierCqTag
+#include <grpc_cb/support/protobuf_fwd.h>  // for Message
 
 namespace grpc_cb {
 
@@ -27,9 +28,14 @@ class ServerReplierImpl GRPC_FINAL {
   };
 
  public:
-  // Reply Message or std::string.
-  template <class ResponseType>
-  void Reply(const ResponseType& response) {
+  // Reply Message or serialized string
+  void Reply(const std::string& response) {
+    if (replied_) return;
+    replied_ = true;
+    auto* tag = new ServerReplierCqTag(call_sptr_, send_init_md_);  // delete in Run()
+    if (!tag->StartReply(response)) delete tag;
+  }
+  void Reply(const ::google::protobuf::Message& response) {
     if (replied_) return;
     replied_ = true;
     auto* tag = new ServerReplierCqTag(call_sptr_, send_init_md_);  // delete in Run()

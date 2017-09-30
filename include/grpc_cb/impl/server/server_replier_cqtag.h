@@ -21,8 +21,8 @@ class ServerReplierCqTag GRPC_FINAL : public CallCqTag {
   ServerReplierCqTag(const CallSptr& call_sptr, bool send_init_md)
     : CallCqTag(call_sptr), send_init_md_(send_init_md) {}
 
-  template <class MsgType>  // ::google::protobuf::Message or std::string
-  inline bool StartReply(const MsgType& msg) GRPC_MUST_USE_RESULT;
+  inline bool StartReply(const std::string& msg) GRPC_MUST_USE_RESULT;
+  inline bool StartReply(const ::google::protobuf::Message& msg) GRPC_MUST_USE_RESULT;
   inline bool StartReplyError(const Status& status) GRPC_MUST_USE_RESULT;
 
  private:
@@ -38,8 +38,15 @@ class ServerReplierCqTag GRPC_FINAL : public CallCqTag {
   bool send_init_md_ = false;  // need to send initial metadata
 };
 
-template <class MsgType>  // ::google::protobuf::Message or std::string
-bool ServerReplierCqTag::StartReply(const MsgType& msg) {
+bool ServerReplierCqTag::StartReply(const std::string& msg) {
+  CallOperations ops;
+  if (send_init_md_) {  // Todo: use CodSendInitMd uptr?
+    ops.SendInitMd(cod_send_init_md_);  // Todo: init metadata
+  }
+  SendMsgAndStatus(msg, ops);
+  return GetCallSptr()->StartBatch(ops, this);
+}
+bool ServerReplierCqTag::StartReply(const ::google::protobuf::Message& msg) {
   CallOperations ops;
   if (send_init_md_) {  // Todo: use CodSendInitMd uptr?
     ops.SendInitMd(cod_send_init_md_);  // Todo: init metadata
