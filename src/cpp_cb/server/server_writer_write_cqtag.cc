@@ -15,7 +15,7 @@ bool ServerWriterWriteCqTag::Start(
     // Todo: set init_md
     ops.SendInitMd(cod_send_init_md_);
   }
-  ops.SendMsg(message, cod_send_msg_);
+  ops.SendMsg(message, cod_send_msg_);  // XXX check result
   return GetCallSptr()->StartBatch(ops, this);
 }
 

@@ -50,8 +50,7 @@ class CallOperations GRPC_FINAL {
   }
   inline void SendInitMd(MetadataVector& init_metadata);
   inline Status SendMsg(const ::google::protobuf::Message& message,
-                        CodSendMsg& cod_send_msg)
-      GRPC_MUST_USE_RESULT;
+                        CodSendMsg& cod_send_msg) GRPC_MUST_USE_RESULT;
   inline void SendMsg(const std::string& message, CodSendMsg& cod_send_msg);
 
   // Receive initial metadata.

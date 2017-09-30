@@ -29,7 +29,7 @@ class ClientSendMsgCqTag GRPC_FINAL : public GeneralCallCqTag {
 bool ClientSendMsgCqTag::Start(
     const ::google::protobuf::Message& message) {
   CallOperations ops;
-  ops.SendMsg(message, cod_send_msg_);
+  ops.SendMsg(message, cod_send_msg_);  // XXX check result
   return GetCallSptr()->StartBatch(ops, this);
 }
 
