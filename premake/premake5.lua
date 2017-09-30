@@ -80,7 +80,7 @@ group "examples"
 		removefiles {
 			"../examples/cpp_cb/helloworld/greeter_cb_server.cc",
 		}
-		links(grpc_cb)
+		links { "grpc_cb" }
 
 	project "greeter_cb_server"
 		kind "ConsoleApp"
@@ -90,7 +90,7 @@ group "examples"
 		removefiles {
 			"../examples/cpp_cb/helloworld/greeter_cb_client.cc",
 		}
-		links(grpc_cb)
+		links { "grpc_cb" }
 
 	project "route_guide_cb_client"
 		kind "ConsoleApp"
@@ -100,7 +100,7 @@ group "examples"
 		removefiles {
 			"../examples/cpp_cb/route_guide/route_guide_cb_server.cc",
 		}
-		links(grpc_cb)
+		links { "grpc_cb" }
 
 	project "route_guide_cb_server"
 		kind "ConsoleApp"
@@ -110,6 +110,6 @@ group "examples"
 		removefiles {
 			"../examples/cpp_cb/route_guide/route_guide_cb_client.cc",
 		}
-		links(grpc_cb)
+		links { "grpc_cb" }
 
 group ""  -- End of group "examples"
