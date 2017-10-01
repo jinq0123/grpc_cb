@@ -68,6 +68,10 @@ project "grpc_cb"
 	files {
 		"../include/grpc_cb/**.h",
 		"../src/cpp_cb/**",
+		"../doc/**",
+		"../*.md",
+		"../*.py",
+		"../*.txt",
 	}
 
 group "examples"
