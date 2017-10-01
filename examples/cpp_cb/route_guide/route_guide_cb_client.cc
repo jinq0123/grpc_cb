@@ -385,6 +385,8 @@ void TestRpcTimeout(const ChannelSptr& channel) {
   assert(status.GetCode() == GRPC_STATUS_DEADLINE_EXCEEDED);
 }
 
+// XXX Rename blocking to sync...
+
 int main(int argc, char** argv) {
   // Expect only arg: --db_path=path/to/route_guide_db.json.
   std::string db = routeguide::GetDbFileContent(argc, argv);
