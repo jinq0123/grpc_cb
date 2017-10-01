@@ -4,7 +4,7 @@
 #ifndef GRPC_CB_GRPC_CB_H
 #define GRPC_CB_GRPC_CB_H
 
-#include <grpc_cb/blocking_run.h>  // for Run()
+#include <grpc_cb/run.h>  // for Run()
 #include <grpc_cb/channel.h>       // for Channel
 #include <grpc_cb/client_async_reader.h>
 #include <grpc_cb/client_async_reader_writer.h>

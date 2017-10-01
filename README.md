@@ -82,7 +82,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 	```
 
 #### Calling service methods
-+ Blocking call
++ Sync call
 	* Simple RPC: ```SyncGetFeature()```
 		```cpp
 		Point point = MakePoint(0, 0);

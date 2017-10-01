@@ -3,7 +3,7 @@
 
 #include <grpc_cb/service_stub.h>
 
-#include <grpc_cb/blocking_run.h>  // for Run()
+#include <grpc_cb/run.h>  // for Run()
 #include <grpc_cb/channel.h>  // for GetCallTimeoutMs()
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
