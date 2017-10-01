@@ -7,8 +7,8 @@
 
 namespace grpc_cb {
 
-GRPC_CB_API void BlockingRun(CompletionQueueForNext& cq4n);
-GRPC_CB_API void BlockingRun(const CompletionQueueForNextSptr& cq4n_sptr);
+GRPC_CB_API void Run(CompletionQueueForNext& cq4n);
+GRPC_CB_API void Run(const CompletionQueueForNextSptr& cq4n_sptr);
 
 }  // namespace grpc_cb
 #endif  // GRPC_CB_BLOCKING_RUN_H

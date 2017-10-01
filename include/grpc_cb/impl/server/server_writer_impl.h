@@ -43,9 +43,9 @@ class ServerWriterImpl GRPC_FINAL
     high_queue_size_ = high_queue_size;
   }
 
-  // Close() is optional. Dtr() will auto AsyncClose().
+  // Close() is optional. Dtr() will auto SyncClose().
   // Redundant Close() will be ignored.
-  void AsyncClose(const Status& status);
+  void SyncClose(const Status& status);
   void AsyncClose(const Status& status);
   bool IsClosed() const {
     Guard g(mtx_);
@@ -68,7 +68,7 @@ class ServerWriterImpl GRPC_FINAL
   size_t high_queue_size_ = std::numeric_limits<size_t>::max();
   MessageQueue queue_;
 
-  // new in AsyncClose()/AsyncClose()
+  // new in SyncClose()/AsyncClose()
   std::unique_ptr<Status> close_status_uptr_;
 
   mutable std::mutex mtx_;

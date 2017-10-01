@@ -168,12 +168,12 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 	* Run the stub
 		+ Async calls need 
 			```cpp
-			stub.BlockingRun();  // until stub.Shutdown()
+			stub.Run();  // until stub.Shutdown()
 			```
 
 		+ It can run in other thread.
 		+ It can be before or after async calls.
-		+ ```stub.Shutdown()``` or ```~Stub()``` to end ```stub.BlockingRun()```.
+		+ ```stub.Shutdown()``` or ```~Stub()``` to end ```stub.Run()```.
 
 	* Server-side streaming RPC: ```AsyncListFeatures()```
 		```cpp
@@ -182,9 +182,9 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 				cout << feature.name() << endl;
 			},
 			[&stub](const Status& status) {
-				stub.Shutdown();  // To break BlockingRun().
+				stub.Shutdown();  // To break Run().
 			});
-		stub.BlockingRun();  // until stub.Shutdown()
+		stub.Run();  // until stub.Shutdown()
 		```
 
 	* Client-side streaming RPC: ```AsyncRecordRoute()```
@@ -347,5 +347,5 @@ See examples/cpp_cb/route_guide/route_guide_server.cc.
 
 3. Blocking run server.
 	```cpp
-	svr.BlockingRun();
+	svr.Run();
 	```

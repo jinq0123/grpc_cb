@@ -58,6 +58,6 @@ int main(int argc, char** argv) {
   stub.AsyncSayHello(request, [](const helloworld::HelloReply& resp) {
       std::cout << "Async greeter received: " << resp.message() << std::endl;
     });
-  stub.BlockingRun();
+  stub.Run();
   return 0;
 }

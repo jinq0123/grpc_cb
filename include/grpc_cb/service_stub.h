@@ -81,7 +81,7 @@ class GRPC_CB_API ServiceStub {
                     const ErrorCallback& on_error = GetDefaultErrorCallback());
 
  public:
-  void BlockingRun();
+  void Run();
   // Request the shutdown of all runs.
   void Shutdown();
 

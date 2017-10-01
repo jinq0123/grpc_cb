@@ -265,7 +265,7 @@ void GetFeatureAsync(const ChannelSptr& channel) {
             << err.GetDetails() << std::endl;
         stub.Shutdown();
       });  // AsyncGetFeature()
-  stub.BlockingRun();  // until stub.Shutdown()
+  stub.Run();  // until stub.Shutdown()
 }
 
 void ListFeaturesAsync(const ChannelSptr& channel) {
@@ -283,9 +283,9 @@ void ListFeaturesAsync(const ChannelSptr& channel) {
     [&stub](const Status& status) {
       std::cout << "End status: (" << status.GetCode() << ") "
           << status.GetDetails() << std::endl;
-      stub.Shutdown();  // To break BlockingRun().
+      stub.Shutdown();  // To break Run().
     });
-  stub.BlockingRun();  // until stub.Shutdown()
+  stub.Run();  // until stub.Shutdown()
 }
 
 void RecordRouteAsync(const ChannelSptr& channel,
@@ -301,7 +301,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
       0, feature_list.size() - 1);
 
   Stub stub(channel);
-  auto f = std::async(std::launch::async, [&stub]() { stub.BlockingRun(); });
+  auto f = std::async(std::launch::async, [&stub]() { stub.Run(); });
 
   // ClientAsyncWriter<Point, RouteSummary> async_writer;
   auto async_writer = stub.AsyncRecordRoute();
@@ -352,7 +352,7 @@ void AsyncWriteRouteNotes(Stub::RouteChat_AsyncReaderWriter async_reader_writer)
 void RouteChatAsync(const ChannelSptr& channel) {
   Stub stub(channel);
   auto f_run = std::async(std::launch::async, [&stub]() { 
-    stub.BlockingRun();
+    stub.Run();
   });
 
   std::atomic_bool bReaderDone = false;
@@ -371,7 +371,7 @@ void RouteChatAsync(const ChannelSptr& channel) {
 
   while (!bReaderDone)
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  stub.Shutdown();  // To break BlockingRun().
+  stub.Shutdown();  // To break Run().
 }  // RouteChatAsync()
 
 void TestRpcTimeout(const ChannelSptr& channel) {

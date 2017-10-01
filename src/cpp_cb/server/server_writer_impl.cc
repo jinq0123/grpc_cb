@@ -22,7 +22,7 @@ ServerWriterImpl::ServerWriterImpl(const CallSptr& call_sptr)
 ServerWriterImpl::~ServerWriterImpl() {
   // Because ServerWriterWriteCqTag has a ServerWriterImpl sptr.
   assert(queue_.empty());
-  AsyncClose(Status::OK);
+  SyncClose(Status::OK);
 }
 
 bool ServerWriterImpl::Write(
@@ -70,7 +70,7 @@ bool ServerWriterImpl::AsyncWrite(
   return SendMsg(response);
 }
 
-void ServerWriterImpl::AsyncClose(const Status& status) {
+void ServerWriterImpl::SyncClose(const Status& status) {
   AsyncClose(status);
   while (GetQueueSize())
     std::this_thread::yield();

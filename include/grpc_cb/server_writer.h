@@ -38,10 +38,10 @@ class ServerWriter GRPC_FINAL {
     impl_sptr_->SetHighQueueSize(high_queue_size);
   }
 
-  // Close is optional. Dtr() will auto AsyncClose().
+  // Close() is optional. Dtr() will auto SyncClose().
   // Redundant close will be ignored.
-  void AsyncClose(const Status& status) const {
-    impl_sptr_->AsyncClose(status);
+  void SyncClose(const Status& status) const {
+    impl_sptr_->SyncClose(status);
   }
   void AsyncClose(const Status& status) const {
     impl_sptr_->AsyncClose(status);

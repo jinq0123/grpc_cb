@@ -47,7 +47,7 @@ class GRPC_CB_API Server GRPC_FINAL : public GrpcLibrary {
   ///
   /// \warning The server must be either shutting down or some other thread must
   /// call \a Shutdown for this function to ever return.
-  void BlockingRun();
+  void Run();
 
   /// Register a service. This call does not take ownership of the service.
   /// The service must exist for the lifetime of the Server instance.

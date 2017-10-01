@@ -7,13 +7,13 @@ Work in progress...
 auto cq = std::make_shared<CQueueForNext>();
 Svc1::Stub stub1(channel, cq);
 Svc2::Stub stub2(channel, cq);
-BlockingRun(cq);
+Run(cq);
 ```
 
 ## Run a stub in multi threads
 ```cpp
-auto f1 = std::async(async, [stub]() { stub.BlockingRun(); }
-auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
+auto f1 = std::async(async, [stub]() { stub.Run(); }
+auto f2 = std::async(async, [stub]() { stub.Run(); }
 ```
 
 ## Mix sync and async stub calls
@@ -25,7 +25,7 @@ auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
 ```cpp
   ...
   auto f = std::async(std::launch::async, [&stub]() { 
-    stub.BlockingRun();
+    stub.Run();
   });
 
   Point point = MakePoint(0,0);

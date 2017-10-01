@@ -3,7 +3,7 @@
 
 #include <grpc_cb/service_stub.h>
 
-#include <grpc_cb/blocking_run.h>  // for BlockingRun()
+#include <grpc_cb/blocking_run.h>  // for Run()
 #include <grpc_cb/channel.h>  // for GetCallTimeoutMs()
 #include <grpc_cb/impl/call.h>
 #include <grpc_cb/impl/client/client_async_call_cqtag.h>  // for ClientAsyncCallCqTag
@@ -59,9 +59,9 @@ void ServiceStub::AsyncRequest(const string& method, const string& request,
 }
 
 // Blocking run stub.
-void ServiceStub::BlockingRun() {
+void ServiceStub::Run() {
   assert(cq4n_sptr_);
-  grpc_cb::BlockingRun(cq4n_sptr_);
+  grpc_cb::Run(cq4n_sptr_);
 }
 
 void ServiceStub::Shutdown() {
