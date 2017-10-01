@@ -121,6 +121,8 @@ void RandomSleep() {
       delay_distribution(generator)));
 }
 
+// XXX Rename Sync to Blocking...
+
 void RunWriteRouteNote(Stub::RouteChat_SyncReaderWriter sync_reader_writer) {
   std::vector<RouteNote> notes{
     MakeRouteNote("First message", 0, 0),
