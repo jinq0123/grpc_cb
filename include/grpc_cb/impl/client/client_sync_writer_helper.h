@@ -13,9 +13,9 @@
 namespace grpc_cb {
 namespace ClientSyncWriterHelper {
 
-// Todo: BlockingGetInitMd();
+// Todo: SyncGetInitMd();
 
-inline bool BlockingWrite(
+inline bool SyncWrite(
     const CallSptr& call_sptr,
     const CQueueForPluckSptr& cq4p_sptr,
     const ::google::protobuf::Message& request,
@@ -33,7 +33,7 @@ inline bool BlockingWrite(
 
   status.SetInternalError("Failed to write client stream.");
   return false;
-}  // BlockingWrite()
+}  // SyncWrite()
 
 }  // namespace ClientSyncWriterHelper
 }  // namespace grpc_cb

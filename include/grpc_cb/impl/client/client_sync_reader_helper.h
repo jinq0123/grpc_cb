@@ -16,19 +16,19 @@ namespace grpc_cb {
 namespace ClientSyncReaderHelper {
 // ClientSyncReaderHelper is used in ClientSyncReader and ClientSyncReaderWriter.
 
-inline bool BlockingReadOne(
+inline bool SyncReadOne(
     const CallSptr& call_sptr,
     const CQueueForPluckSptr& cq4p_sptr,
     ::google::protobuf::Message& response,
     Status& status);
 
-inline Status BlockingRecvStatus(
+inline Status SyncRecvStatus(
     const CallSptr& call_sptr,
     const CQueueForPluckSptr& cq4p_sptr);
 
 // Todo: move to cpp file.
 
-inline bool BlockingReadOne(
+inline bool SyncReadOne(
     const CallSptr& call_sptr,
     const CQueueForPluckSptr& cq4p_sptr,
     ::google::protobuf::Message& response,
@@ -49,7 +49,7 @@ inline bool BlockingReadOne(
   return status.ok();
 }
 
-inline Status BlockingRecvStatus(
+inline Status SyncRecvStatus(
     const CallSptr& call_sptr,
     const CQueueForPluckSptr& cq4p_sptr) {
   assert(call_sptr);

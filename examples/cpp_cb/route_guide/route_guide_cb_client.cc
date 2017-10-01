@@ -121,8 +121,6 @@ void RandomSleep() {
       delay_distribution(generator)));
 }
 
-// XXX Rename Sync to Blocking...
-
 void RunWriteRouteNote(Stub::RouteChat_SyncReaderWriter sync_reader_writer) {
   std::vector<RouteNote> notes{
     MakeRouteNote("First message", 0, 0),
@@ -147,16 +145,16 @@ class RouteGuideClient {
     assert(!feature_list_.empty());
   }
 
-  void BlockingGetFeature() {
+  void SyncGetFeature() {
     Point point;
     Feature feature;
     point = MakePoint(409146138, -746188906);
-    BlockingGetOneFeature(point, &feature);
+    SyncGetOneFeature(point, &feature);
     point = MakePoint(0, 0);
-    BlockingGetOneFeature(point, &feature);
+    SyncGetOneFeature(point, &feature);
   }
 
-  void BlockingListFeatures() {
+  void SyncListFeatures() {
     routeguide::Rectangle rect = MakeRect(
         400000000, -750000000, 420000000, -730000000);
     Feature feature;
@@ -179,7 +177,7 @@ class RouteGuideClient {
     }
   }
 
-  void BlockingRecordRoute() {
+  void SyncRecordRoute() {
     Point point;
     const int kPoints = 10;
     std::uniform_int_distribution<int> feature_distribution(
@@ -213,7 +211,7 @@ class RouteGuideClient {
 
   // Todo: Callback on client stream response and status.
 
-  void BlockingRouteChat() {
+  void SyncRouteChat() {
     auto sync_reader_writer(stub_->SyncRouteChat());
     auto f = std::async(std::launch::async, [sync_reader_writer]() {
         RunWriteRouteNote(sync_reader_writer);
@@ -232,8 +230,8 @@ class RouteGuideClient {
   }
 
  private:
-  bool BlockingGetOneFeature(const Point& point, Feature* feature) {
-    Status status = stub_->BlockingGetFeature(point, feature);
+  bool SyncGetOneFeature(const Point& point, Feature* feature) {
+    Status status = stub_->SyncGetFeature(point, feature);
     if (!status.ok()) {
       std::cout << "GetFeature rpc failed." << std::endl;
       return false;
@@ -381,7 +379,7 @@ void TestRpcTimeout(const ChannelSptr& channel) {
   stub.SetCallTimeoutMs(INT64_MIN);
   Point point = MakePoint(0, 0);
   Feature feature;
-  Status status = stub.BlockingGetFeature(point, &feature);
+  Status status = stub.SyncGetFeature(point, &feature);
   assert(status.GetCode() == GRPC_STATUS_DEADLINE_EXCEEDED);
 }
 
@@ -396,14 +394,14 @@ int main(int argc, char** argv) {
 
   TestRpcTimeout(channel);
 
-  std::cout << "---- BlockingGetFeature --------------" << std::endl;
-  guide.BlockingGetFeature();
-  std::cout << "---- BlockingListFeatures --------------" << std::endl;
-  guide.BlockingListFeatures();
-  std::cout << "---- BlockingRecordRoute --------------" << std::endl;
-  guide.BlockingRecordRoute();
-  std::cout << "---- BlockingRouteChat --------------" << std::endl;
-  guide.BlockingRouteChat();
+  std::cout << "---- SyncGetFeature --------------" << std::endl;
+  guide.SyncGetFeature();
+  std::cout << "---- SyncListFeatures --------------" << std::endl;
+  guide.SyncListFeatures();
+  std::cout << "---- SyncRecordRoute --------------" << std::endl;
+  guide.SyncRecordRoute();
+  std::cout << "---- SyncRouteChat --------------" << std::endl;
+  guide.SyncRouteChat();
 
   std::cout << "---- GetFeatureAsync ----" << std::endl;
   GetFeatureAsync(channel);

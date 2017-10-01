@@ -21,8 +21,8 @@ class ServerWriter GRPC_FINAL {
   bool Write(const Response& response) const {
     return impl_sptr_->Write(response);
   }
-  bool BlockingWrite(const Response& response) const {
-    return impl_sptr_->BlockingWrite(response);
+  bool SyncWrite(const Response& response) const {
+    return impl_sptr_->SyncWrite(response);
   }
   void AsyncWrite(const Response& response) const {
     impl_sptr_->AsyncWrite(response);
@@ -38,10 +38,10 @@ class ServerWriter GRPC_FINAL {
     impl_sptr_->SetHighQueueSize(high_queue_size);
   }
 
-  // Close is optional. Dtr() will auto BlockingClose().
+  // Close is optional. Dtr() will auto AsyncClose().
   // Redundant close will be ignored.
-  void BlockingClose(const Status& status) const {
-    impl_sptr_->BlockingClose(status);
+  void AsyncClose(const Status& status) const {
+    impl_sptr_->AsyncClose(status);
   }
   void AsyncClose(const Status& status) const {
     impl_sptr_->AsyncClose(status);

@@ -26,10 +26,10 @@ class ClientSyncWriter GRPC_FINAL {
   inline ClientSyncWriter(const ChannelSptr& channel, const std::string& method,
                           int64_t timeout_ms);
 
-  // Todo: BlockingGetInitMd();
+  // Todo: SyncGetInitMd();
   bool Write(const Request& request) const {
     Data& d = *data_sptr_;
-    return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, d.cq4p_sptr,
+    return ClientSyncWriterHelper::SyncWrite(d.call_sptr, d.cq4p_sptr,
                                                  request, d.status);
   }
 
@@ -93,7 +93,7 @@ Status ClientSyncWriter<Request>::Close(
     status = tag.GetStatus();
 
   return status;
-}  // BlockingFinish()
+}  // Close()
 
 }  // namespace grpc_cb
 

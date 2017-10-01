@@ -57,10 +57,10 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
     const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr)
     : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}
 
-::grpc_cb::Status Stub::BlockingGetFeature(
+::grpc_cb::Status Stub::SyncGetFeature(
     const ::routeguide::Point& request,
     ::routeguide::Feature* response) {
-  return ::grpc_cb::StubHelper(*this).BlockingRequest(
+  return ::grpc_cb::StubHelper(*this).SyncRequest(
       method_names[0], request, response);
 }
 

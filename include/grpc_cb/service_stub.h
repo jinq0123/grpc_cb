@@ -72,7 +72,7 @@ class GRPC_CB_API ServiceStub {
   }
 
  public:
-  Status BlockingRequest(const string& method, const string& request,
+  Status SyncRequest(const string& method, const string& request,
                          string& response);
 
   using OnResponse = std::function<void (const string&)>;

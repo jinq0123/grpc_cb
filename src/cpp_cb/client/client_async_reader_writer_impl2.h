@@ -83,7 +83,7 @@ class ClientAsyncReaderWriterImpl2 GRPC_FINAL
   std::shared_ptr<ClientAsyncWriterHelper> writer_sptr_;
 };  // class ClientAsyncReaderWriterImpl2
 
-// Todo: BlockingGetInitMd();
+// Todo: SyncGetInitMd();
 
 }  // namespace grpc_cb
 

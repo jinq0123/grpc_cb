@@ -20,7 +20,7 @@ class Stub : public ::grpc_cb::ServiceStub {
   explicit Stub(const ::grpc_cb::ChannelSptr& channel,
       const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr = nullptr);
 
-  ::grpc_cb::Status BlockingGetFeature(
+  ::grpc_cb::Status SyncGetFeature(
       const ::routeguide::Point& request,
       ::routeguide::Feature* response = nullptr);
 

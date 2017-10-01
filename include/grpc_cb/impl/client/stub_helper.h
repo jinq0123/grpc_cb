@@ -22,7 +22,7 @@ public:
     using Message = ::google::protobuf::Message;
 
     template <class Response>
-    inline Status BlockingRequest(const std::string& method,
+    inline Status SyncRequest(const std::string& method,
         const Message& request, Response* response);
 
     template <class Response>
@@ -36,10 +36,10 @@ private:
 };  // StubHelper
 
 template <class Response>
-Status StubHelper::BlockingRequest(const std::string& method,
+Status StubHelper::SyncRequest(const std::string& method,
     const Message& request, Response* response) {
   std::string resp_str;
-  ::grpc_cb::Status status = stub_.BlockingRequest(method,
+  ::grpc_cb::Status status = stub_.SyncRequest(method,
       request.SerializeAsString(), resp_str);
   if (!status.ok() || !response)
     return status;

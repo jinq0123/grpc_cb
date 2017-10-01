@@ -29,14 +29,14 @@ class ClientSyncReader GRPC_FINAL {
   inline bool ReadOne(Response* response) const {
     assert(response);
     Data& d = *data_sptr_;
-    return ClientSyncReaderHelper::BlockingReadOne(d.call_sptr, d.cq4p_sptr,
+    return ClientSyncReaderHelper::SyncReadOne(d.call_sptr, d.cq4p_sptr,
                                                    *response, d.status);
   }
 
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
     if (!d.status.ok()) return d.status;
-    return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq4p_sptr);
+    return ClientSyncReaderHelper::SyncRecvStatus(d.call_sptr, d.cq4p_sptr);
   }
 
  private:

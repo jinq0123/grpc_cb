@@ -21,7 +21,7 @@ class GreeterClient {
 
   // Assambles the client's payload, sends it and presents the response back
   // from the server.
-  std::string BlockingSayHello(const std::string& user) {
+  std::string SyncSayHello(const std::string& user) {
     // Data we are sending to the server.
     HelloRequest request;
     request.set_name(user);
@@ -30,7 +30,7 @@ class GreeterClient {
     HelloReply reply;
 
     // The actual RPC.
-    Status status = stub_->BlockingSayHello(request, &reply);
+    Status status = stub_->SyncSayHello(request, &reply);
 
     // Act upon its status.
     if (status.ok()) {
@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
   ChannelSptr channel(new Channel("localhost:50051"));
   GreeterClient greeter(channel);
   std::string user("world");
-  std::string reply = greeter.BlockingSayHello(user);
+  std::string reply = greeter.SyncSayHello(user);
   std::cout << "Greeter received: " << reply << std::endl;
 
   // Async client.

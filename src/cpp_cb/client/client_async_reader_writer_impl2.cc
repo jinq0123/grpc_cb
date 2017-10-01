@@ -15,7 +15,7 @@ namespace grpc_cb {
 
 using Sptr = std::shared_ptr<ClientAsyncReaderWriterImpl2>;
 
-// Todo: BlockingGetInitMd();
+// Todo: SyncGetInitMd();
 
 ClientAsyncReaderWriterImpl2::ClientAsyncReaderWriterImpl2(
     const ChannelSptr& channel, const std::string& method,

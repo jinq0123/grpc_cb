@@ -15,7 +15,7 @@
 
 namespace grpc_cb {
 
-// Completion queue tag (CqTag) for client call for both blocking and async calls.
+// Completion queue tag (CqTag) for client call for both sync and async calls.
 // ClientAsyncCallCqTag derives from it.
 class ClientCallCqTag : public CallCqTag {
  public:

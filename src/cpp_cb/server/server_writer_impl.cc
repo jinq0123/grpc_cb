@@ -22,7 +22,7 @@ ServerWriterImpl::ServerWriterImpl(const CallSptr& call_sptr)
 ServerWriterImpl::~ServerWriterImpl() {
   // Because ServerWriterWriteCqTag has a ServerWriterImpl sptr.
   assert(queue_.empty());
-  BlockingClose(Status::OK);
+  AsyncClose(Status::OK);
 }
 
 bool ServerWriterImpl::Write(
@@ -35,12 +35,12 @@ bool ServerWriterImpl::Write(
   }
 
   if (is_high)
-    return BlockingWrite(response);
+    return SyncWrite(response);
   else
     return AsyncWrite(response);
 }
 
-bool ServerWriterImpl::BlockingWrite(
+bool ServerWriterImpl::SyncWrite(
     const ::google::protobuf::Message& response) {
   if (!AsyncWrite(response))  // Will trigger sending.
     return false;
@@ -70,7 +70,7 @@ bool ServerWriterImpl::AsyncWrite(
   return SendMsg(response);
 }
 
-void ServerWriterImpl::BlockingClose(const Status& status) {
+void ServerWriterImpl::AsyncClose(const Status& status) {
   AsyncClose(status);
   while (GetQueueSize())
     std::this_thread::yield();
@@ -146,7 +146,7 @@ bool ServerWriterImpl::SendMsg(const ::google::protobuf::Message& msg) {
 
   delete tag;
   closed_ = true;  // error
-  queue_ = MessageQueue();  // reset to break BlockingWrite().
+  queue_ = MessageQueue();  // reset to break SyncWrite().
   // Todo: do sth. on error?
   return false;
 }

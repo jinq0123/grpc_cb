@@ -83,11 +83,11 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 
 #### Calling service methods
 + Blocking call
-	* Simple RPC: ```BlockingGetFeature()```
+	* Simple RPC: ```SyncGetFeature()```
 		```cpp
 		Point point = MakePoint(0, 0);
 		Feature feature;
-		Status status = stub.BlockingGetFeature(point, &feature);
+		Status status = stub.SyncGetFeature(point, &feature);
 		```
 
 	* Server-side streaming RPC: ```SyncListFeatures()```

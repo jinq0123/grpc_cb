@@ -9,7 +9,7 @@
 
 namespace grpc_cb {
 
-// Todo: BlockingGetInitMd();
+// Todo: SyncGetInitMd();
 
 ClientAsyncReaderWriterImpl::ClientAsyncReaderWriterImpl(
     const ChannelSptr& channel, const std::string& method,

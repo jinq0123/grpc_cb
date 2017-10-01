@@ -32,7 +32,7 @@ auto f2 = std::async(async, [stub]() { stub.BlockingRun(); }
   stub.AsyncGetFeature(point);
   
   Feature feature;
-  Status status = stub.BlockingGetFeature(point, &feature);
+  Status status = stub.SyncGetFeature(point, &feature);
   ...
 ```
 
@@ -63,7 +63,7 @@ Note: ```SetErrorCallback()``` and ```SetDefaultErrorCallback()``` are not threa
 	ChannelSptr channel(new Channel("localhost:50051"));
 	Stub stub(channel);
 	channel->SetCallTimeoutMs(1000);  // 1 second
-	stub->BlockingSayHello();
+	stub->SyncSayHello();
 	```
 	
 * Set timeout on stub

@@ -45,7 +45,7 @@ class ClientSyncReaderWriter GRPC_FINAL {
   const std::shared_ptr<Impl> impl_sptr_;
 };  // class ClientSyncReaderWriter<>
 
-// Todo: BlockingGetInitMd();
+// Todo: SyncGetInitMd();
 
 // Todo: same as ClientReader?
 

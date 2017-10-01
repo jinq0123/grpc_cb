@@ -31,7 +31,7 @@ ServiceStub::~ServiceStub() {
   assert(cq4n_sptr_);
 }
 
-Status ServiceStub::BlockingRequest(const string& method, const string& request,
+Status ServiceStub::SyncRequest(const string& method, const string& request,
                                     string& response) {
   CQueueForPluck cq4p;
   CallSptr call_sptr(MakeSharedCall(method, cq4p));

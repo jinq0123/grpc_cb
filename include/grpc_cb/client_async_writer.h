@@ -37,7 +37,7 @@ class ClientAsyncWriter GRPC_FINAL {
   }
 
   // Todo: Get queue size()
-  // Todo: BlockingGetInitMd();
+  // Todo: SyncGetInitMd();
 
   bool Write(const Request& request) const {
     auto sptr = std::make_shared<Request>(request);

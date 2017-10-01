@@ -151,7 +151,7 @@ void PrintHeaderClientMethodPublic(
 
   if (NoStreaming(method)) {
       printer->Print(*vars,
-          "::grpc_cb::Status Blocking$Method$(\n"
+          "::grpc_cb::Status Sync$Method$(\n"
           "    const $Request$& request,\n"
           "    $Response$* response = nullptr);\n"
           "\n"
@@ -524,10 +524,10 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
       grpc_cpp_generator::ClassName(method->output_type(), true);
   if (NoStreaming(method)) {
     printer->Print(*vars,
-        "::grpc_cb::Status Stub::Blocking$Method$(\n"
+        "::grpc_cb::Status Stub::Sync$Method$(\n"
         "    const $Request$& request,\n"
         "    $Response$* response) {\n"
-        "  return ::grpc_cb::StubHelper(*this).BlockingRequest(\n"
+        "  return ::grpc_cb::StubHelper(*this).SyncRequest(\n"
         "      method_names[0], request, response);\n"
         "}\n"
         "\n");

@@ -35,7 +35,7 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
   inline Status RecvStatus() const {
     const Data& d = *data_sptr_;
     if (!d.status.ok()) return d.status;
-    return ClientSyncReaderHelper::BlockingRecvStatus(d.call_sptr, d.cq4p_sptr);
+    return ClientSyncReaderHelper::SyncRecvStatus(d.call_sptr, d.cq4p_sptr);
   }
 
  private:
@@ -46,11 +46,11 @@ class ClientSyncReaderWriterImpl GRPC_FINAL {
   using Data = ClientSyncReaderData<Response>;
   using DataSptr = ClientSyncReaderDataSptr<Response>;
   DataSptr data_sptr_;  // Same as reader. Easy to copy.
-  bool writing_closed_ = false;  // Is BlockingCloseWriting() called?
+  bool writing_closed_ = false;  // Is SyncCloseWriting() called?
   bool init_md_received_ = false;  // to receive init metadata once
 };  // class ClientSyncReaderWriterImpl<>
 
-// Todo: BlockingGetInitMd();
+// Todo: SyncGetInitMd();
 
 template <class Request, class Response>
 ClientSyncReaderWriterImpl<Request, Response>::ClientSyncReaderWriterImpl(
@@ -81,7 +81,7 @@ bool ClientSyncReaderWriterImpl<Request, Response>::Write(
   assert(data_sptr_);
   Data& d = *data_sptr_;
   assert(d.call_sptr);
-  return ClientSyncWriterHelper::BlockingWrite(d.call_sptr, d.cq4p_sptr, request,
+  return ClientSyncWriterHelper::SyncWrite(d.call_sptr, d.cq4p_sptr, request,
                                                d.status);
 }
 
@@ -110,7 +110,7 @@ bool ClientSyncReaderWriterImpl<Request, Response>::ReadOne(Response* response) 
   if (!status.ok()) return false;
   RecvInitMdIfNot();
   if (!status.ok()) return false;
-  return ClientSyncReaderHelper::BlockingReadOne(
+  return ClientSyncReaderHelper::SyncReadOne(
       d.call_sptr, d.cq4p_sptr, *response, status);
 }
 

@@ -27,7 +27,7 @@ class ServerWriterImpl GRPC_FINAL
  public:
   // Write() will block if the high queue size reached.
   bool Write(const ::google::protobuf::Message& response);
-  bool BlockingWrite(const ::google::protobuf::Message& response);
+  bool SyncWrite(const ::google::protobuf::Message& response);
   bool AsyncWrite(const ::google::protobuf::Message& response);
 
   size_t GetQueueSize() const {
@@ -43,9 +43,9 @@ class ServerWriterImpl GRPC_FINAL
     high_queue_size_ = high_queue_size;
   }
 
-  // Close() is optional. Dtr() will auto BlockingClose().
+  // Close() is optional. Dtr() will auto AsyncClose().
   // Redundant Close() will be ignored.
-  void BlockingClose(const Status& status);
+  void AsyncClose(const Status& status);
   void AsyncClose(const Status& status);
   bool IsClosed() const {
     Guard g(mtx_);
@@ -68,7 +68,7 @@ class ServerWriterImpl GRPC_FINAL
   size_t high_queue_size_ = std::numeric_limits<size_t>::max();
   MessageQueue queue_;
 
-  // new in BlockingClose()/AsyncClose()
+  // new in AsyncClose()/AsyncClose()
   std::unique_ptr<Status> close_status_uptr_;
 
   mutable std::mutex mtx_;
