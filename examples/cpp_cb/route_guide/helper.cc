@@ -160,9 +160,8 @@ void ParseDb(const std::string& db, std::vector<Feature>* feature_list) {
       db_content.end());
 
   Parser parser(db_content);
-  Feature feature;
   while (!parser.Finished()) {
-    feature_list->push_back(Feature());
+    feature_list->emplace_back(Feature());
     if (!parser.TryParseOne(&feature_list->back())) {
       std::cout << "Error parsing the db file";
       feature_list->clear();
