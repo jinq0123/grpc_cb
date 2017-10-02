@@ -39,7 +39,7 @@ template <class Response>
 Status StubHelper::SyncRequest(const std::string& method,
     const Message& request, Response* response) {
   std::string resp_str;
-  ::grpc_cb::Status status = stub_.SyncRequest(method,
+  Status status = stub_.SyncRequest(method,
       request.SerializeAsString(), resp_str);
   if (!status.ok() || !response)
     return status;
