@@ -28,8 +28,6 @@
 *.out
 *.app
 
-/third_party/grpc
-
 /premake/*.db
 /premake/*.opendb
 /premake/.vs
