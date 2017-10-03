@@ -37,7 +37,7 @@ Status ServiceStub::SyncRequest(const string& method, const string& request,
   CallSptr call_sptr(MakeSharedCall(method, cq4p));
   ClientCallCqTag tag(call_sptr);
   if (!tag.Start(request))
-    return ::grpc_cb::Status::InternalError("Failed to request.");
+    return Status::InternalError("Failed to request.");
   cq4p.Pluck(&tag);
   return tag.GetResponse(response);
 }
@@ -45,8 +45,8 @@ Status ServiceStub::SyncRequest(const string& method, const string& request,
 void ServiceStub::AsyncRequest(const string& method, const string& request,
                                const OnResponse& on_response,
                                const ErrorCallback& on_error) {
-  ::grpc_cb::CallSptr call_sptr(MakeSharedCall(method));
-  using CqTag = ::grpc_cb::ClientAsyncCallCqTag<std::string>;
+  CallSptr call_sptr(MakeSharedCall(method));
+  using CqTag = ClientAsyncCallCqTag<std::string>;
   CqTag* tag = new CqTag(call_sptr);
   tag->SetOnResponse(on_response);
   tag->SetOnError(on_error);
@@ -55,7 +55,7 @@ void ServiceStub::AsyncRequest(const string& method, const string& request,
 
   delete tag;
   if (on_error)
-    on_error(::grpc_cb::Status::InternalError("Failed to async request."));
+    on_error(Status::InternalError("Failed to async request."));
 }
 
 // Blocking run stub.

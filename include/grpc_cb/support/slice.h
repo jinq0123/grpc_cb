@@ -38,8 +38,8 @@
 
 namespace grpc_cb {
 
-inline grpc_cb::string_ref StringRefFromSlice(const grpc_slice* slice) {
-  return grpc_cb::string_ref(
+inline string_ref StringRefFromSlice(const grpc_slice* slice) {
+  return string_ref(
       reinterpret_cast<const char*>(GRPC_SLICE_START_PTR(*slice)),
       GRPC_SLICE_LENGTH(*slice));
 }
