@@ -12,6 +12,6 @@ namespace grpc_cb {
 
 using MetadataVector = std::vector<grpc_metadata>;
 
-}  // namespace grpb_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_INTERNAL_CPP_CB_IMPL_METADATA_VECTOR_H

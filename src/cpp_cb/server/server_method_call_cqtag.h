@@ -46,6 +46,6 @@ class ServerMethodCallCqTag GRPC_FINAL : public CompletionQueueTag {
   grpc_byte_buffer* payload_ptr_ = nullptr;
 };
 
-}  // namespace grpb_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_CB_SERVER_SERVER_METHOD_CALL_CQTAG_H

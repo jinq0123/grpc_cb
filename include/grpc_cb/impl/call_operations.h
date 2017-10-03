@@ -184,6 +184,6 @@ void CallOperations::ServerSendStatus(
   op.data.send_status_from_server.status_details = &send_status_details_;
 }
 
-}  // namespace grpb_cb
+}  // namespace grpc_cb
 
 #endif  // GRPC_INTERNAL_CPP_CB_COMMON_CALL_OPERATIONS_H
