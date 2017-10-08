@@ -39,9 +39,10 @@
 #include <string>
 #include <thread>
 
-#include <grpc/grpc.h>
-#include <grpc_cb/server.h>
-#include <grpc_cb/security/server_credentials.h>
+// DEL
+//#include <grpc/grpc.h>
+//#include <grpc_cb/server.h>
+//#include <grpc_cb/security/server_credentials.h>
 #include "helper.h"
 #include "route_guide.grpc_cb.pb.h"
 
