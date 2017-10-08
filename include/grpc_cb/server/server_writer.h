@@ -4,7 +4,7 @@
 #ifndef GRPC_CB_SERVER_WRITER_H
 #define GRPC_CB_SERVER_WRITER_H
 
-#include <grpc_cb/impl/server/server_writer_impl.h>  // for ServerWriterImpl
+//#include <grpc_cb/impl/server/server_writer_impl.h>  // for ServerWriterImpl
 
 namespace grpc_cb {
 

@@ -7,10 +7,10 @@
 #include <cassert>
 #include <cstdint>  // for int64_t
 
-#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
-#include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
-#include <grpc_cb/status_callback.h>  // for StatusCallback
-#include <grpc_cb/support/config.h>   // for GRPC_FINAL
+//#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
+//#include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
+#include <grpc_cb_core/client/status_cb.h>  // for StatusCb
+#include <grpc_cb/common/config.h>   // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -18,12 +18,12 @@ namespace grpc_cb {
 template <class Request, class Response>
 class ClientAsyncReaderWriter GRPC_FINAL {
  public:
-  // Todo: Move on_status to Set()
+  // Todo: Move status_cb to Set()
   ClientAsyncReaderWriter(const ChannelSptr& channel, const std::string& method,
                           const CompletionQueueSptr& cq_sptr,
                           int64_t timeout_ms,
-                          const StatusCallback& on_status = StatusCallback())
-      : impl_sptr_(new Impl(channel, method, cq_sptr, timeout_ms, on_status)) {
+                          const StatusCb& status_cb = StatusCb())
+      : impl_sptr_(new Impl(channel, method, cq_sptr, timeout_ms, status_cb)) {
     assert(cq_sptr);
     assert(channel);
   }

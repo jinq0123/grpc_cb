@@ -7,10 +7,10 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
-#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
-#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
-#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
+//#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
+//#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
+//#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
+//#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
 
 // package routeguide
 namespace routeguide {
@@ -81,11 +81,11 @@ Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
 void Stub::AsyncListFeatures(
     const ::routeguide::Rectangle& request,
     const ListFeaturesMsgCb& on_msg,
-    const ::grpc_cb::StatusCallback& on_status) {
+    const ::grpc_cb::StatusCb& status_cb) {
   ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
       GetChannelSptr(), method_names[1], request, GetCompletionQueue(),
       GetCallTimeoutMs());
-  reader.ReadEach(on_msg, on_status);
+  reader.ReadEach(on_msg, status_cb);
 }
 
 ::grpc_cb::ClientSyncWriter<::routeguide::Point>
@@ -119,12 +119,12 @@ Stub::SyncRouteChat() {
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>
 Stub::AsyncRouteChat(
-    const ::grpc_cb::StatusCallback& on_status) {
+    const ::grpc_cb::StatusCb& status_cb) {
   return ::grpc_cb::ClientAsyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>(
           GetChannelSptr(), method_names[3], GetCompletionQueue(),
-          GetCallTimeoutMs(), on_status);
+          GetCallTimeoutMs(), status_cb);
 }
 
 Service::Service() {}

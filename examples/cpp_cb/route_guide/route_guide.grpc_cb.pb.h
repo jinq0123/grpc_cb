@@ -40,7 +40,7 @@ class Stub : public ::grpc_cb::ServiceStub {
       void(const ::routeguide::Feature&)>;
   void AsyncListFeatures(const ::routeguide::Rectangle& request,
       const ListFeaturesMsgCb& on_msg = ListFeaturesMsgCb(),
-      const ::grpc_cb::StatusCallback& on_status = ::grpc_cb::StatusCallback());
+      const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());
 
   using RecordRoute_SyncWriter =
       ::grpc_cb::ClientSyncWriter<::routeguide::Point>;
@@ -66,7 +66,7 @@ class Stub : public ::grpc_cb::ServiceStub {
           ::routeguide::RouteNote,
           ::routeguide::RouteNote>;
   RouteChat_AsyncReaderWriter
-  AsyncRouteChat(const ::grpc_cb::StatusCallback& on_status);
+  AsyncRouteChat(const ::grpc_cb::StatusCb& status_cb);
 
 };  // class Stub
 

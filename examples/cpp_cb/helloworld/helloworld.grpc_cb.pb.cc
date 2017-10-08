@@ -7,10 +7,10 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
-#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
-#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
-#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
+//#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
+//#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
+//#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
+//#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
 
 // package helloworld
 namespace helloworld {

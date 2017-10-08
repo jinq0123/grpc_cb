@@ -8,47 +8,50 @@
 #include <functional>  // for std::function
 #include <string>
 
-#include <grpc_cb/impl/channel_sptr.h>                      // for ChannelSptr
-#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
-#include <grpc_cb/impl/client/client_async_reader_impl.h>  // for ClientAsyncReaderImpl
-#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/status_callback.h>             // for StatusCallback
-#include <grpc_cb/support/protobuf_fwd.h>        // for Message
+#include <grpc_cb_core/client/channel_sptr.h>  // for ChannelSptr
+#include <grpc_cb_core/client/client_async_reader.h>  // for grpc_cb_core::ClientAsyncReader
+//#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
+//#include <grpc_cb/impl/client/client_async_reader_impl.h>  // for ClientAsyncReaderImpl
+#include <grpc_cb_core/common/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/client/status_cb.h>  // for StatusCb
+#include <grpc_cb/common/protobuf_fwd.h>        // for Message
 
 namespace grpc_cb {
 
 // Copyable. Thread-safe.
-template <class Response>
+template <class Request, class Response>
 class ClientAsyncReader GRPC_FINAL {
  public:
-  ClientAsyncReader(const ChannelSptr& channel, const std::string& method,
-                    const ::google::protobuf::Message& request,
-                    const CompletionQueueSptr& cq_sptr, int64_t timeout_ms)
-      : impl_sptr_(new ClientAsyncReaderImpl(channel, method, request, cq_sptr,
-                                             timeout_ms)) {}
+  ClientAsyncReader(const grpc_cb_core::ChannelSptr& channel,
+                    const std::string& method,
+                    const Request& request,
+                    const grpc_cb_core::CompletionQueueSptr& cq_sptr,
+                    int64_t timeout_ms)
+      : core_sptr_(new grpc_cb_core::ClientAsyncReader(channel, method,
+                   request.SerializeAsString(), cq_sptr, timeout_ms)) {}
 
  public:
-  using OnMsg = std::function<void(const Response&)>;
-  void ReadEach(const OnMsg& on_msg,
-      const StatusCallback& on_status = StatusCallback()) const {
+  using MsgCb = std::function<void(const Response&)>;
+  void ReadEach(const MsgCb& on_msg,
+      const StatusCb& status_cb = StatusCb()) const {
     class ReadHandler : public ClientAsyncReadHandler {
      public:
-      explicit ReadHandler(const OnMsg& on_msg) : on_msg_(on_msg) {}
+      explicit ReadHandler(const MsgCb& on_msg) : on_msg_(on_msg) {}
       Message& GetMsg() GRPC_OVERRIDE { return msg_; }
       void HandleMsg() GRPC_OVERRIDE { if (on_msg_) on_msg_(msg_); }
      private:
-      OnMsg on_msg_;
+      MsgCb on_msg_;
       Response msg_;
     };
 
     auto handler_sptr = std::make_shared<ReadHandler>(on_msg);
     impl_sptr_->SetReadHandler(handler_sptr);
-    impl_sptr_->SetOnStatus(on_status);
+    impl_sptr_->SetOnStatus(status_cb);
     impl_sptr_->Start();
   }
 
  private:
-  const std::shared_ptr<ClientAsyncReaderImpl> impl_sptr_;
+  const std::shared_ptr<grpc_cb_core::ClientAsyncReader> core_sptr_;
 };  // class ClientAsyncReader<>
 
 }  // namespace grpc_cb

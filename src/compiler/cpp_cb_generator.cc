@@ -187,7 +187,7 @@ void PrintHeaderClientMethodPublic(
           "    void(const $Response$&)>;\n"
           "void Async$Method$(const $Request$& request,\n"
           "    const $Method$MsgCb& on_msg = $Method$MsgCb(),\n"
-          "    const ::grpc_cb::StatusCallback& on_status = ::grpc_cb::StatusCallback());\n\n");
+          "    const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());\n\n");
   } else if (BidiStreaming(method)) {
       printer->Print(
           *vars,
@@ -203,7 +203,7 @@ void PrintHeaderClientMethodPublic(
           "        $Request$,\n"
           "        $Response$>;\n"
           "$Method$_AsyncReaderWriter\n"
-          "Async$Method$(const ::grpc_cb::StatusCallback& on_status);\n\n");
+          "Async$Method$(const ::grpc_cb::StatusCb& status_cb);\n\n");
   }
 }
 
@@ -413,10 +413,10 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("#include <google/protobuf/descriptor.h>\n");
     printer.Print("#include <google/protobuf/stubs/once.h>\n");
     printer.Print("\n");
-    printer.Print("#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper\n");
-    printer.Print("#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()\n");
-    printer.Print("#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag\n");
-    printer.Print("#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag\n");
+    printer.Print("//#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper\n");
+    printer.Print("//#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()\n");
+    printer.Print("//#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag\n");
+    printer.Print("//#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag\n");
     printer.Print("\n");
 
     if (!file->package().empty()) {
@@ -569,11 +569,11 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "void Stub::Async$Method$(\n"
                    "    const $Request$& request,\n"
                    "    const $Method$MsgCb& on_msg,\n"
-                   "    const ::grpc_cb::StatusCallback& on_status) {\n"
+                   "    const ::grpc_cb::StatusCb& status_cb) {\n"
                    "  ::grpc_cb::ClientAsyncReader<$Response$> reader(\n"
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCompletionQueue(),\n"
                    "      GetCallTimeoutMs());\n"
-                   "  reader.ReadEach(on_msg, on_status);\n"
+                   "  reader.ReadEach(on_msg, status_cb);\n"
                    "}\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
@@ -591,12 +591,12 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "    $Request$,\n"
                    "    $Response$>\n"
                    "Stub::Async$Method$(\n"
-                   "    const ::grpc_cb::StatusCallback& on_status) {\n"
+                   "    const ::grpc_cb::StatusCb& status_cb) {\n"
                    "  return ::grpc_cb::ClientAsyncReaderWriter<\n"
                    "      $Request$,\n"
                    "      $Response$>(\n"
                    "          GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
-                   "          GetCallTimeoutMs(), on_status);\n"
+                   "          GetCallTimeoutMs(), status_cb);\n"
                    "}\n\n");
   }  // if
 }

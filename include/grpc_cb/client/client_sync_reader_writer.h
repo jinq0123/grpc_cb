@@ -8,7 +8,7 @@
 #include <memory>  // for shared_ptr
 #include <string>
 
-#include <grpc_cb/impl/client/client_sync_reader_writer_impl.h>  // for ClientSyncReaderWriterImpl<>
+// DEL /impl/ #include <grpc_cb/impl/client/client_sync_reader_writer_impl.h>  // for ClientSyncReaderWriterImpl<>
 
 namespace grpc_cb {
 
