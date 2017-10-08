@@ -10,8 +10,6 @@
 
 #include <grpc_cb_core/client/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb_core/client/client_async_reader.h>  // for grpc_cb_core::ClientAsyncReader
-//#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
-//#include <grpc_cb/impl/client/client_async_reader_impl.h>  // for ClientAsyncReaderImpl
 #include <grpc_cb_core/common/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/client/status_cb.h>  // for StatusCb
 #include <grpc_cb/common/protobuf_fwd.h>        // for Message
@@ -32,22 +30,16 @@ class ClientAsyncReader GRPC_FINAL {
 
  public:
   using MsgCb = std::function<void(const Response&)>;
-  void ReadEach(const MsgCb& on_msg,
+  void ReadEach(const MsgCb& msg_cb,
       const StatusCb& status_cb = StatusCb()) const {
-    class ReadHandler : public ClientAsyncReadHandler {
-     public:
-      explicit ReadHandler(const MsgCb& on_msg) : on_msg_(on_msg) {}
-      Message& GetMsg() GRPC_OVERRIDE { return msg_; }
-      void HandleMsg() GRPC_OVERRIDE { if (on_msg_) on_msg_(msg_); }
-     private:
-      MsgCb on_msg_;
-      Response msg_;
-    };
-
-    auto handler_sptr = std::make_shared<ReadHandler>(on_msg);
-    impl_sptr_->SetReadHandler(handler_sptr);
-    impl_sptr_->SetOnStatus(status_cb);
-    impl_sptr_->Start();
+    grpc_cb_core::MsgStrCb msg_str_cb =
+      [msg_cb, status_cb](const std::string& sResponse) {
+        Response response;
+        bool ok = response.ParseFromString(sResponse);
+        if (ok) msg_cb(response)
+        else status_cb();  XXX tell core error!
+      };
+    core_sptr_->ReadEach(msg_str_cb, status_cb)
   }
 
  private:
