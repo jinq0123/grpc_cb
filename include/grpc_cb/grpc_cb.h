@@ -14,6 +14,7 @@
 #include <grpc_cb_core/server/service.h>          // for Service
 #include <grpc_cb_core/server/service_sptr.h>     // for ServiceSptr
 
+#include <grpc_cb/client/channel_sptr.h>
 #include <grpc_cb/client/client_async_reader.h>
 #include <grpc_cb/client/client_async_reader_writer.h>
 #include <grpc_cb/client/client_async_writer.h>

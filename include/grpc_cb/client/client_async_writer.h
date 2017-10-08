@@ -12,8 +12,9 @@
 //#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for ClientAsyncWriterCloseHandler
 //#include <grpc_cb/impl/client/client_async_writer_impl.h>  // for ClientAsyncWriterImpl
 //#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/common/config.h>              // for GRPC_OVERRIDE
-#include <grpc_cb/common/protobuf_fwd.h>        // for Message
+#include <grpc_cb/common/impl/config.h>              // for GRPC_OVERRIDE
+// DEL protobuf_fwd.h
+// XXX #include <grpc_cb/common/protobuf_fwd.h>        // for Message
 
 namespace grpc_cb {
 

@@ -10,9 +10,10 @@
 
 #include <grpc_cb_core/client/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb_core/client/client_async_reader.h>  // for grpc_cb_core::ClientAsyncReader
-#include <grpc_cb_core/common/completion_queue_sptr.h>  // for CompletionQueueSptr
+
+#include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/client/status_cb.h>  // for StatusCb
-#include <grpc_cb/common/protobuf_fwd.h>        // for Message
+#include <grpc_cb/common/impl/config.h>     // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -23,7 +24,7 @@ class ClientAsyncReader GRPC_FINAL {
   ClientAsyncReader(const grpc_cb_core::ChannelSptr& channel,
                     const std::string& method,
                     const Request& request,
-                    const grpc_cb_core::CompletionQueueSptr& cq_sptr,
+                    const CompletionQueueSptr& cq_sptr,
                     int64_t timeout_ms)
       : core_sptr_(new grpc_cb_core::ClientAsyncReader(channel, method,
                    request.SerializeAsString(), cq_sptr, timeout_ms)) {}
@@ -36,8 +37,9 @@ class ClientAsyncReader GRPC_FINAL {
       [msg_cb, status_cb](const std::string& sResponse) {
         Response response;
         bool ok = response.ParseFromString(sResponse);
-        if (!ok) return Status::InternalError("Failed to parse message.");
-        return Status::OK;
+        if (ok) return Status::OK;
+        return Status::InternalError("Failed to parse message "
+            + response.GetTypeName());
       };
     core_sptr_->ReadEach(msg_str_cb, status_cb)
   }

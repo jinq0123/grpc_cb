@@ -1,0 +1,13 @@
+// Licensed under the Apache License, Version 2.0.
+// Author: Jin Qing (http://blog.csdn.net/jq0123)
+
+#ifndef GRPC_CB_CLIENT_IMPL_COMPLETION_QUEUE_SPTR_H
+#define GRPC_CB_CLIENT_IMPL_COMPLETION_QUEUE_SPTR_H
+
+#include <grpc_cb_core/common/completion_queue_sptr.h>  // for CompletionQueueSptr
+
+namespace grpc_cb {
+using CompletionQueueSptr = grpc_cb_core::CompletionQueueSptr;
+}  // namespace grpc_cb
+
+#endif  // GRPC_CB_CLIENT_IMPL_COMPLETION_QUEUE_SPTR_H

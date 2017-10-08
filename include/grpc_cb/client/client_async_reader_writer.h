@@ -7,10 +7,12 @@
 #include <cassert>
 #include <cstdint>  // for int64_t
 
-//#include <grpc_cb/impl/client/client_async_read_handler.h>  // for ClientAsyncReadHandler
-//#include <grpc_cb/impl/client/client_async_reader_writer_impl.h>  // for ClientAsyncReaderWriterImpl<>
-#include <grpc_cb_core/client/status_cb.h>  // for StatusCb
-#include <grpc_cb/common/config.h>   // for GRPC_FINAL
+#include <grpc_cb_core/client/client_async_reader_writer.h>  // for grpc_cb_core::ClientAsyncReaderWriter
+
+#include <grpc_cb/client/channel_sptr.h>  // for ChannelSptr
+#include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/client/status_cb.h>  // for StatusCb
+#include <grpc_cb/common/impl/config.h>     // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -23,43 +25,38 @@ class ClientAsyncReaderWriter GRPC_FINAL {
                           const CompletionQueueSptr& cq_sptr,
                           int64_t timeout_ms,
                           const StatusCb& status_cb = StatusCb())
-      : impl_sptr_(new Impl(channel, method, cq_sptr, timeout_ms, status_cb)) {
+      : core_sptr_(new grpc_cb_core::ClientAsyncReaderWriter(
+          channel, method, cq_sptr, timeout_ms, status_cb)) {
     assert(cq_sptr);
     assert(channel);
   }
 
  public:
   bool Write(const Request& request) const {
-    auto msg_sptr = std::make_shared<Request>(request);
-    return impl_sptr_->Write(msg_sptr);
+    return core_sptr_->Write(request.SerializeAsString());
   }
 
   // Optional. Writing is auto closed in dtr().
   // Redundant calls are ignored.
   void CloseWriting() {
-    impl_sptr_->CloseWriting();
+    core_sptr_->CloseWriting();
   }
 
-  using OnRead = std::function<void(const Response&)>;
-  void ReadEach(const OnRead& on_read) {
-
-    class ReadHandler : public ClientAsyncReadHandler {
-     public:
-      explicit ReadHandler(const OnRead& on_read) : on_read_(on_read) {}
-      Message& GetMsg() GRPC_OVERRIDE { return msg_; }
-      void HandleMsg() GRPC_OVERRIDE { if (on_read_) on_read_(msg_); }
-     private:
-      OnRead on_read_;
-      Response msg_;
-    };
-
-    auto handler_sptr = std::make_shared<ReadHandler>(on_read);
-    impl_sptr_->ReadEach(handler_sptr);
+  using ReadCb = std::function<void(const Response&)>;
+  void ReadEach(const ReadCb& read_cb) {
+    grpc_cb_core::MsgStrCb str_cb =
+      [read_cb](const std::string& msg_str) {
+        Response response;
+        bool ok = response.ParseFromString(msg_str);
+        if (ok) return Status::OK;
+        return Status::InternalError("Failed to parse message "
+            + response.GetTypeName());
+      };
+    core_sptr_->ReadEach(str_cb);
   }
 
  private:
-  using Impl = ClientAsyncReaderWriterImpl;
-  const std::shared_ptr<Impl> impl_sptr_;
+  const std::shared_ptr<grpc_cb_core::ClientAsyncReaderWriter> core_sptr_;
 };  // class ClientAsyncReaderWriter<>
 
 }  // namespace grpc_cb
