@@ -36,8 +36,8 @@ class ClientAsyncReader GRPC_FINAL {
       [msg_cb, status_cb](const std::string& sResponse) {
         Response response;
         bool ok = response.ParseFromString(sResponse);
-        if (ok) msg_cb(response)
-        else status_cb();  XXX tell core error!
+        if (!ok) return Status::InternalError("Failed to parse message.");
+        return Status::OK;
       };
     core_sptr_->ReadEach(msg_str_cb, status_cb)
   }
