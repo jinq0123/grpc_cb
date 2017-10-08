@@ -8,17 +8,16 @@
 #include <cstdint>  // for int64_t
 #include <string>
 
-//#include <grpc_cb/impl/channel_sptr.h>  // for ChannelSptr
+#include <grpc_cb/client/channel_sptr.h>  // for ChannelSptr
 //#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for ClientAsyncWriterCloseHandler
 //#include <grpc_cb/impl/client/client_async_writer_impl.h>  // for ClientAsyncWriterImpl
-//#include <grpc_cb/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
+#include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/common/impl/config.h>              // for GRPC_OVERRIDE
 // DEL protobuf_fwd.h
 // XXX #include <grpc_cb/common/protobuf_fwd.h>        // for Message
+#include <grpc_cb/common/status_fwd.h>  // for Status
 
 namespace grpc_cb {
-
-class Status;
 
 // Copyable. Thread-safe.
 // Use template class instead of template member function
@@ -59,7 +58,7 @@ class ClientAsyncWriter GRPC_FINAL {
    public:
     explicit CloseHandler(const ClosedCallback& on_closed = ClosedCallback())
         : on_closed_(on_closed){};
-    Message& GetMsg() GRPC_OVERRIDE { return msg_; }
+    Response& GetMsg() GRPC_OVERRIDE { return msg_; }
     void OnClose(const Status& status) GRPC_OVERRIDE {
       if (on_closed_) on_closed_(status, msg_);
     }
@@ -71,7 +70,7 @@ class ClientAsyncWriter GRPC_FINAL {
 
  private:
   // Use non_template class as the implement.
-  const std::shared_ptr<ClientAsyncWriterImpl> impl_sptr_;  // Easy to copy.
+  const std::shared_ptr<grpc_cb_core::ClientAsyncWriter> core_sptr_;  // Easy to copy.
 };  // class ClientAsyncWriter<>
 
 }  // namespace grpc_cb
