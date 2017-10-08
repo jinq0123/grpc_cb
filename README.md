@@ -1,5 +1,7 @@
 # gRPC_cb
-C++ [gRPC](http://www.grpc.io/) library with callback interface. Depend on grpc but not on grpc++. It is a replacement of grpc++. Easier to use.
+C++ [gRPC](http://www.grpc.io/) library with protobuf and callback interface. 
+It is easier to use than grpc++.
+Depend on [grpc_cb_core](https://github.com/jinq0123/grpc_cb_core). 
 
 ## Build
 
@@ -19,13 +21,11 @@ See [premake/README.md](premake/README.md) to use premake5 to generate VS soluti
 * route_guide example
 
 ## Todo
-1. Lua binding. Convert grpc_byte_buffer to string, which is needed by lua.
 1. Connect and disconnect event.
 1. Export for unity.
 1. Compression
 1. Security
 1. Metadata
-1. Support message types other than protobuffer.
 
 ## Tutorial
 Tutorial shows some codes in the route_guide example.
