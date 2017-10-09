@@ -6,8 +6,9 @@
 
 #include <memory>
 
-//#include <grpc_cb/impl/call_sptr.h>       // for CallSptr
-//#include <grpc_cb/impl/server/server_replier_impl.h>  // for ServerReplierImpl
+#include <grpc_cb_core/server/server_replier.h>  // for grpc_cb_core::ServerReplier
+
+#include <grpc_cb/common/impl/call_sptr.h>       // for CallSptr
 #include <grpc_cb/common/status_fwd.h>  // for Status
 
 namespace grpc_cb {
@@ -19,28 +20,27 @@ namespace grpc_cb {
 // Copyable. Thread-safe.
 // Safe to delete before completion.
 // Only accept the 1st reply and ignore other replies.
-template <class ResponseType>
+template <class Response>
 class ServerReplier {
  public:
   explicit ServerReplier(const CallSptr& call_sptr)
-      : impl_sptr_(new ServerReplierImpl(call_sptr)) {
+      : core_sptr_(new grpc_cb_core::ServerReplier(call_sptr)) {
     assert(call_sptr);
   };
   virtual ~ServerReplier() {};
 
  public:
-  void Reply(const ResponseType& response) const {
-    impl_sptr_->Reply(response);
+  void Reply(const Response& response) const {
+    core_sptr_->Reply(response.SerializeAsString());
   }
 
   void ReplyError(const Status& status) const {
-    impl_sptr_->ReplyError(status);
+    core_sptr_->ReplyError(status);
   }
 
 private:
-  const std::shared_ptr<ServerReplierImpl> impl_sptr_;  // copyable
+  const std::shared_ptr<grpc_cb_core::ServerReplier> core_sptr_;  // copyable
 };  // class ServerReplier
 
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_SERVER_REPLIER_H

@@ -7,7 +7,8 @@
 #include <grpc_cb_core/client/status_cb.h>
 
 namespace grpc_cb {
-using StatusCb = grpc_cb_core::StatusCb;	
+using StatusCb = grpc_cb_core::StatusCb;
+using ErrorCb = grpc_cb_core::ErrorCb;
 }  // namespace grpc_cb
 
 #endif  // GRPC_CB_CLIENT_STATUS_CB_H

@@ -29,7 +29,7 @@ class Stub : public ::grpc_cb::ServiceStub {
   void AsyncSayHello(
       const ::helloworld::HelloRequest& request,
       const SayHelloCallback& cb = SayHelloCallback(),
-      const ::grpc_cb::ErrorCallback& ecb = ::grpc_cb::ErrorCallback());
+      const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
 
 };  // class Stub
 
@@ -56,11 +56,11 @@ class Service : public ::grpc_cb::Service {
       const ::helloworld::HelloRequest& request,
       SayHello_Replier replier);
 
- private:
-  virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
-      const GRPC_OVERRIDE {
-    return GetServiceDescriptor();
-  }
+ //private:
+ // virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
+ //     const {
+ //   return GetServiceDescriptor();
+ // }
 };
 
 }  // namespace Greeter

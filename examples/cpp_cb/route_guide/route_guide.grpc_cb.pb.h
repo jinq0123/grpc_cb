@@ -29,7 +29,7 @@ class Stub : public ::grpc_cb::ServiceStub {
   void AsyncGetFeature(
       const ::routeguide::Point& request,
       const GetFeatureCallback& cb = GetFeatureCallback(),
-      const ::grpc_cb::ErrorCallback& ecb = ::grpc_cb::ErrorCallback());
+      const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
 
   using ListFeatures_SyncReader =
       ::grpc_cb::ClientSyncReader<::routeguide::Feature>;
@@ -128,11 +128,11 @@ class Service : public ::grpc_cb::Service {
   virtual RouteChat_ReaderSptr RouteChat(
       RouteChat_Writer writer);
 
- private:
-  virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
-      const GRPC_OVERRIDE {
-    return GetServiceDescriptor();
-  }
+ //private:
+ // virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
+ //     const GRPC_OVERRIDE {
+ //   return GetServiceDescriptor();
+ // }
 };
 
 }  // namespace RouteGuide
