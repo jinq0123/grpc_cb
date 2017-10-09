@@ -22,7 +22,7 @@
 #include <grpc_cb/client/client_sync_writer.h>
 #include <grpc_cb/client/status_cb.h>  // for StatusCb
 
-#include <grpc_cb/common/status.h>           // for Status
+#include <grpc_cb_core/common/status.h>           // for Status
 
 #include <grpc_cb/server/server_reader.h>    // for ServerReader<>
 #include <grpc_cb/server/server_reader_for_bidi_streaming.h>

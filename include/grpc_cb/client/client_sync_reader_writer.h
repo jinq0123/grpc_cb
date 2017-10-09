@@ -8,7 +8,7 @@
 #include <memory>  // for shared_ptr
 #include <string>
 
-// DEL /impl/ #include <grpc_cb/impl/client/client_sync_reader_writer_impl.h>  // for ClientSyncReaderWriterImpl<>
+#include <grpc_cb_core/client/client_sync_reader_writer.h>  // for grpc_cb_core::ClientSyncReaderWriter
 
 namespace grpc_cb {
 
@@ -16,33 +16,41 @@ namespace grpc_cb {
 template <class Request, class Response>
 class ClientSyncReaderWriter GRPC_FINAL {
  public:
-  ClientSyncReaderWriter(const ChannelSptr& channel, const std::string& method, int64_t timeout_ms)
-      : impl_sptr_(new Impl(channel, method, timeout_ms)) {
+  ClientSyncReaderWriter(const ChannelSptr& channel, const std::string& method,
+                         int64_t timeout_ms)
+      : core_sptr_(new grpc_cb_core::ClientSyncReaderWriter(
+          channel, method, timeout_ms)) {
     assert(channel);
   }
 
  public:
   bool Write(const Request& request) const {
-    return impl_sptr_->Write(request);
+    return core_sptr_->Write(request.SerializeAsString());
   }
 
   // Optional. Writing is auto closed in dtr().
   // Redundant calls are ignored.
   void CloseWriting() {
-    impl_sptr_->CloseWriting();
+    core_sptr_->CloseWriting();
   }
 
+  // Same as ClientSyncReader::ReadOne()
   bool ReadOne(Response* response) const {
-    return impl_sptr_->ReadOne(response);
+    assert(response);
+    std::string resp_str;
+    if (!core_sptr_->ReadOne(&resp_str)) return false;
+    if (response->ParseFromString(resp_str)) return true;
+    core_sptr_->SetErrorStatus(Status::InternalError("Failed to parse message "
+        + response.GetTypeName()));
+    return false;
   }
 
   Status RecvStatus() const {
-    return impl_sptr_->RecvStatus();
+    return core_sptr_->RecvStatus();
   }
 
  private:
-  using Impl = ClientSyncReaderWriterImpl<Request, Response>;
-  const std::shared_ptr<Impl> impl_sptr_;
+  const std::shared_ptr<grpc_cb_core::ClientSyncReaderWriter> core_sptr_;
 };  // class ClientSyncReaderWriter<>
 
 // Todo: SyncGetInitMd();
