@@ -7,7 +7,8 @@
 #include <cassert>  // for assert()
 #include <cstdint>  // for int64_t
 
-#include <grpc_cb_core/client/channel.h>  // for MakeSharedCall()
+#include <grpc_cb_core/client/client_sync_reader.h>  // for grpc_cb_core::ClientSyncReader
+
 #include <grpc_cb/common/status_fwd.h>    // for Status
 
 namespace grpc_cb {

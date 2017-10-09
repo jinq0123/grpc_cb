@@ -7,8 +7,8 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-//#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper
-//#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()
+#include <grpc_cb/client/stub_helper.h>              // for StubHelper
+#include <grpc_cb/common/proto_utils.h>                     // for Proto::Deserialize()
 //#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
 //#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
 
@@ -72,9 +72,13 @@ void Stub::AsyncGetFeature(
       method_names[0], request, cb, ecb);
 }
 
-::grpc_cb::ClientSyncReader<::routeguide::Feature>
+::grpc_cb::ClientSyncReader<
+    ::routeguide::Rectangle,
+    ::routeguide::Feature>
 Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
-  return ::grpc_cb::ClientSyncReader<::routeguide::Feature>(
+  return ::grpc_cb::ClientSyncReader<
+          ::routeguide::Rectangle,
+          ::routeguide::Feature>(
       GetChannelSptr(), method_names[1], request, GetCallTimeoutMs());
 }
 
@@ -82,15 +86,21 @@ void Stub::AsyncListFeatures(
     const ::routeguide::Rectangle& request,
     const ListFeaturesMsgCb& on_msg,
     const ::grpc_cb::StatusCb& status_cb) {
-  ::grpc_cb::ClientAsyncReader<::routeguide::Feature> reader(
+  ::grpc_cb::ClientAsyncReader<
+          ::routeguide::Rectangle,
+          ::routeguide::Feature> reader(
       GetChannelSptr(), method_names[1], request, GetCompletionQueue(),
       GetCallTimeoutMs());
   reader.ReadEach(on_msg, status_cb);
 }
 
-::grpc_cb::ClientSyncWriter<::routeguide::Point>
+::grpc_cb::ClientSyncWriter<
+    ::routeguide::Point,
+    ::routeguide::RouteSummary>
 Stub::SyncRecordRoute() {
-  return ::grpc_cb::ClientSyncWriter<::routeguide::Point>(
+  return ::grpc_cb::ClientSyncWriter<
+          ::routeguide::Point,
+          ::routeguide::RouteSummary>(
       GetChannelSptr(), method_names[2], GetCallTimeoutMs());
 }
 
@@ -208,6 +218,7 @@ void Service::ListFeatures(
   writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
 }
 
+// XXX input call_sptr and Point. Hide the implement.
 void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
   RecordRoute_Replier replier(call_sptr);

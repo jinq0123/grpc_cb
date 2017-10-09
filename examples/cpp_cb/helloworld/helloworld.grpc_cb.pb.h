@@ -58,7 +58,7 @@ class Service : public ::grpc_cb::Service {
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
-      const {
+      const GRPC_OVERRIDE {
     return GetServiceDescriptor();
   }
 };

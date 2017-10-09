@@ -36,12 +36,12 @@ class ClientSyncReaderWriter GRPC_FINAL {
 
   // Same as ClientSyncReader::ReadOne()
   bool ReadOne(Response* response) const {
-    assert(response);
+    assert(response);  // XXX ?
     std::string resp_str;
     if (!core_sptr_->ReadOne(&resp_str)) return false;
     if (response->ParseFromString(resp_str)) return true;
     core_sptr_->SetErrorStatus(Status::InternalError("Failed to parse message "
-        + response.GetTypeName()));
+        + response->GetTypeName()));
     return false;
   }
 

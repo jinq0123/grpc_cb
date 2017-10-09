@@ -7,29 +7,26 @@
 #include <functional>
 
 #include <grpc_cb_core/common/status.h>  // for Status
-#include <grpc_cb/client/status_cb.h>  // for ErrorCb
+#include <grpc_cb_core/client/msg_str_cb.h>  // for RespStrCb
 
 namespace grpc_cb {
 
 // Wrap message callback to string callback,
 // i.e. from function<void (const HelloReply& response)>
-//        to function<void (const string& response)>
+//        to function<Status (const string& response)>
 // Used in generated stub class.
-template <class Msg>
-inline
-std::function<void (const std::string&)>
-WrapResponseCb(
-    const std::function<void (const Msg&)>& cb,
-    const ErrorCb& ecb) {
+template <class Response>
+inline grpc_cb_core::RespStrCb
+WrapResponseCb(const std::function<void (const Response&)>& cb) {
   if (!cb) return nullptr;
-  return [cb, ecb](const std::string& resp_str) {
-    Msg msg;
-    if (msg.ParseFromString(resp_str)) {
-      cb(msg);
-      return;
+  return [cb](const std::string& resp_str) {
+    Response response;
+    if (response.ParseFromString(resp_str)) {
+      cb(response);
+      return Status::OK;
     }
-    if (ecb)
-      ecb(Status::InternalError("Failed to parse response."));
+    return Status::InternalError("Failed to parse response "
+        + response.GetTypeName());
   };  // return
 }  // WrapResponseCb()
 

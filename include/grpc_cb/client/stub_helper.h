@@ -4,8 +4,9 @@
 #ifndef GRPC_CB_CLIENT_STUB_HELPER_H
 #define GRPC_CB_CLIENT_STUB_HELPER_H
 
-#include <grpc_cb_core/client/service_stub.h>  // for ServiceStub
 #include <grpc_cb_core/common/status.h>  // for Status
+
+#include <grpc_cb/client/service_stub.h>  // for ServiceStub
 #include <grpc_cb/client/status_cb.h>  // for ErrorCb
 #include <grpc_cb/client/impl/wrap_response_cb.h>  // for WrapResponseCb()
 
@@ -43,7 +44,8 @@ Status StubHelper::SyncRequest(const std::string& method,
     return status;
   if (response->ParseFromString(resp_str))
     return status;
-  return status.InternalError("Failed to parse response.");
+  return status.InternalError("Failed to parse response "
+      + response->GetTypeName());
 }
 
 template <class Response>
@@ -52,7 +54,7 @@ void StubHelper::AsyncRequest(const std::string& method,
     const std::function<void (const Response&)>& cb,
     const ErrorCb& ecb) {
   stub_.AsyncRequest(method, request.SerializeAsString(),
-      WrapResponseCb(cb, ecb), ecb);
+      WrapResponseCb(cb), ecb);
 }
 
 }  // namespace grpc_cb

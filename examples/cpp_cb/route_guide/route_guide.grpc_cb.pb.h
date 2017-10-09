@@ -32,7 +32,9 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
 
   using ListFeatures_SyncReader =
-      ::grpc_cb::ClientSyncReader<::routeguide::Point, ::routeguide::Feature>;
+      ::grpc_cb::ClientSyncReader<
+          ::routeguide::Rectangle,
+          ::routeguide::Feature>;
   ListFeatures_SyncReader
   SyncListFeatures(const ::routeguide::Rectangle& request);
 
