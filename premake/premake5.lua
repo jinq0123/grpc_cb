@@ -80,6 +80,7 @@ group "examples"
 		kind "ConsoleApp"
 		files {
 			"../examples/cpp_cb/helloworld/**",
+			"../examples/protos/helloworld.proto"
 		}
 		removefiles {
 			"../examples/cpp_cb/helloworld/greeter_cb_server.cc",
@@ -90,6 +91,7 @@ group "examples"
 		kind "ConsoleApp"
 		files {
 			"../examples/cpp_cb/helloworld/**",
+			"../examples/protos/helloworld.proto"
 		}
 		removefiles {
 			"../examples/cpp_cb/helloworld/greeter_cb_client.cc",
@@ -100,6 +102,7 @@ group "examples"
 		kind "ConsoleApp"
 		files {
 			"../examples/cpp_cb/route_guide/**",
+			"../examples/protos/route_guide.proto"
 		}
 		removefiles {
 			"../examples/cpp_cb/route_guide/route_guide_cb_server.cc",
@@ -110,6 +113,7 @@ group "examples"
 		kind "ConsoleApp"
 		files {
 			"../examples/cpp_cb/route_guide/**",
+			"../examples/protos/route_guide.proto"
 		}
 		removefiles {
 			"../examples/cpp_cb/route_guide/route_guide_cb_client.cc",
