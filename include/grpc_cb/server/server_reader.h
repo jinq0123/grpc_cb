@@ -4,9 +4,9 @@
 #ifndef GRPC_CB_SERVER_READER_H
 #define GRPC_CB_SERVER_READER_H
 
-namespace grpc_cb {
+#include <grpc_cb/common/status_fwd.h>  // for Status
 
-class Status;
+namespace grpc_cb {
 
 // ServerReader is the interface of client streaming handler.
 // Thread-safe.

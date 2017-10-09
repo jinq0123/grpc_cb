@@ -6,8 +6,8 @@
 
 #include <memory>  // for unique_ptr<>
 
-#include <grpc_cb/server_reader.h>  // for ServerReader<>
-#include <grpc_cb/server_replier.h>  // for ReplyError()
+#include <grpc_cb/server/server_reader.h>  // for ServerReader<>
+#include <grpc_cb/server/server_replier.h>  // for ReplyError()
 #include <grpc_cb/common/impl/config.h>  // for GRPC_OVERRIDE
 
 namespace grpc_cb {

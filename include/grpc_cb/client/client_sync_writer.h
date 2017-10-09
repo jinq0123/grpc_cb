@@ -25,7 +25,7 @@ class ClientSyncWriter GRPC_FINAL {
   inline ClientSyncWriter(const ChannelSptr& channel, const std::string& method,
                           int64_t timeout_ms)
       : core_sptr_(new grpc_cb_core::ClientSyncWriter(
-          channel, method, timeout_ms) {}
+          channel, method, timeout_ms)) {}
 
   // Todo: SyncGetInitMd();
   bool Write(const Request& request) const {

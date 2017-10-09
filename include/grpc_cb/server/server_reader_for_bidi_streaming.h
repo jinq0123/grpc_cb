@@ -6,9 +6,9 @@
 
 #include <memory>  // for unique_ptr<>
 
-#include <grpc_cb/server_reader.h>  // for ServerReader<>
+#include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/common/impl/config.h>  // for GRPC_OVERRIDE
-#include <grpc_cb/server_writer.h>  // for ServerWriter<>
+#include <grpc_cb/server/server_writer.h>  // for ServerWriter<>
 
 namespace grpc_cb {
 
