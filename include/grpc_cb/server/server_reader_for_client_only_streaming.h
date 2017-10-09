@@ -9,10 +9,9 @@
 #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/server/server_replier.h>  // for ReplyError()
 #include <grpc_cb/common/impl/config.h>  // for GRPC_OVERRIDE
+#include <grpc_cb/common/status_fwd.h>  // for Status
 
 namespace grpc_cb {
-
-class Status;
 
 // ServerReader for client only streaming.
 // Thread-safe.

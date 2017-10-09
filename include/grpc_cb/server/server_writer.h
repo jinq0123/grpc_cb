@@ -4,7 +4,8 @@
 #ifndef GRPC_CB_SERVER_WRITER_H
 #define GRPC_CB_SERVER_WRITER_H
 
-//#include <grpc_cb/impl/server/server_writer_impl.h>  // for ServerWriterImpl
+#include <grpc_cb/common/impl/call_sptr.h>  // for CallSptr
+#include <grpc_cb_core/server/server_writer.h>  // for grpc_cb_core::ServerWriter
 
 namespace grpc_cb {
 
@@ -13,45 +14,44 @@ template <class Response>
 class ServerWriter GRPC_FINAL {
  public:
   explicit ServerWriter(const CallSptr& call_sptr)
-      : impl_sptr_(new ServerWriterImpl(call_sptr)) {
+      : core_sptr_(new grpc_cb_core::ServerWriter(call_sptr)) {
     assert(call_sptr);
   }
 
  public:
   bool Write(const Response& response) const {
-    return impl_sptr_->Write(response);
+    return core_sptr_->Write(response.SerializeAsString());
   }
   bool SyncWrite(const Response& response) const {
-    return impl_sptr_->SyncWrite(response);
+    return core_sptr_->SyncWrite(response.SerializeAsString());
   }
   void AsyncWrite(const Response& response) const {
-    impl_sptr_->AsyncWrite(response);
+    core_sptr_->AsyncWrite(response.SerializeAsString());
   }
 
   size_t GetQueueSize() const {
-    return impl_sptr_->GetQueueSize();
+    return core_sptr_->GetQueueSize();
   }
   size_t GetHighQueueSize() const {
-    return impl_sptr_->GetHighQueueSize();
+    return core_sptr_->GetHighQueueSize();
   }
   void SetHighQueueSize(size_t high_queue_size) {
-    impl_sptr_->SetHighQueueSize(high_queue_size);
+    core_sptr_->SetHighQueueSize(high_queue_size);
   }
 
   // Close() is optional. Dtr() will auto SyncClose().
   // Redundant close will be ignored.
   void SyncClose(const Status& status) const {
-    impl_sptr_->SyncClose(status);
+    core_sptr_->SyncClose(status);
   }
   void AsyncClose(const Status& status) const {
-    impl_sptr_->AsyncClose(status);
+    core_sptr_->AsyncClose(status);
   }
-  bool IsClosed() const { return impl_sptr_->IsClosed(); }
+  bool IsClosed() const { return core_sptr_->IsClosed(); }
 
  private:
-  const std::shared_ptr<ServerWriterImpl> impl_sptr_;
+  const std::shared_ptr<grpc_cb_core::ServerWriter> core_sptr_;
 };  // class ServerWriter<>
 
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_SERVER_WRITER_H

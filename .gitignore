@@ -49,3 +49,4 @@
 *.pyc
 test_package/build
 
+/premake/conan_install_x64.bat

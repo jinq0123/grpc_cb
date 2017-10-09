@@ -9,10 +9,9 @@
 #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/common/impl/config.h>  // for GRPC_OVERRIDE
 #include <grpc_cb/server/server_writer.h>  // for ServerWriter<>
+#include <grpc_cb/common/status_fwd.h>  // for Status
 
 namespace grpc_cb {
-
-class Status;
 
 // ServerReader for bidirectional streaming.
 // Thread-safe.
