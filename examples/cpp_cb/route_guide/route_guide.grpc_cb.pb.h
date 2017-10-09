@@ -43,7 +43,9 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());
 
   using RecordRoute_SyncWriter =
-      ::grpc_cb::ClientSyncWriter<::routeguide::Point>;
+      ::grpc_cb::ClientSyncWriter<
+          ::routeguide::Point,
+          ::routeguide::RouteSummary>;
   RecordRoute_SyncWriter
   SyncRecordRoute();
 
@@ -128,11 +130,11 @@ class Service : public ::grpc_cb::Service {
   virtual RouteChat_ReaderSptr RouteChat(
       RouteChat_Writer writer);
 
- //private:
- // virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
- //     const GRPC_OVERRIDE {
- //   return GetServiceDescriptor();
- // }
+ private:
+  virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
+      const GRPC_OVERRIDE {
+    return GetServiceDescriptor();
+  }
 };
 
 }  // namespace RouteGuide

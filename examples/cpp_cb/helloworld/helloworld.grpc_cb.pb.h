@@ -56,11 +56,11 @@ class Service : public ::grpc_cb::Service {
       const ::helloworld::HelloRequest& request,
       SayHello_Replier replier);
 
- //private:
- // virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
- //     const {
- //   return GetServiceDescriptor();
- // }
+ private:
+  virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()
+      const {
+    return GetServiceDescriptor();
+  }
 };
 
 }  // namespace Greeter

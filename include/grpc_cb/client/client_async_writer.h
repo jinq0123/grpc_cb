@@ -8,14 +8,12 @@
 #include <cstdint>  // for int64_t
 #include <string>
 
+#include <grpc_cb_core/client/client_async_writer.h>  // for grpc_cb_core::ClientAsyncWriter
+
 #include <grpc_cb/client/channel_sptr.h>  // for ChannelSptr
-//#include <grpc_cb/impl/client/client_async_writer_close_handler.h>  // for ClientAsyncWriterCloseHandler
-//#include <grpc_cb/impl/client/client_async_writer_impl.h>  // for ClientAsyncWriterImpl
 #include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/common/impl/config.h>              // for GRPC_OVERRIDE
-// DEL protobuf_fwd.h
-// XXX #include <grpc_cb/common/protobuf_fwd.h>        // for Message
-#include <grpc_cb/common/status_fwd.h>  // for Status
+#include <grpc_cb/common/impl/config.h>   // for GRPC_OVERRIDE
+#include <grpc_cb/common/status_fwd.h>    // for Status
 
 namespace grpc_cb {
 

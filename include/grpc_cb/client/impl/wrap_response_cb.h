@@ -6,8 +6,8 @@
 
 #include <functional>
 
-#include <grpc_cb/status.h>
-#include <grpc_cb/status_callback.h>  // for ErrorCallback
+#include <grpc_cb_core/common/status.h>  // for Status
+#include <grpc_cb/client/status_cb.h>  // for ErrorCb
 
 namespace grpc_cb {
 
@@ -18,9 +18,9 @@ namespace grpc_cb {
 template <class Msg>
 inline
 std::function<void (const std::string&)>
-WrapResponseCallback(
+WrapResponseCb(
     const std::function<void (const Msg&)>& cb,
-    const ErrorCallback& ecb) {
+    const ErrorCb& ecb) {
   if (!cb) return nullptr;
   return [cb, ecb](const std::string& resp_str) {
     Msg msg;
@@ -31,7 +31,7 @@ WrapResponseCallback(
     if (ecb)
       ecb(Status::InternalError("Failed to parse response."));
   };  // return
-}  // WrapResponseCallback()
+}  // WrapResponseCb()
 
 }  // namespace grpc_cb
 #endif  // GRPC_CB_IMPL_CLIENT_WRAP_RESPONSE_CALLBACK_H

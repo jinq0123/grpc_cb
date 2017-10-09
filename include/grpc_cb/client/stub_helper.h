@@ -4,12 +4,10 @@
 #ifndef GRPC_CB_CLIENT_STUB_HELPER_H
 #define GRPC_CB_CLIENT_STUB_HELPER_H
 
-#include <google/protobuf/message.h>  // for Message
-
 #include <grpc_cb_core/client/service_stub.h>  // for ServiceStub
 #include <grpc_cb_core/common/status.h>  // for Status
 #include <grpc_cb/client/status_cb.h>  // for ErrorCb
-#include <grpc_cb/impl/client/wrap_response_callback.h>  // for WrapResponseCallback()
+#include <grpc_cb/client/impl/wrap_response_cb.h>  // for WrapResponseCb()
 
 namespace grpc_cb {
 
@@ -54,7 +52,7 @@ void StubHelper::AsyncRequest(const std::string& method,
     const std::function<void (const Response&)>& cb,
     const ErrorCb& ecb) {
   stub_.AsyncRequest(method, request.SerializeAsString(),
-      WrapResponseCallback(cb, ecb), ecb);
+      WrapResponseCb(cb, ecb), ecb);
 }
 
 }  // namespace grpc_cb
