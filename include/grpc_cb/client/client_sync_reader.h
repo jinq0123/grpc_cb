@@ -33,7 +33,7 @@ class ClientSyncReader GRPC_FINAL {
     if (!core_sptr_->ReadOne(&resp_str)) return false;
     if (response->ParseFromString(resp_str)) return true;
     core_sptr_->SetErrorStatus(Status::InternalError("Failed to parse message "
-        + response.GetTypeName()));
+        + response->GetTypeName()));
     return false;
   }
 

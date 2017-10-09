@@ -14,6 +14,7 @@
 #include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
 #include <grpc_cb/common/impl/config.h>   // for GRPC_OVERRIDE
 #include <grpc_cb/common/status_fwd.h>    // for Status
+#include <grpc_cb/client/impl/wrap_close_cb.h>  // for WrapCloseCb()
 
 namespace grpc_cb {
 
@@ -28,7 +29,7 @@ class ClientAsyncWriter GRPC_FINAL {
                            const CompletionQueueSptr& cq_sptr,
                            int64_t timeout_ms)
       // Todo: same as ClientReader?
-      : impl_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr,
+      : core_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr,
                                              timeout_ms)) {
     assert(channel);
     assert(cq_sptr);
@@ -38,33 +39,13 @@ class ClientAsyncWriter GRPC_FINAL {
   // Todo: SyncGetInitMd();
 
   bool Write(const Request& request) const {
-    auto sptr = std::make_shared<Request>(request);
-    return impl_sptr_->Write(sptr);
+    return core_sptr_->Write(request.SerializeAsString());
   }
 
-  using ClosedCallback = std::function<void (const Status&, const Response&)>;
-  void Close(const ClosedCallback& on_closed = ClosedCallback()) {
-    auto handler = std::make_shared<CloseHandler>(on_closed);
-    impl_sptr_->Close(handler);
+  using CloseCb = std::function<void (const Status&, const Response&)>;
+  void Close(const CloseCb& close_cb = CloseCb()) {
+    core_sptr_->Close(WrapCloseCb(close_cb));
   }  // Close()
-
-  // Todo: Use a default CloseHandler if no Close()?
-
- private:
-  // Use CloseHandler to make impl non-template.
-  class CloseHandler GRPC_FINAL : public ClientAsyncWriterCloseHandler {
-   public:
-    explicit CloseHandler(const ClosedCallback& on_closed = ClosedCallback())
-        : on_closed_(on_closed){};
-    Response& GetMsg() GRPC_OVERRIDE { return msg_; }
-    void OnClose(const Status& status) GRPC_OVERRIDE {
-      if (on_closed_) on_closed_(status, msg_);
-    }
-
-   private:
-    Response msg_;
-    ClosedCallback on_closed_;
-  };
 
  private:
   // Use non_template class as the implement.
@@ -72,5 +53,4 @@ class ClientAsyncWriter GRPC_FINAL {
 };  // class ClientAsyncWriter<>
 
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_CLIENT_ASYNC_WRITER_H

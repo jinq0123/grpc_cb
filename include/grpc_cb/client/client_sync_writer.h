@@ -8,11 +8,8 @@
 #include <cstdint>  // for int64_t
 
 #include <grpc_cb_core/client/channel.h>                           // for MakeSharedCall()
-//#include <grpc_cb/impl/call_sptr.h>                    // for CallSptr
-//#include <grpc_cb/impl/client/client_send_init_md_cqtag.h>  // for ClientSendInitMdCqTag
-//#include <grpc_cb/impl/client/client_sync_writer_helper.h>  // for ClientSyncWriterHelper
-//#include <grpc_cb/impl/client/client_writer_close_cqtag.h>  // for ClientWriterCloseCqTag
 #include <grpc_cb_core/common/status.h>                                 // for Status
+#include <grpc_cb_core/client/client_sync_writer.h>  // for grpc_cb_core::ClientSyncWriter
 
 namespace grpc_cb {
 
@@ -43,7 +40,7 @@ class ClientSyncWriter GRPC_FINAL {
   }
 
  private:
-  std::shared_ptr<ClientSyncWriter> core_sptr_;  // Easy to copy.
+  std::shared_ptr<grpc_cb_core::ClientSyncWriter> core_sptr_;  // Easy to copy.
 };  // class ClientSyncWriter<>
 
 }  // namespace grpc_cb
