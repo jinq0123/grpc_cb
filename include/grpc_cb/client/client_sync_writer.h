@@ -19,82 +19,32 @@ namespace grpc_cb {
 // Copyable.
 // Use template class instead of template member function
 //    to ensure client input the correct request type.
-// Todo: Use non_template class as the implement.
-template <class Request>
+template <class Request, class Response>
 class ClientSyncWriter GRPC_FINAL {
  public:
   inline ClientSyncWriter(const ChannelSptr& channel, const std::string& method,
-                          int64_t timeout_ms);
+                          int64_t timeout_ms)
+      : core_sptr_(new grpc_cb_core::ClientSyncWriter(
+          channel, method, timeout_ms) {}
 
   // Todo: SyncGetInitMd();
   bool Write(const Request& request) const {
-    Data& d = *data_sptr_;
-    return ClientSyncWriterHelper::SyncWrite(d.call_sptr, d.cq4p_sptr,
-                                                 request, d.status);
+    return core_sptr_->Write(request.SerializeAsString());
   }
 
-  Status Close(::google::protobuf::Message* response) const;
+  Status Close(Response* response) const {
+    std::string resp_str;
+    Status status = core_sptr_->Close(&resp_str);
+    if (!status.ok()) return status;
+    if (response->ParseFromString(resp_str))
+      return status;
+    return Status::InternalError("Failed to parse message "
+        + response->GetTypeName());
+  }
 
  private:
-  // Wrap all data in shared struct pointer to make copy quick.
-  struct Data {
-    CQueueForPluckSptr cq4p_sptr;
-    CallSptr call_sptr;
-    Status status;
-  };
-  using DataSptr = std::shared_ptr<Data>;
-
-  DataSptr data_sptr_;  // Easy to copy.
+  std::shared_ptr<ClientSyncWriter> core_sptr_;  // Easy to copy.
 };  // class ClientSyncWriter<>
 
-template <class Request>
-ClientSyncWriter<Request>::ClientSyncWriter(const ChannelSptr& channel,
-                                            const std::string& method,
-                                            int64_t timeout_ms)
-    // Todo: same as ClientReader?
-    : data_sptr_(new Data) {
-  assert(channel);
-  CQueueForPluckSptr cq4p_sptr(new CQueueForPluck);
-  CallSptr call_sptr = channel->MakeSharedCall(method, *cq4p_sptr, timeout_ms);
-  data_sptr_->cq4p_sptr = cq4p_sptr;
-  data_sptr_->call_sptr = call_sptr;
-  ClientSendInitMdCqTag tag(call_sptr);
-  if (tag.Start()) {
-    cq4p_sptr->Pluck(&tag);
-    return;
-  }
-
-  data_sptr_->status.SetInternalError("Failed to start client sync writer.");
-}
-
-template <class Request>
-Status ClientSyncWriter<Request>::Close(
-    ::google::protobuf::Message* response) const {
-  assert(response);
-  assert(data_sptr_);
-  Data& data = *data_sptr_;
-  assert(data.call_sptr);
-  assert(data.cq4p_sptr);
-
-  Status& status = data.status;
-  if (!status.ok()) return status;
-  ClientWriterCloseCqTag tag(data.call_sptr);
-  if (!tag.Start()) {
-    status.SetInternalError("Failed to finish client stream.");
-    return status;
-  }
-
-  data.cq4p_sptr->Pluck(&tag);
-
-  // Todo: Get trailing metadata.
-  if (tag.IsStatusOk())
-    status = tag.GetResponse(*response);
-  else
-    status = tag.GetStatus();
-
-  return status;
-}  // Close()
-
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_CLIENT_SYNC_WRITER_H
