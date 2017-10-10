@@ -1,12 +1,13 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
-
-#ifndef GRPC_CB_SERVER_READER_FOR_BIDI_STREAMING_H
-#define GRPC_CB_SERVER_READER_FOR_BIDI_STREAMING_H
+#ifndef GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
+#define GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
 
 #include <memory>  // for unique_ptr<>
 
-#include <grpc_cb/server/server_reader.h>  // for ServerReader<>
+#include <grpc_cb_core/server/server_reader_for_bidi_streaming.h>
+
+// XXX #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/common/impl/config.h>  // for GRPC_OVERRIDE
 #include <grpc_cb/server/server_writer.h>  // for ServerWriter<>
 #include <grpc_cb/common/status_fwd.h>  // for Status
@@ -16,7 +17,8 @@ namespace grpc_cb {
 // ServerReader for bidirectional streaming.
 // Thread-safe.
 template <class Request, class Response>
-class ServerReaderForBidiStreaming : public ServerReader<Request> {
+class ServerReaderForBidiStreaming
+    : public grpc_cb_core::ServerReaderForBidiStreaming {
  public:
   // Default constructable.
   ServerReaderForBidiStreaming() {}
@@ -25,9 +27,9 @@ class ServerReaderForBidiStreaming : public ServerReader<Request> {
  public:
   // Set by generated codes.
   using Writer = ServerWriter<Response>;
-  void SetWriter(const Writer& writer) {
-    writer_uptr_.reset(new Writer(writer));
-  }
+  //void SetWriter(const Writer& writer) {
+  //  writer_uptr_.reset(new Writer(writer));
+  //}
 
  public:
   Writer& GetWriter() {
@@ -48,5 +50,4 @@ class ServerReaderForBidiStreaming : public ServerReader<Request> {
 };  // class ServerReaderForBidiStreaming
 
 }  // namespace grpc_cb
-
-#endif  // GRPC_CB_SERVER_READER_FOR_BIDI_STREAMING_H
+#endif  // GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H

@@ -236,7 +236,7 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         " public:\n"
         "  using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
         "      $Response$>;\n"
-        "  using $Method$_Reader = ::grpc_cb::ServerReaderForClientOnlyStreaming<\n"
+        "  using $Method$_Reader = ::grpc_cb::ServerReaderForClientSideStreaming<\n"
         "      $Request$, $Response$>;\n"
         "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
         " protected:\n"

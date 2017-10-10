@@ -38,7 +38,7 @@ using grpc_cb_core::ServiceSptr;
 
 #include <grpc_cb/server/server_reader.h>    // for ServerReader<>
 #include <grpc_cb/server/server_reader_for_bidi_streaming.h>
-#include <grpc_cb/server/server_reader_for_client_only_streaming.h>
+#include <grpc_cb/server/server_reader_for_client_side_streaming.h>
 #include <grpc_cb/server/server_replier.h>   // for ServerReplier<>
 #include <grpc_cb/server/server_writer.h>    // for ServerWriter<>
 #include <grpc_cb/server/service.h>          // for Service

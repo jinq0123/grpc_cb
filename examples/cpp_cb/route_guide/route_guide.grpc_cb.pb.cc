@@ -218,7 +218,6 @@ void Service::ListFeatures(
   writer.AsyncClose(::grpc_cb::Status::UNIMPLEMENTED);
 }
 
-// XXX input call_sptr and Point. Hide the implement.
 void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
   RecordRoute_Replier replier(call_sptr);
@@ -235,10 +234,11 @@ Service::RecordRoute(RecordRoute_Replier replier) {
 
 void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
-  RouteChat_Writer writer(call_sptr);
-  RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
+  RouteChat_WriterSptr writer_sptr =
+      std::make_shared<RouteChat_Writer>(call_sptr);
+  RouteChat_ReaderSptr reader_sptr = RouteChat(*writer_sptr);
   if (reader_sptr)
-    reader_sptr->Start(call_sptr, writer);
+    reader_sptr->Start(call_sptr, writer_sptr);
 }
 
 Service::RouteChat_ReaderSptr
