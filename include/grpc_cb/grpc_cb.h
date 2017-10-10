@@ -5,6 +5,7 @@
 #define GRPC_CB_GRPC_CB_H
 
 #include <grpc_cb_core/client/channel.h>       // for Channel
+#include <grpc_cb_core/common/completion_queue.h>  // for CompletionQueue
 #include <grpc_cb_core/common/completion_queue_for_next.h>  // for CompletionQueueForNext
 #include <grpc_cb_core/common/completion_queue_for_next_sptr.h>  // for CompletionQueueForNextSptr
 #include <grpc_cb_core/common/run.h>     // for Run()
@@ -13,6 +14,7 @@
 
 namespace grpc_cb {
 using grpc_cb_core::Channel;
+using grpc_cb_core::CompletionQueue;
 using grpc_cb_core::CompletionQueueForNext;
 using grpc_cb_core::CompletionQueueForNextSptr;
 using grpc_cb_core::Run;
