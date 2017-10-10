@@ -223,17 +223,8 @@ void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
   RecordRoute_Replier replier(call_sptr);
   RecordRoute_ReaderSptr reader_sptr = RecordRoute(replier);
-  if (!reader_sptr) return;
-  reader_sptr->SetReplier(replier);
-
-  using CqTag = ::grpc_cb::ServerReaderCqTag<
-      ::routeguide::Point>;
-  CqTag* tag = new CqTag(call_sptr, reader_sptr);
-  if (tag->Start()) return;
-
-  delete tag;
-  reader_sptr->OnError(::grpc_cb::Status::InternalError(
-      "Failed to init server reader."));
+  if (reader_sptr)
+    reader_sptr->Start(call_sptr, replier);
 }
 
 Service::RecordRoute_ReaderSptr
@@ -246,17 +237,8 @@ void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
   RouteChat_Writer writer(call_sptr);
   RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
-  if (!reader_sptr) return;
-  reader_sptr->SetWriter(writer);
-
-  using RwCqTag = ::grpc_cb::ServerReaderWriterCqTag<
-      ::routeguide::RouteNote>;
-  RwCqTag* tag = new RwCqTag(call_sptr, reader_sptr);
-  if (tag->Start()) return;
-
-  delete tag;
-  reader_sptr->OnError(::grpc_cb::Status::InternalError(
-      "Failed to init server stream."));
+  if (reader_sptr)
+    reader_sptr->Start(call_sptr, writer);
 }
 
 Service::RouteChat_ReaderSptr

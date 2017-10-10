@@ -9,6 +9,8 @@
 
 namespace grpc_cb {
 
+// XXX Derive it from grpc_cb_core::ServerWriter...
+
 // Copyable. Thread-safe.
 template <class Response>
 class ServerWriter GRPC_FINAL {
