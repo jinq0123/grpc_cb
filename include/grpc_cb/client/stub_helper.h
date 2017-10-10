@@ -28,7 +28,7 @@ public:
     template <class Response>
     inline void AsyncRequest(const std::string& method,
         const Message& request,
-        const std::function<void (const Response&)>& cb,
+        const MsgCbTmpl<Response>& cb,
         const ErrorCb& ecb);
 
 private:
@@ -52,7 +52,7 @@ Status StubHelper::SyncRequest(const std::string& method,
 template <class Response>
 void StubHelper::AsyncRequest(const std::string& method,
     const Message& request,
-    const std::function<void (const Response&)>& cb,
+    const MsgCbTmpl<Response>& cb,
     const ErrorCb& ecb) {
   stub_.AsyncRequest(method, request.SerializeAsString(),
       WrapMsgCb(cb), ecb);

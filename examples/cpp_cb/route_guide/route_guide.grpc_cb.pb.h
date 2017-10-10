@@ -24,8 +24,7 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::routeguide::Point& request,
       ::routeguide::Feature* response = nullptr);
 
-  using GetFeatureCallback =
-      std::function<void (const ::routeguide::Feature& response)>;
+  using GetFeatureCallback = ::grpc_cb::MsgCbTmpl<::routeguide::Feature>;
   void AsyncGetFeature(
       const ::routeguide::Point& request,
       const GetFeatureCallback& cb = GetFeatureCallback(),

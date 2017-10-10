@@ -42,17 +42,10 @@ class ClientAsyncReaderWriter GRPC_FINAL {
     core_sptr_->CloseWriting();
   }
 
-  using ReadCb = std::function<void(const Response&)>;
+  using ReadCb = MsgCbTmpl<Response>;
   void ReadEach(const ReadCb& read_cb) {
-    grpc_cb_core::MsgStrCb str_cb =
-      [read_cb](const std::string& msg_str) {
-        Response response;
-        bool ok = response.ParseFromString(msg_str);
-        if (ok) return Status::OK;
-        return Status::InternalError("Failed to parse message "
-            + response.GetTypeName());
-      };
-    core_sptr_->ReadEach(str_cb);
+    grpc_cb_core::MsgStrCb msg_str_cb = WrapMsgCb(read_cb);
+    core_sptr_->ReadEach(msg_str_cb);
   }
 
  private:

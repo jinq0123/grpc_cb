@@ -24,8 +24,7 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::helloworld::HelloRequest& request,
       ::helloworld::HelloReply* response = nullptr);
 
-  using SayHelloCallback =
-      std::function<void (const ::helloworld::HelloReply& response)>;
+  using SayHelloCallback = ::grpc_cb::MsgCbTmpl<::helloworld::HelloReply>;
   void AsyncSayHello(
       const ::helloworld::HelloRequest& request,
       const SayHelloCallback& cb = SayHelloCallback(),

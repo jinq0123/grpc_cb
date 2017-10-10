@@ -15,7 +15,7 @@ namespace grpc_cb {
 //        to function<Status (const string& msg_str)>
 template <class Msg>
 inline grpc_cb_core::MsgStrCb
-WrapMsgCb(const std::function<void (const Msg&)>& cb) {  // XXX extract MsgCb<>
+WrapMsgCb(const std::function<void (const Msg&)>& cb) {
   if (!cb) return nullptr;
   return [cb](const std::string& resp_str) {
     Msg msg;

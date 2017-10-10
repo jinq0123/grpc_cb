@@ -12,7 +12,8 @@
 #include <grpc_cb_core/client/client_async_reader.h>  // for grpc_cb_core::ClientAsyncReader
 
 #include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/client/impl/wrap_msg_cb.h>       // for WrapMsgCb()
+#include <grpc_cb/client/impl/wrap_msg_cb.h>            // for WrapMsgCb()
+#include <grpc_cb/client/msg_cb_tmpl.h>                 // for MsgCbTmpl<>
 #include <grpc_cb/client/status_cb.h>                   // for StatusCb
 #include <grpc_cb/common/impl/config.h>                 // for GRPC_FINAL
 
@@ -31,7 +32,7 @@ class ClientAsyncReader GRPC_FINAL {
                    request.SerializeAsString(), cq_sptr, timeout_ms)) {}
 
  public:
-  using MsgCb = std::function<void(const Response&)>;
+  using MsgCb = MsgCbTmpl<Response>;
   void ReadEach(const MsgCb& msg_cb,
       const StatusCb& status_cb = StatusCb()) const {
     grpc_cb_core::MsgStrCb msg_str_cb = WrapMsgCb(msg_cb);

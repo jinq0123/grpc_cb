@@ -29,6 +29,7 @@ using grpc_cb_core::ServiceSptr;
 #include <grpc_cb/client/client_sync_reader.h>
 #include <grpc_cb/client/client_sync_reader_writer.h>
 #include <grpc_cb/client/client_sync_writer.h>
+#include <grpc_cb/client/msg_cb_tmpl.h>   // for MsgCbTmpl<>
 #include <grpc_cb/client/service_stub.h>  // for ServiceStub
 #include <grpc_cb/client/status_cb.h>     // for StatusCb
 #include <grpc_cb/client/stub_helper.h>   // for StubHelper
