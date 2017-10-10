@@ -20,8 +20,8 @@ class ClientSyncReader GRPC_FINAL {
   // Todo: Also need to template request?
   ClientSyncReader(const ChannelSptr& channel, const std::string& method,
                    const Request& request, int64_t timeout_ms)
-      : core_sptr_(new ClientSyncReader(channel, method,
-                   request.SerializeAsString(), timeout_ms)) {
+      : core_sptr_(new grpc_cb_core::ClientSyncReader(
+            channel, method, request.SerializeAsString(), timeout_ms)) {
     assert(channel);
   }
 

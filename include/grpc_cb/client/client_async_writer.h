@@ -12,7 +12,7 @@
 
 #include <grpc_cb/client/channel_sptr.h>  // for ChannelSptr
 #include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/common/impl/config.h>   // for GRPC_OVERRIDE
+#include <grpc_cb/common/impl/config.h>   // for GRPC_FINAL
 #include <grpc_cb/common/status_fwd.h>    // for Status
 #include <grpc_cb/client/impl/wrap_close_cb.h>  // for WrapCloseCb()
 
@@ -29,8 +29,8 @@ class ClientAsyncWriter GRPC_FINAL {
                            const CompletionQueueSptr& cq_sptr,
                            int64_t timeout_ms)
       // Todo: same as ClientReader?
-      : core_sptr_(new ClientAsyncWriterImpl(channel, method, cq_sptr,
-                                             timeout_ms)) {
+      : core_sptr_(new grpc_cb_core::ClientAsyncWriter(
+          channel, method, cq_sptr, timeout_ms)) {
     assert(channel);
     assert(cq_sptr);
   }
