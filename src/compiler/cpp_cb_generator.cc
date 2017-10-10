@@ -416,11 +416,6 @@ grpc::string GetSourceIncludes(const grpc::protobuf::FileDescriptor *file,
     printer.Print("#include <google/protobuf/descriptor.h>\n");
     printer.Print("#include <google/protobuf/stubs/once.h>\n");
     printer.Print("\n");
-    printer.Print("//#include <grpc_cb/impl/client/stub_helper.h>              // for StubHelper\n");
-    printer.Print("//#include <grpc_cb/impl/proto_utils.h>                     // for Proto::Deserialize()\n");
-    printer.Print("//#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag\n");
-    printer.Print("//#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag\n");
-    printer.Print("\n");
 
     if (!file->package().empty()) {
       std::vector<grpc::string> parts =

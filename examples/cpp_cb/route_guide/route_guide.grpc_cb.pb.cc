@@ -7,11 +7,6 @@
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/stubs/once.h>
 
-#include <grpc_cb/client/stub_helper.h>              // for StubHelper
-#include <grpc_cb/common/proto_utils.h>                     // for Proto::Deserialize()
-//#include <grpc_cb/impl/server/server_reader_cqtag.h>      // for ServerReaderCqTag
-//#include <grpc_cb/impl/server/server_reader_writer_cqtag.h>  // for ServerReaderWriterCqTag
-
 // package routeguide
 namespace routeguide {
 
