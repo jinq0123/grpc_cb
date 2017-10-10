@@ -164,7 +164,9 @@ void PrintHeaderClientMethodPublic(
       printer->Print(
           *vars,
           "using $Method$_SyncWriter =\n"
-          "    ::grpc_cb::ClientSyncWriter<$Request$>;\n"
+          "    ::grpc_cb::ClientSyncWriter<\n"
+          "        $Request$,\n"
+          "        $Response$>;\n"
           "$Method$_SyncWriter\n"
           "Sync$Method$();\n"
           "\n"
@@ -178,7 +180,9 @@ void PrintHeaderClientMethodPublic(
       printer->Print(
           *vars,
           "using $Method$_SyncReader =\n"
-          "    ::grpc_cb::ClientSyncReader<$Response$>;\n"
+          "    ::grpc_cb::ClientSyncReader<\n"
+          "        $Request$,\n"
+          "        $Response$>;\n"
           "$Method$_SyncReader\n"
           "Sync$Method$(const $Request$& request);\n"
           "\n"
@@ -543,7 +547,9 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
     printer->Print(*vars,
                    "::grpc_cb::ClientSyncWriter<$Request$>\n"
                    "Stub::Sync$Method$() {\n"
-                   "  return ::grpc_cb::ClientSyncWriter<$Request$>(\n"
+                   "  return ::grpc_cb::ClientSyncWriter<\n"
+                   "          $Request$,\n"
+                   "          $Response$>(\n"
                    "      GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
@@ -559,9 +565,13 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
-                   "::grpc_cb::ClientSyncReader<$Response$>\n"
+                   "::grpc_cb::ClientSyncReader<\n"
+                   "    $Request$,\n"
+                   "    $Response$>\n"
                    "Stub::Sync$Method$(const $Request$& request) {\n"
-                   "  return ::grpc_cb::ClientSyncReader<$Response$>(\n"
+                   "  return ::grpc_cb::ClientSyncReader<\n"
+                   "          $Request$,\n"
+                   "          $Response$>(\n"
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
