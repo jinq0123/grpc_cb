@@ -25,11 +25,13 @@ class ServerReaderForBidiStreaming
   virtual ~ServerReaderForBidiStreaming() {}
 
  public:
-  // Set by generated codes.
-  using Writer = ServerWriter<Response>;
-  //void SetWriter(const Writer& writer) {
-  //  writer_uptr_.reset(new Writer(writer));
-  //}
+  using Writer = ServerWriter<Response>;  // NOT grpc_cb_core::ServerWriter
+  // Start server reader.
+  void Start(const CallSptr& call_sptr, const Writer& writer) {
+    writer_uptr_.reset(new Writer(writer));
+    grpc_cb_core::ServerReaderForBidiStreaming::Start(call_sptr,
+                                                      writer.GetCoreWriter());
+  }
 
  public:
   Writer& GetWriter() {

@@ -25,10 +25,12 @@ class ServerReaderForClientSideStreaming
   virtual ~ServerReaderForClientSideStreaming() {}
 
  public:
-  // Set by generated code.
-  using Replier = ServerReplier<Response>;
-  void SetReplier(const Replier& replier) {
+  using Replier = ServerReplier<Response>;  // NOT grpc_cb_core::ServerReplier
+  // Start server reader.
+  void Start(const CallSptr& call_sptr, const Replier& replier) {
     replier_uptr_.reset(new Replier(replier));
+    grpc_cb_core::ServerReaderForClientSideStreaming::Start(
+        call_sptr, replier.GetCoreReplier());
   }
 
  public:
