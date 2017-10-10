@@ -10,8 +10,8 @@
 
 // XXX #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
 #include <grpc_cb/common/impl/call_sptr.h>       // for CallSptr
-#include <grpc_cb/common/grpc_cb_api.h>  // for GRPC_CB_API
-#include <grpc_cb/common/protobuf_fwd.h>  // for ServiceDescriptor
+#include <grpc_cb/common/impl/grpc_cb_api.h>  // for GRPC_CB_API
+#include <grpc_cb/common/impl/protobuf_fwd.h>  // for ServiceDescriptor
 #include <grpc_cb/common/impl/config.h>   // for GRPC_OVERRIDE
 
 struct grpc_byte_buffer;

@@ -9,6 +9,7 @@
 #include <grpc_cb/client/service_stub.h>  // for ServiceStub
 #include <grpc_cb/client/status_cb.h>  // for ErrorCb
 #include <grpc_cb/client/impl/wrap_response_cb.h>  // for WrapResponseCb()
+#include <grpc_cb/common/impl/protobuf_fwd.h>  // for Message
 
 namespace grpc_cb {
 

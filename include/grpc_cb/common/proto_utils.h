@@ -1,7 +1,7 @@
 #ifndef GRPC_CB_IMPL_PROTO_UTILS_H
 #define GRPC_CB_IMPL_PROTO_UTILS_H
 
-#include <grpc_cb/common/protobuf_fwd.h>  // for Message
+#include <grpc_cb/common/impl/protobuf_fwd.h>  // for Message
 #include <grpc_cb/common/status_fwd.h>  // for Status
 
 struct grpc_byte_buffer;
