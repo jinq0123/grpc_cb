@@ -1,13 +1,11 @@
 REM Generate source files from proto files.
 
-set CONFIG=Release
-
 set PROTOC=D:\Tools\protoc-3.4.0-win32\bin\protoc.exe
+set PLUGIN_EXE=..\..\premake\VS2015\bin\x64\Debug\grpc_cpp_cb_plugin.exe
 
 %PROTOC% -I. --cpp_out=..\cpp_cb\helloworld helloworld.proto
 %PROTOC% -I. --cpp_out=..\cpp_cb\route_guide route_guide.proto
 
-set PLUGIN_EXE=..\..\build\bin\%CONFIG%\grpc_cpp_cb_plugin.exe
 %PROTOC% -I. --grpc_out=..\cpp_cb\helloworld ^
   --plugin=protoc-gen-grpc=%PLUGIN_EXE% ^
   helloworld.proto
