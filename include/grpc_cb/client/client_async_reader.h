@@ -12,8 +12,9 @@
 #include <grpc_cb_core/client/client_async_reader.h>  // for grpc_cb_core::ClientAsyncReader
 
 #include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/client/status_cb.h>  // for StatusCb
-#include <grpc_cb/common/impl/config.h>     // for GRPC_FINAL
+#include <grpc_cb/client/impl/wrap_response_cb.h>       // for WrapMsgCb()
+#include <grpc_cb/client/status_cb.h>                   // for StatusCb
+#include <grpc_cb/common/impl/config.h>                 // for GRPC_FINAL
 
 namespace grpc_cb {
 
@@ -33,15 +34,8 @@ class ClientAsyncReader GRPC_FINAL {
   using MsgCb = std::function<void(const Response&)>;
   void ReadEach(const MsgCb& msg_cb,
       const StatusCb& status_cb = StatusCb()) const {
-    grpc_cb_core::MsgStrCb msg_str_cb =
-      [msg_cb, status_cb](const std::string& sResponse) {
-        Response response;
-        bool ok = response.ParseFromString(sResponse);
-        if (ok) return Status::OK;
-        return Status::InternalError("Failed to parse message "
-            + response.GetTypeName());
-      };
-    core_sptr_->ReadEach(msg_str_cb, status_cb)
+    grpc_cb_core::MsgStrCb msg_str_cb = WrapMsgCb(msg_cb);
+    core_sptr_->ReadEach(msg_str_cb, status_cb);
   }
 
  private:

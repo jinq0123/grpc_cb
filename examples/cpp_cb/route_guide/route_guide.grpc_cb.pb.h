@@ -125,7 +125,6 @@ class Service : public ::grpc_cb::Service {
  public:
   using RouteChat_Writer = ::grpc_cb::ServerWriter<
       ::routeguide::RouteNote>;
-  using RouteChat_WriterSptr = std::shared_ptr<RouteChat_Writer>;
   using RouteChat_Reader = ::grpc_cb::ServerReaderForBidiStreaming<
       ::routeguide::RouteNote, ::routeguide::RouteNote>;
   using RouteChat_ReaderSptr = std::shared_ptr<RouteChat_Reader>;

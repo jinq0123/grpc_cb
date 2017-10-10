@@ -8,7 +8,7 @@
 
 #include <grpc_cb/client/service_stub.h>  // for ServiceStub
 #include <grpc_cb/client/status_cb.h>  // for ErrorCb
-#include <grpc_cb/client/impl/wrap_response_cb.h>  // for WrapResponseCb()
+#include <grpc_cb/client/impl/wrap_response_cb.h>  // for WrapMsgCb()
 #include <grpc_cb/common/impl/protobuf_fwd.h>  // for Message
 
 namespace grpc_cb {
@@ -55,7 +55,7 @@ void StubHelper::AsyncRequest(const std::string& method,
     const std::function<void (const Response&)>& cb,
     const ErrorCb& ecb) {
   stub_.AsyncRequest(method, request.SerializeAsString(),
-      WrapResponseCb(cb), ecb);
+      WrapMsgCb(cb), ecb);
 }
 
 }  // namespace grpc_cb

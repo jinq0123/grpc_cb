@@ -234,11 +234,10 @@ Service::RecordRoute(RecordRoute_Replier replier) {
 
 void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   assert(call_sptr);
-  RouteChat_WriterSptr writer_sptr =
-      std::make_shared<RouteChat_Writer>(call_sptr);
-  RouteChat_ReaderSptr reader_sptr = RouteChat(*writer_sptr);
+  RouteChat_Writer writer(call_sptr);
+  RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
   if (reader_sptr)
-    reader_sptr->Start(call_sptr, writer_sptr);
+    reader_sptr->Start(call_sptr, writer);
 }
 
 Service::RouteChat_ReaderSptr
