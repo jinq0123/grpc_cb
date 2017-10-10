@@ -36,7 +36,6 @@ using grpc_cb_core::ServiceSptr;
 #include <grpc_cb/common/proto_utils.h>  // for Proto::Deserialize()
 #include <grpc_cb/common/status_fwd.h>  // for Status
 
-#include <grpc_cb/server/server_reader.h>    // for ServerReader<>
 #include <grpc_cb/server/server_reader_for_bidi_streaming.h>
 #include <grpc_cb/server/server_reader_for_client_side_streaming.h>
 #include <grpc_cb/server/server_replier.h>   // for ServerReplier<>

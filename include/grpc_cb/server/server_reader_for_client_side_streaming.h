@@ -25,6 +25,13 @@ class ServerReaderForClientSideStreaming
   virtual ~ServerReaderForClientSideStreaming() {}
 
  public:
+  // Set by generated code.
+  using Replier = ServerReplier<Response>;
+  void SetReplier(const Replier& replier) {
+    replier_uptr_.reset(new Replier(replier));
+  }
+
+ public:
   void Reply(const Response& response) {
     assert(replier_uptr_);
     replier_uptr_->Reply(response);
@@ -40,6 +47,9 @@ class ServerReaderForClientSideStreaming
 
  public:
   virtual void OnMsg(const Request& msg) {}
+
+ private:
+  std::unique_ptr<Replier> replier_uptr_;
 };  // class ServerReaderForClientSideStreaming
 
 }  // namespace grpc_cb

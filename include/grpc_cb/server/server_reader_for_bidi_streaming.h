@@ -38,12 +38,7 @@ class ServerReaderForBidiStreaming
   }
 
  public:
-  void OnMsg(const Request& msg) GRPC_OVERRIDE {}
-  void OnError(const Status& status) GRPC_OVERRIDE {
-    assert(writer_uptr_);
-    writer_uptr_->AsyncClose(status);
-  }
-  void OnEnd() GRPC_OVERRIDE {}
+  virtual void OnMsg(const Request& msg) {}
 
  private:
   std::unique_ptr<Writer> writer_uptr_;

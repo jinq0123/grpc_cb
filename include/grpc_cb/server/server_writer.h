@@ -21,6 +21,11 @@ class ServerWriter GRPC_FINAL {
   }
 
  public:
+  grpc_cb_core::ServerWriter& GetCoreWriter() const {
+    return *core_sptr_;
+  }
+
+ public:
   bool Write(const Response& response) const {
     return core_sptr_->Write(response.SerializeAsString());
   }
