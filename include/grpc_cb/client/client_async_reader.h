@@ -12,7 +12,7 @@
 #include <grpc_cb_core/client/client_async_reader.h>  // for grpc_cb_core::ClientAsyncReader
 
 #include <grpc_cb/client/impl/completion_queue_sptr.h>  // for CompletionQueueSptr
-#include <grpc_cb/client/impl/wrap_response_cb.h>       // for WrapMsgCb()
+#include <grpc_cb/client/impl/wrap_msg_cb.h>       // for WrapMsgCb()
 #include <grpc_cb/client/status_cb.h>                   // for StatusCb
 #include <grpc_cb/common/impl/config.h>                 // for GRPC_FINAL
 

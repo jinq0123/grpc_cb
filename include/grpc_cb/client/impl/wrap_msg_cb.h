@@ -1,7 +1,7 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
-#ifndef GRPC_CB_CLIENT_IMPL_WRAP_RESPONSE_CB_H
-#define GRPC_CB_CLIENT_IMPL_WRAP_RESPONSE_CB_H
+#ifndef GRPC_CB_CLIENT_IMPL_WRAP_MSG_CB_H
+#define GRPC_CB_CLIENT_IMPL_WRAP_MSG_CB_H
 
 #include <functional>
 
@@ -29,4 +29,4 @@ WrapMsgCb(const std::function<void (const Msg&)>& cb) {
 }  // WrapMsgCb()
 
 }  // namespace grpc_cb
-#endif  // GRPC_CB_CLIENT_IMPL_WRAP_RESPONSE_CB_H
+#endif  // GRPC_CB_CLIENT_IMPL_WRAP_MSG_CB_H
