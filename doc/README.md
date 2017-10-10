@@ -3,6 +3,11 @@
 C++ callback implementation of gRPC.
 
 # Design
+
+## Templated interface
+grpc_cb interface is templated by request and response message types while grpc_cb_core is non-templated which only accept message string. The generated code is templated to inforce message type check.
+
+## `CompletionQueueTag`
 CompletionQueueTag is the element of CompletionQueue.
 On completion, ```CompletionQueueTag``` is poped, and ```DoComplete()``` is called,
 and then got deleted.
@@ -18,13 +23,12 @@ because grpc can only send message one by one.
 ```SyncWrite()``` will block until all messages sent.
 ```Write()``` normaly will call ```AsnycWrite()```, but will call ```SyncWrite()```
  if the queue size reaches to a "high queue size".
-```SetHighQueueSize()``` to change it from the default one. 
+```SetHighQueueSize()``` to change it from the default one.
 
 Todo: set default high queue size
 
 ## Sync and async
-Because completion queue can not mix ```pluck()``` and ```next()```, 
+Because completion queue can not mix ```pluck()``` and ```next()```,
 the stream rpc call must be sync or async.
 Sync call uses own completion queue and pluck on each read or write.
 Async call uses a shared completion queue and do next for all operations.
-
