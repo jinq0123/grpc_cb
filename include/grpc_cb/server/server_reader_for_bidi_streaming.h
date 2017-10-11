@@ -40,11 +40,27 @@ class ServerReaderForBidiStreaming
   }
 
  public:
+  void OnMsgStr(const std::string& msg_str) GRPC_OVERRIDE;
+
+ public:
   virtual void OnMsg(const Request& msg) {}
 
  private:
   std::unique_ptr<Writer> writer_uptr_;
 };  // class ServerReaderForBidiStreaming
+
+template <class Request, class Response>
+void ServerReaderForBidiStreaming<Request, Response>::OnMsgStr(
+    const std::string& msg_str) {
+  Request msg;
+  bool ok = msg.ParseFromString(msg_str);
+  if (ok) {
+    OnMsg(msg);
+    return;
+  }
+  OnError(
+      Status::InternalError("Failed to parse message " + msg.GetTypeName()));
+}
 
 }  // namespace grpc_cb
 #endif  // GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
