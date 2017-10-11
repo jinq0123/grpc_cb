@@ -30,11 +30,6 @@ class ServerReplier {
   virtual ~ServerReplier() {};
 
  public:
-  grpc_cb_core::ServerReplier& GetCoreReplier() const {
-    return *core_sptr_;
-  }
-
- public:
   void Reply(const Response& response) const {
     core_sptr_->ReplyStr(response.SerializeAsString());
   }

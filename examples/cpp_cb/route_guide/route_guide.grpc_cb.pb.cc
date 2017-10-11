@@ -218,7 +218,7 @@ void Service::RecordRoute(const ::grpc_cb::CallSptr& call_sptr) {
   RecordRoute_Replier replier(call_sptr);
   RecordRoute_ReaderSptr reader_sptr = RecordRoute(replier);
   if (reader_sptr)
-    reader_sptr->Start(call_sptr, replier);
+    reader_sptr->StartForClientSideStreaming(call_sptr);
 }
 
 Service::RecordRoute_ReaderSptr
@@ -232,7 +232,7 @@ void Service::RouteChat(const ::grpc_cb::CallSptr& call_sptr) {
   RouteChat_Writer writer(call_sptr);
   RouteChat_ReaderSptr reader_sptr = RouteChat(writer);
   if (reader_sptr)
-    reader_sptr->Start(call_sptr, writer);
+    reader_sptr->StartForBidirectionalStreaming(call_sptr);
 }
 
 Service::RouteChat_ReaderSptr

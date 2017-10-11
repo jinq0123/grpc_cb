@@ -3,14 +3,8 @@
 #ifndef GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
 #define GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
 
-#include <memory>  // for unique_ptr<>
-
-#include <grpc_cb_core/server/server_reader_for_bidi_streaming.h>
-
-// XXX #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
-#include <grpc_cb/common/impl/config.h>  // for GRPC_OVERRIDE
+#include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/server/server_writer.h>  // for ServerWriter<>
-#include <grpc_cb/common/status_fwd.h>  // for Status
 
 namespace grpc_cb {
 
@@ -18,49 +12,24 @@ namespace grpc_cb {
 // Thread-safe.
 template <class Request, class Response>
 class ServerReaderForBidiStreaming
-    : public grpc_cb_core::ServerReaderForBidiStreaming {
+    : public ServerReader<Request, Response> {
  public:
-  // Default constructable.
-  ServerReaderForBidiStreaming() {}
+  using Writer = ServerWriter<Response>;  // NOT grpc_cb_core::ServerWriter
+  explicit ServerReaderForBidiStreaming(const Writer& writer)
+      : writer_(writer) {}
   virtual ~ServerReaderForBidiStreaming() {}
 
  public:
-  using Writer = ServerWriter<Response>;  // NOT grpc_cb_core::ServerWriter
-  // Start server reader.
-  void Start(const CallSptr& call_sptr, const Writer& writer) {
-    writer_uptr_.reset(new Writer(writer));
-    grpc_cb_core::ServerReaderForBidiStreaming::Start(call_sptr,
-                                                      writer.GetCoreWriter());
-  }
-
- public:
   Writer& GetWriter() {
-    assert(writer_uptr_);
-    return *writer_uptr_;
+    return writer_;
   }
-
- public:
-  void OnMsgStr(const std::string& msg_str) GRPC_OVERRIDE;
 
  public:
   virtual void OnMsg(const Request& msg) {}
 
  private:
-  std::unique_ptr<Writer> writer_uptr_;
+  Writer writer_;
 };  // class ServerReaderForBidiStreaming
-
-template <class Request, class Response>
-void ServerReaderForBidiStreaming<Request, Response>::OnMsgStr(
-    const std::string& msg_str) {
-  Request msg;
-  bool ok = msg.ParseFromString(msg_str);
-  if (ok) {
-    OnMsg(msg);
-    return;
-  }
-  OnError(
-      Status::InternalError("Failed to parse message " + msg.GetTypeName()));
-}
 
 }  // namespace grpc_cb
 #endif  // GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
