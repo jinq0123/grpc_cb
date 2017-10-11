@@ -35,9 +35,6 @@ class ServerReaderForBidiStreaming
     return *writer_uptr_;
   }
 
- public:
-  virtual void OnMsg(const Request& msg) {}
-
  private:
   std::unique_ptr<Writer> writer_uptr_;
 };  // class ServerReaderForBidiStreaming

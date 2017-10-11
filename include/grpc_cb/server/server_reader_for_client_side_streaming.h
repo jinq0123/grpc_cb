@@ -45,9 +45,6 @@ class ServerReaderForClientSideStreaming
     return *replier_uptr_;
   }
 
- public:
-  virtual void OnMsg(const Request& msg) {}
-
  private:
   std::unique_ptr<Replier> replier_uptr_;
 };  // class ServerReaderForClientSideStreaming
