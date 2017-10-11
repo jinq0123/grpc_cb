@@ -1,6 +1,5 @@
 // Licensed under the Apache License, Version 2.0.
 // Author: Jin Qing (http://blog.csdn.net/jq0123)
-
 #ifndef GRPC_CB_SERVER_SERVICE_H
 #define GRPC_CB_SERVER_SERVICE_H
 
@@ -8,8 +7,6 @@
 
 #include <grpc_cb_core/server/service.h>  // for grpc_cb_core::Service
 
-// XXX #include <grpc_cb/impl/call_sptr.h>  // for CallSptr
-#include <grpc_cb/common/impl/call_sptr.h>       // for CallSptr
 #include <grpc_cb/common/impl/grpc_cb_api.h>  // for GRPC_CB_API
 #include <grpc_cb/common/impl/protobuf_fwd.h>  // for ServiceDescriptor
 #include <grpc_cb/common/impl/config.h>   // for GRPC_OVERRIDE
@@ -31,5 +28,4 @@ class GRPC_CB_API Service : public grpc_cb_core::Service {
 };  // class Service
 
 }  // namespace grpc_cb
-
 #endif  // GRPC_CB_SERVER_SERVICE_H
