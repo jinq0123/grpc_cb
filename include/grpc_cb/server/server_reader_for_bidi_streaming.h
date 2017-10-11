@@ -3,6 +3,8 @@
 #ifndef GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
 #define GRPC_CB_SERVER_SERVER_READER_FOR_BIDI_STREAMING_H
 
+#include <memory>  // for unique_ptr<>
+
 #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/server/server_writer.h>  // for ServerWriter<>
 
@@ -14,21 +16,30 @@ template <class Request, class Response>
 class ServerReaderForBidiStreaming
     : public ServerReader<Request, Response> {
  public:
-  using Writer = ServerWriter<Response>;  // NOT grpc_cb_core::ServerWriter
-  explicit ServerReaderForBidiStreaming(const Writer& writer)
-      : writer_(writer) {}
+  // Default constructable.
+  ServerReaderForBidiStreaming() {}
   virtual ~ServerReaderForBidiStreaming() {}
 
  public:
+  using Writer = ServerWriter<Response>;  // NOT grpc_cb_core::ServerWriter
+
+  // Start server reader.
+  void Start(const CallSptr& call_sptr, const Writer& writer) {
+    writer_uptr_.reset(new Writer(writer));
+    StartForBidiStreaming(call_sptr);
+  }
+
+ public:
   Writer& GetWriter() {
-    return writer_;
+    assert(writer_uptr_);  // Must after Start().
+    return *writer_uptr_;
   }
 
  public:
   virtual void OnMsg(const Request& msg) {}
 
  private:
-  Writer writer_;
+  std::unique_ptr<Writer> writer_uptr_;
 };  // class ServerReaderForBidiStreaming
 
 }  // namespace grpc_cb

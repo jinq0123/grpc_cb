@@ -3,6 +3,8 @@
 #ifndef GRPC_CB_SERVER_SERVER_READER_FOR_CLIENT_SIDE_STREAMING_H
 #define GRPC_CB_SERVER_SERVER_READER_FOR_CLIENT_SIDE_STREAMING_H
 
+#include <memory>  // for unique_ptr<>
+
 #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/server/server_replier.h>  // for ReplyError()
 #include <grpc_cb/common/status_fwd.h>  // for Status
@@ -15,27 +17,39 @@ template <class Request, class Response>
 class ServerReaderForClientSideStreaming
     : public ServerReader<Request, Response> {
  public:
-  using Replier = ServerReplier<Response>;  // NOT grpc_cb_core::ServerReplier
-  explicit ServerReaderForClientSideStreaming(const Replier& replier)
-      : replier_(replier) {}
+  // Default constructable.
+  ServerReaderForClientSideStreaming() {}
   virtual ~ServerReaderForClientSideStreaming() {}
 
  public:
+  using Replier = ServerReplier<Response>;  // NOT grpc_cb_core::ServerReplier
+
+  // Start server reader.
+  void Start(const CallSptr& call_sptr, const Replier& replier) {
+    replier_uptr_.reset(new Replier(replier));
+    StartForClientSideStreaming(call_sptr);
+  }
+
+ public:
   void Reply(const Response& response) {
-    replier_.Reply(response);
+    assert(replier_uptr_);  // Must after Start().
+    replier_uptr_->Reply(response);
   }
   void ReplyError(const Status& status) {
-    replier_.ReplyError(status);
+    assert(replier_uptr_);  // Must after Start().
+    replier_uptr_->ReplyError(status);
   }
+
   Replier& GetReplier() {
-    return replier_;
+    assert(replier_uptr_);  // Must after Start().
+    return *replier_uptr_;
   }
 
  public:
   virtual void OnMsg(const Request& msg) {}
 
  private:
-  Replier replier_;
+  std::unique_ptr<Replier> replier_uptr_;
 };  // class ServerReaderForClientSideStreaming
 
 }  // namespace grpc_cb
