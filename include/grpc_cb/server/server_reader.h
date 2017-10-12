@@ -31,7 +31,7 @@ template <class Request, class Response>
 Status ServerReader<Request, Response>::OnMsgStr(const std::string& msg_str) {
   Request msg;
   if (!msg.ParseFromString(msg_str))
-    return Status::InternalError("Failed to parse message " + msg.GetTypeName()));
+    return Status::InternalError("Failed to parse message " + msg.GetTypeName());
   OnMsg(msg);  // Calls subclass's implemention.
   return Status::OK;
 }  // OnMsg()
