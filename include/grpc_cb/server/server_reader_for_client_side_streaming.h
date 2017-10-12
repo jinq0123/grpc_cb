@@ -33,7 +33,7 @@ class ServerReaderForClientSideStreaming
   // Start server reader.
   void Start(const CallSptr& call_sptr, const Replier& replier) {
     replier_uptr_.reset(new Replier(replier));
-    StartForClientSideStreaming(call_sptr);
+    StartForClientStreaming(call_sptr);
   }
 
  public:

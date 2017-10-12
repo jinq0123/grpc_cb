@@ -36,7 +36,7 @@ class ServerReaderForBidiStreaming
   // Start server reader.
   void Start(const CallSptr& call_sptr, const Writer& writer) {
     writer_uptr_.reset(new Writer(writer));
-    StartForBidiStreaming(call_sptr);
+    StartForClientStreaming(call_sptr);
   }
 
  public:
