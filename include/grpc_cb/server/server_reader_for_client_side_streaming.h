@@ -22,6 +22,12 @@ class ServerReaderForClientSideStreaming
   virtual ~ServerReaderForClientSideStreaming() {}
 
  public:
+  // Subclass override should call this.
+  void OnError(const Status& status) GRPC_OVERRIDE {
+    ReplyError(status);
+  }
+
+ public:
   using Replier = ServerReplier<Response>;  // NOT grpc_cb_core::ServerReplier
 
   // Start server reader.

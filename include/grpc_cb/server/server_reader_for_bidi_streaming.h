@@ -5,6 +5,9 @@
 
 #include <memory>  // for unique_ptr<>
 
+#include <grpc_cb_core/common/support/config.h>  // for GRPC_OVERRIDE
+
+#include <grpc_cb/common/status_fwd.h>     // for Status
 #include <grpc_cb/server/server_reader.h>  // for ServerReader<>
 #include <grpc_cb/server/server_writer.h>  // for ServerWriter<>
 
@@ -19,6 +22,13 @@ class ServerReaderForBidiStreaming
   // Default constructable.
   ServerReaderForBidiStreaming() {}
   virtual ~ServerReaderForBidiStreaming() {}
+
+ public:
+  // Subclass override should call this.
+  void OnError(const Status& status) GRPC_OVERRIDE {
+    assert(writer_uptr_);  // Must after Start().
+    writer_uptr_->AsyncClose(status);
+  }
 
  public:
   using Writer = ServerWriter<Response>;  // NOT grpc_cb_core::ServerWriter
