@@ -22,7 +22,8 @@ class ServerReaderForClientSideStreaming
   virtual ~ServerReaderForClientSideStreaming() {}
 
  public:
-  // Subclass override should call this.
+  // Default reply error on error.
+  // User can override it to do other things.
   void OnError(const Status& status) GRPC_OVERRIDE {
     ReplyError(status);
   }
@@ -33,7 +34,7 @@ class ServerReaderForClientSideStreaming
   // Start server reader.
   void Start(const CallSptr& call_sptr, const Replier& replier) {
     replier_uptr_.reset(new Replier(replier));
-    StartForClientStreaming(call_sptr);
+    ServerReader<Request, Response>::Start(call_sptr);
   }
 
  public:

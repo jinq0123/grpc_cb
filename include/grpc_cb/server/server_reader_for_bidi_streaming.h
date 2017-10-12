@@ -24,7 +24,8 @@ class ServerReaderForBidiStreaming
   virtual ~ServerReaderForBidiStreaming() {}
 
  public:
-  // Subclass override should call this.
+  // Default close writing on error.
+  // User can override it to do other things.
   void OnError(const Status& status) GRPC_OVERRIDE {
     assert(writer_uptr_);  // Must after Start().
     writer_uptr_->AsyncClose(status);
@@ -36,7 +37,7 @@ class ServerReaderForBidiStreaming
   // Start server reader.
   void Start(const CallSptr& call_sptr, const Writer& writer) {
     writer_uptr_.reset(new Writer(writer));
-    StartForClientStreaming(call_sptr);
+    ServerReader<Request, Response>::Start(call_sptr);
   }
 
  public:
