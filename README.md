@@ -32,7 +32,7 @@ Tutorial shows some codes in the route_guide example.
  See [doc/advanced_usage.md](doc/advanced_usage.md) for more usage examples.
 
 ### Defining the service
-See examples/protos/route_guide.proto.
+See [examples/protos/route_guide.proto](examples/protos/route_guide.proto).
 ```protobuf
 // Interface exported by the server.
 service RouteGuide {
@@ -68,7 +68,7 @@ The generated namespace ```RouteGuide``` contains
 * a ```Service``` class for servers to implement.
 
 ### Creating the client
-See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
+See [examples/cpp_cb/route_guide/route_guide_cb_client.cc](examples/cpp_cb/route_guide/route_guide_cb_client.cc).
 
 #### Creating a stub
 1. Create a shared ```Channel```, specifying the server address.
@@ -222,7 +222,7 @@ See examples/cpp_cb/route_guide/route_guide_cb_client.cc.
 		```
 
 ### Creating the server
-See examples/cpp_cb/route_guide/route_guide_server.cc.
+See [examples/cpp_cb/route_guide/route_guide_server.cc](examples/cpp_cb/route_guide/route_guide_server.cc).
 
 #### Implementing RouteGuide service
 
