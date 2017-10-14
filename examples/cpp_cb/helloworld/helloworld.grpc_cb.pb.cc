@@ -49,14 +49,14 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
     const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr)
     : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}
 
-::grpc_cb::Status Stub::SyncSayHello(
+::grpc_cb::Status Stub::Sync_SayHello(
     const ::helloworld::HelloRequest& request,
     ::helloworld::HelloReply* response) {
   return ::grpc_cb::StubHelper(*this).SyncRequest(
       method_names[0], request, response);
 }
 
-void Stub::AsyncSayHello(
+void Stub::Async_SayHello(
     const ::helloworld::HelloRequest& request,
     const SayHello_RespCb& cb,
     const ::grpc_cb::ErrorCb& ecb) {

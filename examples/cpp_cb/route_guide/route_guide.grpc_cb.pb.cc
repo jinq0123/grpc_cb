@@ -52,14 +52,14 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
     const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr)
     : ::grpc_cb::ServiceStub(channel, cq4n_sptr) {}
 
-::grpc_cb::Status Stub::SyncGetFeature(
+::grpc_cb::Status Stub::Sync_GetFeature(
     const ::routeguide::Point& request,
     ::routeguide::Feature* response) {
   return ::grpc_cb::StubHelper(*this).SyncRequest(
       method_names[0], request, response);
 }
 
-void Stub::AsyncGetFeature(
+void Stub::Async_GetFeature(
     const ::routeguide::Point& request,
     const GetFeature_RespCb& cb,
     const ::grpc_cb::ErrorCb& ecb) {
@@ -70,14 +70,14 @@ void Stub::AsyncGetFeature(
 ::grpc_cb::ClientSyncReader<
     ::routeguide::Rectangle,
     ::routeguide::Feature>
-Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
+Stub::Sync_ListFeatures(const ::routeguide::Rectangle& request) {
   return ::grpc_cb::ClientSyncReader<
           ::routeguide::Rectangle,
           ::routeguide::Feature>(
       GetChannelSptr(), method_names[1], request, GetCallTimeoutMs());
 }
 
-void Stub::AsyncListFeatures(
+void Stub::Async_ListFeatures(
     const ::routeguide::Rectangle& request,
     const ListFeatures_MsgCb& msg_cb,
     const ::grpc_cb::StatusCb& status_cb) {
@@ -92,7 +92,7 @@ void Stub::AsyncListFeatures(
 ::grpc_cb::ClientSyncWriter<
     ::routeguide::Point,
     ::routeguide::RouteSummary>
-Stub::SyncRecordRoute() {
+Stub::Sync_RecordRoute() {
   return ::grpc_cb::ClientSyncWriter<
           ::routeguide::Point,
           ::routeguide::RouteSummary>(
@@ -102,7 +102,7 @@ Stub::SyncRecordRoute() {
 ::grpc_cb::ClientAsyncWriter<
     ::routeguide::Point,
     ::routeguide::RouteSummary>
-Stub::AsyncRecordRoute() {
+Stub::Async_RecordRoute() {
   return ::grpc_cb::ClientAsyncWriter<
       ::routeguide::Point,
       ::routeguide::RouteSummary>(
@@ -113,7 +113,7 @@ Stub::AsyncRecordRoute() {
 ::grpc_cb::ClientSyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>
-Stub::SyncRouteChat() {
+Stub::Sync_RouteChat() {
   return ::grpc_cb::ClientSyncReaderWriter<
       ::routeguide::RouteNote,
       ::routeguide::RouteNote>(
@@ -123,7 +123,7 @@ Stub::SyncRouteChat() {
 ::grpc_cb::ClientAsyncReaderWriter<
     ::routeguide::RouteNote,
     ::routeguide::RouteNote>
-Stub::AsyncRouteChat(
+Stub::Async_RouteChat(
     const ::grpc_cb::StatusCb& status_cb) {
   return ::grpc_cb::ClientAsyncReaderWriter<
       ::routeguide::RouteNote,

@@ -30,7 +30,7 @@ class GreeterClient {
     HelloReply reply;
 
     // The actual RPC.
-    Status status = stub_->SyncSayHello(request, &reply);
+    Status status = stub_->Sync_SayHello(request, &reply);
 
     // Act upon its status.
     if (status.ok()) {
@@ -55,7 +55,7 @@ int main(int argc, char** argv) {
   helloworld::Greeter::Stub stub(channel);
   HelloRequest request;
   request.set_name("async_world");
-  stub.AsyncSayHello(request, [](const helloworld::HelloReply& resp) {
+  stub.Async_SayHello(request, [](const helloworld::HelloReply& resp) {
       std::cout << "Async greeter received: " << resp.message() << std::endl;
     });
   stub.Run();

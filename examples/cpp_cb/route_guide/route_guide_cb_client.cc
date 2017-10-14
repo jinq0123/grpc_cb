@@ -162,7 +162,7 @@ class RouteGuideClient {
     std::cout << "Looking for features between 40, -75 and 42, -73"
         << std::endl;
 
-    auto sync_reader(stub_->SyncListFeatures(rect));
+    auto sync_reader(stub_->Sync_ListFeatures(rect));
     while (sync_reader.ReadOne(&feature)) {
       std::cout << "Found feature called "
                 << feature.name() << " at "
@@ -183,7 +183,7 @@ class RouteGuideClient {
     std::uniform_int_distribution<int> feature_distribution(
         0, feature_list_.size() - 1);
 
-    auto sync_writer(stub_->SyncRecordRoute());
+    auto sync_writer(stub_->Sync_RecordRoute());
     for (int i = 0; i < kPoints; i++) {
       const Feature& f = feature_list_[feature_distribution(generator)];
       std::cout << "Visiting point "
@@ -212,7 +212,7 @@ class RouteGuideClient {
   // Todo: Callback on client stream response and status.
 
   void SyncRouteChat() {
-    auto sync_reader_writer(stub_->SyncRouteChat());
+    auto sync_reader_writer(stub_->Sync_RouteChat());
     auto f = std::async(std::launch::async, [sync_reader_writer]() {
         RunWriteRouteNote(sync_reader_writer);
     });
@@ -231,7 +231,7 @@ class RouteGuideClient {
 
  private:
   bool SyncGetOneFeature(const Point& point, Feature* feature) {
-    Status status = stub_->SyncGetFeature(point, feature);
+    Status status = stub_->Sync_GetFeature(point, feature);
     if (!status.ok()) {
       std::cout << "GetFeature rpc failed." << std::endl;
       return false;
@@ -248,14 +248,14 @@ void GetFeatureAsync(const ChannelSptr& channel) {
   Stub stub(channel);
 
   // Ignore error status.
-  stub.AsyncGetFeature(MakePoint(0, 0),
+  stub.Async_GetFeature(MakePoint(0, 0),
                        [](const Feature& feature) { PrintFeature(feature); });
 
   // Ignore response.
-  stub.AsyncGetFeature(MakePoint(0, 0));
+  stub.Async_GetFeature(MakePoint(0, 0));
 
   Point point1 = MakePoint(409146138, -746188906);
-  stub.AsyncGetFeature(point1,
+  stub.Async_GetFeature(point1,
       [&stub](const Feature& feature) {
         PrintFeature(feature);
         stub.Shutdown();
@@ -274,7 +274,7 @@ void ListFeaturesAsync(const ChannelSptr& channel) {
       400000000, -750000000, 420000000, -730000000);
   std::cout << "Looking for features between 40, -75 and 42, -73" << std::endl;
 
-  stub.AsyncListFeatures(rect,
+  stub.Async_ListFeatures(rect,
     [](const Feature& feature) {
       std::cout << "Got feature " << feature.name() << " at "
           << feature.location().latitude()/kCoordFactor << ", "
@@ -304,7 +304,7 @@ void RecordRouteAsync(const ChannelSptr& channel,
   auto f = std::async(std::launch::async, [&stub]() { stub.Run(); });
 
   // ClientAsyncWriter<Point, RouteSummary> async_writer;
-  auto async_writer = stub.AsyncRecordRoute();
+  auto async_writer = stub.Async_RecordRoute();
   for (int i = 0; i < kPoints; i++) {
     const Feature& f = feature_list[feature_distribution(generator)];
     std::cout << "Visiting point "
@@ -357,7 +357,7 @@ void RouteChatAsync(const ChannelSptr& channel) {
 
   std::atomic_bool bReaderDone = false;
   auto async_reader_writer(
-      stub.AsyncRouteChat([&bReaderDone](const Status& status) {
+      stub.Async_RouteChat([&bReaderDone](const Status& status) {
         if (!status.ok()) {
           std::cout << "RouteChat rpc failed. " << status.GetDetails()
                     << std::endl;
@@ -379,7 +379,7 @@ void TestRpcTimeout(const ChannelSptr& channel) {
   stub.SetCallTimeoutMs(INT64_MIN);
   Point point = MakePoint(0, 0);
   Feature feature;
-  Status status = stub.SyncGetFeature(point, &feature);
+  Status status = stub.Sync_GetFeature(point, &feature);
   assert(status.GetCode() == GRPC_STATUS_DEADLINE_EXCEEDED);
 }
 

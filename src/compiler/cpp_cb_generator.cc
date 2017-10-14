@@ -151,12 +151,12 @@ void PrintHeaderClientMethodPublic(
 
   if (NoStreaming(method)) {
       printer->Print(*vars,
-          "::grpc_cb::Status Sync$Method$(\n"
+          "::grpc_cb::Status Sync_$Method$(\n"
           "    const $Request$& request,\n"
           "    $Response$* response = nullptr);\n"
           "\n"
           "using $Method$_RespCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
-          "void Async$Method$(\n"
+          "void Async_$Method$(\n"
           "    const $Request$& request,\n"
           "    const $Method$_RespCb& cb = $Method$_RespCb(),\n"
           "    const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());\n\n");
@@ -168,14 +168,14 @@ void PrintHeaderClientMethodPublic(
           "        $Request$,\n"
           "        $Response$>;\n"
           "$Method$_SyncWriter\n"
-          "Sync$Method$();\n"
+          "Sync_$Method$();\n"
           "\n"
           "using $Method$_AsyncWriter =\n"
           "    ::grpc_cb::ClientAsyncWriter<\n"
           "        $Request$,\n"
           "        $Response$>;\n"
           "$Method$_AsyncWriter\n"
-          "Async$Method$();\n\n");
+          "Async_$Method$();\n\n");
   } else if (ServerOnlyStreaming(method)) {
       printer->Print(
           *vars,
@@ -184,10 +184,10 @@ void PrintHeaderClientMethodPublic(
           "        $Request$,\n"
           "        $Response$>;\n"
           "$Method$_SyncReader\n"
-          "Sync$Method$(const $Request$& request);\n"
+          "Sync_$Method$(const $Request$& request);\n"
           "\n"
           "using $Method$_MsgCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
-          "void Async$Method$(const $Request$& request,\n"
+          "void Async_$Method$(const $Request$& request,\n"
           "    const $Method$_MsgCb& msg_cb = $Method$_MsgCb(),\n"
           "    const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());\n\n");
   } else if (BidiStreaming(method)) {
@@ -198,14 +198,14 @@ void PrintHeaderClientMethodPublic(
           "        $Request$,\n"
           "        $Response$>;\n"
           "$Method$_SyncReaderWriter\n"
-          "Sync$Method$();\n"
+          "Sync_$Method$();\n"
           "\n"
           "using $Method$_AsyncReaderWriter =\n"
           "    ::grpc_cb::ClientAsyncReaderWriter<\n"
           "        $Request$,\n"
           "        $Response$>;\n"
           "$Method$_AsyncReaderWriter\n"
-          "Async$Method$(const ::grpc_cb::StatusCb& status_cb);\n\n");
+          "Async_$Method$(const ::grpc_cb::StatusCb& status_cb);\n\n");
   }
 }
 
@@ -521,7 +521,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
       grpc_cpp_generator::ClassName(method->output_type(), true);
   if (NoStreaming(method)) {
     printer->Print(*vars,
-        "::grpc_cb::Status Stub::Sync$Method$(\n"
+        "::grpc_cb::Status Stub::Sync_$Method$(\n"
         "    const $Request$& request,\n"
         "    $Response$* response) {\n"
         "  return ::grpc_cb::StubHelper(*this).SyncRequest(\n"
@@ -529,7 +529,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "}\n"
         "\n");
     printer->Print(*vars,
-        "void Stub::Async$Method$(\n"
+        "void Stub::Async_$Method$(\n"
         "    const $Request$& request,\n"
         "    const $Method$_RespCb& cb,\n"
         "    const ::grpc_cb::ErrorCb& ecb) {\n"
@@ -542,7 +542,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "::grpc_cb::ClientSyncWriter<\n"
                    "    $Request$,\n"
                    "    $Response$>\n"
-                   "Stub::Sync$Method$() {\n"
+                   "Stub::Sync_$Method$() {\n"
                    "  return ::grpc_cb::ClientSyncWriter<\n"
                    "          $Request$,\n"
                    "          $Response$>(\n"
@@ -552,7 +552,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "::grpc_cb::ClientAsyncWriter<\n"
                    "    $Request$,\n"
                    "    $Response$>\n"
-                   "Stub::Async$Method$() {\n"
+                   "Stub::Async_$Method$() {\n"
                    "  return ::grpc_cb::ClientAsyncWriter<\n"
                    "      $Request$,\n"
                    "      $Response$>(\n"
@@ -564,14 +564,14 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "::grpc_cb::ClientSyncReader<\n"
                    "    $Request$,\n"
                    "    $Response$>\n"
-                   "Stub::Sync$Method$(const $Request$& request) {\n"
+                   "Stub::Sync_$Method$(const $Request$& request) {\n"
                    "  return ::grpc_cb::ClientSyncReader<\n"
                    "          $Request$,\n"
                    "          $Response$>(\n"
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
-                   "void Stub::Async$Method$(\n"
+                   "void Stub::Async_$Method$(\n"
                    "    const $Request$& request,\n"
                    "    const $Method$_MsgCb& msg_cb,\n"
                    "    const ::grpc_cb::StatusCb& status_cb) {\n"
@@ -587,7 +587,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "::grpc_cb::ClientSyncReaderWriter<\n"
                    "    $Request$,\n"
                    "    $Response$>\n"
-                   "Stub::Sync$Method$() {\n"
+                   "Stub::Sync_$Method$() {\n"
                    "  return ::grpc_cb::ClientSyncReaderWriter<\n"
                    "      $Request$,\n"
                    "      $Response$>(\n"
@@ -597,7 +597,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "::grpc_cb::ClientAsyncReaderWriter<\n"
                    "    $Request$,\n"
                    "    $Response$>\n"
-                   "Stub::Async$Method$(\n"
+                   "Stub::Async_$Method$(\n"
                    "    const ::grpc_cb::StatusCb& status_cb) {\n"
                    "  return ::grpc_cb::ClientAsyncReaderWriter<\n"
                    "      $Request$,\n"

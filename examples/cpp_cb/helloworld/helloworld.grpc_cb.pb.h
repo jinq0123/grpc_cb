@@ -20,12 +20,12 @@ class Stub : public ::grpc_cb::ServiceStub {
   explicit Stub(const ::grpc_cb::ChannelSptr& channel,
       const ::grpc_cb::CompletionQueueForNextSptr& cq4n_sptr = nullptr);
 
-  ::grpc_cb::Status SyncSayHello(
+  ::grpc_cb::Status Sync_SayHello(
       const ::helloworld::HelloRequest& request,
       ::helloworld::HelloReply* response = nullptr);
 
   using SayHello_RespCb = ::grpc_cb::MsgCbTmpl<::helloworld::HelloReply>;
-  void AsyncSayHello(
+  void Async_SayHello(
       const ::helloworld::HelloRequest& request,
       const SayHello_RespCb& cb = SayHello_RespCb(),
       const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
