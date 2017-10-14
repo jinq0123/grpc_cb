@@ -158,7 +158,7 @@ void PrintHeaderClientMethodPublic(
           "using $Method$_RespCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
           "void Async$Method$(\n"
           "    const $Request$& request,\n"
-          "    const $Method$_RespCb& cb = $Method$Callback(),\n"
+          "    const $Method$_RespCb& cb = $Method$_RespCb(),\n"
           "    const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());\n\n");
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
