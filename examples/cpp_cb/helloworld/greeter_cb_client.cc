@@ -2,8 +2,6 @@
 #include <memory>
 #include <string>
 
-#include <grpc_cb/grpc_cb.h>
-
 #include "helloworld.grpc_cb.pb.h"
 
 using grpc_cb::Channel;

@@ -1,6 +1,7 @@
 /*
  *
  * Copyright 2015, Google Inc.
+ * Copyright 2017, Jin Qing (http://blog.csdn.net/jq0123).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,12 +36,8 @@
 #include <memory>
 #include <string>
 
-#include <grpc_cb/grpc_cb.h>
-
 #include "helloworld.grpc_cb.pb.h"
 
-using grpc_cb::Server;
-using grpc_cb::Status;
 using helloworld::HelloRequest;
 using helloworld::HelloReply;
 
@@ -61,7 +58,7 @@ void RunServer() {
   std::string server_address("0.0.0.0:50051");
   GreeterServiceImpl service;
 
-  Server svr;
+  grpc_cb::Server svr;
   // Listen on the given address without any authentication mechanism.
   svr.AddListeningPort(server_address);
   // Register "service" as the instance through which we'll communicate with clients.
@@ -76,6 +73,5 @@ void RunServer() {
 
 int main(int argc, char** argv) {
   RunServer();
-
   return 0;
 }

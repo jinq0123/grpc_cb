@@ -1,6 +1,7 @@
 /*
  *
  * Copyright 2015, Google Inc.
+ * Copyright 2017, Jin Qing (http://blog.csdn.net/jq0123).
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,16 +40,9 @@
 #include <string>
 #include <thread>
 
-// DEL
-//#include <grpc/grpc.h>
-//#include <grpc_cb/server.h>
-//#include <grpc_cb/security/server_credentials.h>
 #include "helper.h"
 #include "route_guide.grpc_cb.pb.h"
 
-using grpc_cb::Server;
-using grpc_cb::ServerWriter;
-using grpc_cb::Status;
 using routeguide::Point;
 using routeguide::Feature;
 using routeguide::Rectangle;
@@ -229,7 +223,7 @@ void RunServer(const std::string& db_path) {
   std::string server_address("0.0.0.0:50051");
   RouteGuideImpl service(db_path);
 
-  Server svr;
+  grpc_cb::Server svr;
   svr.AddListeningPort(server_address);
   svr.RegisterService(service);
   std::cout << "Server listening on " << server_address << std::endl;
