@@ -61,7 +61,7 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
 
 void Stub::AsyncGetFeature(
     const ::routeguide::Point& request,
-    const GetFeatureCallback& cb,
+    const GetFeature_RespCb& cb,
     const ::grpc_cb::ErrorCb& ecb) {
   ::grpc_cb::StubHelper(*this).AsyncRequest(
       method_names[0], request, cb, ecb);

@@ -155,10 +155,10 @@ void PrintHeaderClientMethodPublic(
           "    const $Request$& request,\n"
           "    $Response$* response = nullptr);\n"
           "\n"
-          "using $Method$Callback = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
+          "using $Method$_RespCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
           "void Async$Method$(\n"
           "    const $Request$& request,\n"
-          "    const $Method$Callback& cb = $Method$Callback(),\n"
+          "    const $Method$_RespCb& cb = $Method$Callback(),\n"
           "    const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());\n\n");
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
@@ -532,7 +532,7 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
     printer->Print(*vars,
         "void Stub::Async$Method$(\n"
         "    const $Request$& request,\n"
-        "    const $Method$Callback& cb,\n"
+        "    const $Method$_RespCb& cb,\n"
         "    const ::grpc_cb::ErrorCb& ecb) {\n"
         "  ::grpc_cb::StubHelper(*this).AsyncRequest(\n"
         "      method_names[0], request, cb, ecb);\n"

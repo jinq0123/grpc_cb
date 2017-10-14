@@ -58,7 +58,7 @@ Stub::Stub(const ::grpc_cb::ChannelSptr& channel,
 
 void Stub::AsyncSayHello(
     const ::helloworld::HelloRequest& request,
-    const SayHelloCallback& cb,
+    const SayHello_RespCb& cb,
     const ::grpc_cb::ErrorCb& ecb) {
   ::grpc_cb::StubHelper(*this).AsyncRequest(
       method_names[0], request, cb, ecb);

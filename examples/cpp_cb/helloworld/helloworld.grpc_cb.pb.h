@@ -24,10 +24,10 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::helloworld::HelloRequest& request,
       ::helloworld::HelloReply* response = nullptr);
 
-  using SayHelloCallback = ::grpc_cb::MsgCbTmpl<::helloworld::HelloReply>;
+  using SayHello_RespCb = ::grpc_cb::MsgCbTmpl<::helloworld::HelloReply>;
   void AsyncSayHello(
       const ::helloworld::HelloRequest& request,
-      const SayHelloCallback& cb = SayHelloCallback(),
+      const SayHello_RespCb& cb = SayHello_RespCb(),
       const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
 
 };  // class Stub

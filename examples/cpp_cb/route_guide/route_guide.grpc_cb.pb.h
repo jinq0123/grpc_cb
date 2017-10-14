@@ -24,10 +24,10 @@ class Stub : public ::grpc_cb::ServiceStub {
       const ::routeguide::Point& request,
       ::routeguide::Feature* response = nullptr);
 
-  using GetFeatureCallback = ::grpc_cb::MsgCbTmpl<::routeguide::Feature>;
+  using GetFeature_RespCb = ::grpc_cb::MsgCbTmpl<::routeguide::Feature>;
   void AsyncGetFeature(
       const ::routeguide::Point& request,
-      const GetFeatureCallback& cb = GetFeatureCallback(),
+      const GetFeature_RespCb& cb = GetFeature_RespCb(),
       const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
 
   using ListFeatures_SyncReader =
