@@ -186,8 +186,7 @@ void PrintHeaderClientMethodPublic(
           "$Method$_SyncReader\n"
           "Sync$Method$(const $Request$& request);\n"
           "\n"
-          "using $Method$_MsgCb = std::function<\n"
-          "    void(const $Response$&)>;\n"
+          "using $Method$_MsgCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
           "void Async$Method$(const $Request$& request,\n"
           "    const $Method$_MsgCb& msg_cb = $Method$_MsgCb(),\n"
           "    const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());\n\n");

@@ -37,9 +37,7 @@ class Stub : public ::grpc_cb::ServiceStub {
   ListFeatures_SyncReader
   SyncListFeatures(const ::routeguide::Rectangle& request);
 
-  // XXX = MsgCbTmpl<>
-  using ListFeatures_MsgCb = std::function<
-      void(const ::routeguide::Feature&)>;
+  using ListFeatures_MsgCb = ::grpc_cb::MsgCbTmpl<::routeguide::Feature>;
   void AsyncListFeatures(const ::routeguide::Rectangle& request,
       const ListFeatures_MsgCb& msg_cb = ListFeatures_MsgCb(),
       const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());
