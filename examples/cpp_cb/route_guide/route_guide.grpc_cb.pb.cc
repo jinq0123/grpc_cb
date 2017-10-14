@@ -99,37 +99,25 @@ Stub::Sync_RecordRoute() {
       GetChannelSptr(), method_names[2], GetCallTimeoutMs());
 }
 
-::grpc_cb::ClientAsyncWriter<
-    ::routeguide::Point,
-    ::routeguide::RouteSummary>
+Stub::RecordRoute_AsyncWriter
 Stub::Async_RecordRoute() {
-  return ::grpc_cb::ClientAsyncWriter<
-      ::routeguide::Point,
-      ::routeguide::RouteSummary>(
-          GetChannelSptr(), method_names[2], GetCompletionQueue(),
-          GetCallTimeoutMs());
+  return RecordRoute_AsyncWriter(
+      GetChannelSptr(), method_names[2], GetCompletionQueue(),
+      GetCallTimeoutMs());
 }
 
-::grpc_cb::ClientSyncReaderWriter<
-    ::routeguide::RouteNote,
-    ::routeguide::RouteNote>
+Stub::RouteChat_SyncReaderWriter
 Stub::Sync_RouteChat() {
-  return ::grpc_cb::ClientSyncReaderWriter<
-      ::routeguide::RouteNote,
-      ::routeguide::RouteNote>(
-          GetChannelSptr(), method_names[3], GetCallTimeoutMs());
+  return RouteChat_SyncReaderWriter(
+      GetChannelSptr(), method_names[3], GetCallTimeoutMs());
 }
 
-::grpc_cb::ClientAsyncReaderWriter<
-    ::routeguide::RouteNote,
-    ::routeguide::RouteNote>
+Stub::RouteChat_AsyncReaderWriter
 Stub::Async_RouteChat(
     const ::grpc_cb::StatusCb& status_cb) {
-  return ::grpc_cb::ClientAsyncReaderWriter<
-      ::routeguide::RouteNote,
-      ::routeguide::RouteNote>(
-          GetChannelSptr(), method_names[3], GetCompletionQueue(),
-          GetCallTimeoutMs(), status_cb);
+  return RouteChat_AsyncReaderWriter(
+      GetChannelSptr(), method_names[3], GetCompletionQueue(),
+      GetCallTimeoutMs(), status_cb);
 }
 
 Service::Service() {}

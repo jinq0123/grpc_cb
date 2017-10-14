@@ -552,15 +552,11 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "      GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
-                   "::grpc_cb::ClientAsyncWriter<\n"
-                   "    $Request$,\n"
-                   "    $Response$>\n"
+                   "Stub::$Method$_AsyncWriter\n"
                    "Stub::Async_$Method$() {\n"
-                   "  return ::grpc_cb::ClientAsyncWriter<\n"
-                   "      $Request$,\n"
-                   "      $Response$>(\n"
-                   "          GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
-                   "          GetCallTimeoutMs());\n"
+                   "  return $Method$_AsyncWriter(\n"
+                   "      GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
+                   "      GetCallTimeoutMs());\n"
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
@@ -587,26 +583,18 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "}\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
-                   "::grpc_cb::ClientSyncReaderWriter<\n"
-                   "    $Request$,\n"
-                   "    $Response$>\n"
+                   "Stub::$Method$_SyncReaderWriter\n"
                    "Stub::Sync_$Method$() {\n"
-                   "  return ::grpc_cb::ClientSyncReaderWriter<\n"
-                   "      $Request$,\n"
-                   "      $Response$>(\n"
-                   "          GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
+                   "  return $Method$_SyncReaderWriter(\n"
+                   "      GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
-                   "::grpc_cb::ClientAsyncReaderWriter<\n"
-                   "    $Request$,\n"
-                   "    $Response$>\n"
+                   "Stub::$Method$_AsyncReaderWriter\n"
                    "Stub::Async_$Method$(\n"
                    "    const ::grpc_cb::StatusCb& status_cb) {\n"
-                   "  return ::grpc_cb::ClientAsyncReaderWriter<\n"
-                   "      $Request$,\n"
-                   "      $Response$>(\n"
-                   "          GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
-                   "          GetCallTimeoutMs(), status_cb);\n"
+                   "  return $Method$_AsyncReaderWriter(\n"
+                   "      GetChannelSptr(), method_names[$Idx$], GetCompletionQueue(),\n"
+                   "      GetCallTimeoutMs(), status_cb);\n"
                    "}\n\n");
   }  // if
 }
