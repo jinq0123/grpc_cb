@@ -79,14 +79,14 @@ Stub::SyncListFeatures(const ::routeguide::Rectangle& request) {
 
 void Stub::AsyncListFeatures(
     const ::routeguide::Rectangle& request,
-    const ListFeaturesMsgCb& on_msg,
+    const ListFeatures_MsgCb& msg_cb,
     const ::grpc_cb::StatusCb& status_cb) {
   ::grpc_cb::ClientAsyncReader<
           ::routeguide::Rectangle,
           ::routeguide::Feature> reader(
       GetChannelSptr(), method_names[1], request, GetCompletionQueue(),
       GetCallTimeoutMs());
-  reader.ReadEach(on_msg, status_cb);
+  reader.ReadEach(msg_cb, status_cb);
 }
 
 ::grpc_cb::ClientSyncWriter<

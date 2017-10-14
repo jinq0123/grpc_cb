@@ -186,10 +186,10 @@ void PrintHeaderClientMethodPublic(
           "$Method$_SyncReader\n"
           "Sync$Method$(const $Request$& request);\n"
           "\n"
-          "using $Method$MsgCb = std::function<\n"
+          "using $Method$_MsgCb = std::function<\n"
           "    void(const $Response$&)>;\n"
           "void Async$Method$(const $Request$& request,\n"
-          "    const $Method$MsgCb& on_msg = $Method$MsgCb(),\n"
+          "    const $Method$_MsgCb& msg_cb = $Method$_MsgCb(),\n"
           "    const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());\n\n");
   } else if (BidiStreaming(method)) {
       printer->Print(
@@ -574,14 +574,14 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "\n"
                    "void Stub::Async$Method$(\n"
                    "    const $Request$& request,\n"
-                   "    const $Method$MsgCb& on_msg,\n"
+                   "    const $Method$_MsgCb& msg_cb,\n"
                    "    const ::grpc_cb::StatusCb& status_cb) {\n"
                    "  ::grpc_cb::ClientAsyncReader<\n"
                    "          $Request$,\n"
                    "          $Response$> reader(\n"
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCompletionQueue(),\n"
                    "      GetCallTimeoutMs());\n"
-                   "  reader.ReadEach(on_msg, status_cb);\n"
+                   "  reader.ReadEach(msg_cb, status_cb);\n"
                    "}\n\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
