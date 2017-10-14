@@ -276,13 +276,16 @@ void ListFeaturesAsync(const ChannelSptr& channel) {
 
   stub.Async_ListFeatures(rect,
     [](const Feature& feature) {
-      std::cout << "Got feature " << feature.name() << " at "
+      std::cout << "Found feature called " << feature.name() << " at "
           << feature.location().latitude()/kCoordFactor << ", "
           << feature.location().longitude()/kCoordFactor << std::endl;
     },
     [&stub](const Status& status) {
-      std::cout << "End status: (" << status.GetCode() << ") "
-          << status.GetDetails() << std::endl;
+      if (status.ok()) {
+        std::cout << "ListFeatures rpc succeeded." << std::endl;
+      } else {
+        std::cout << "ListFeatures rpc failed." << std::endl;
+      }
       stub.Shutdown();  // To break Run().
     });
   stub.Run();  // until stub.Shutdown()
