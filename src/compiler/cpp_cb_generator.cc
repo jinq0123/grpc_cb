@@ -542,13 +542,9 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
         "\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
-                   "::grpc_cb::ClientSyncWriter<\n"
-                   "    $Request$,\n"
-                   "    $Response$>\n"
+                   "Stub::$Method$_SyncWriter\n"
                    "Stub::Sync_$Method$() {\n"
-                   "  return ::grpc_cb::ClientSyncWriter<\n"
-                   "          $Request$,\n"
-                   "          $Response$>(\n"
+                   "  return $Method$_SyncWriter(\n"
                    "      GetChannelSptr(), method_names[$Idx$], GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
@@ -560,13 +556,9 @@ void PrintSourceClientMethod(grpc::protobuf::io::Printer *printer,
                    "}\n\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
-                   "::grpc_cb::ClientSyncReader<\n"
-                   "    $Request$,\n"
-                   "    $Response$>\n"
+                   "Stub::$Method$_SyncReader\n"
                    "Stub::Sync_$Method$(const $Request$& request) {\n"
-                   "  return ::grpc_cb::ClientSyncReader<\n"
-                   "          $Request$,\n"
-                   "          $Response$>(\n"
+                   "  return $Method$_SyncReader(\n"
                    "      GetChannelSptr(), method_names[$Idx$], request, GetCallTimeoutMs());\n"
                    "}\n"
                    "\n"
