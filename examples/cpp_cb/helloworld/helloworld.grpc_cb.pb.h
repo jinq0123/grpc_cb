@@ -45,14 +45,14 @@ class Service : public ::grpc_cb::Service {
  public:
   using SayHello_Replier = ::grpc_cb::ServerReplier<
       ::helloworld::HelloReply>;
- private:
-  void SayHello(
-      grpc_byte_buffer& request_buffer,
-      const SayHello_Replier& replier);
  protected:
   virtual void SayHello(
       const ::helloworld::HelloRequest& request,
       SayHello_Replier replier);
+ private:
+  void SayHello(
+      grpc_byte_buffer& request_buffer,
+      const SayHello_Replier& replier);
 
  private:
   virtual const ::google::protobuf::ServiceDescriptor& GetDescriptor()

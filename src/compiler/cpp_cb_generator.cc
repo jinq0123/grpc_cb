@@ -222,18 +222,17 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         " public:\n"
         "  using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
         "      $Response$>;\n"
+        " protected:\n"
+        "  virtual void $Method$(\n"
+        "      const $Request$& request,\n"
+        "      $Method$_Replier replier);\n"
         " private:\n"
         "  void $Method$(\n"
         "      grpc_byte_buffer& request_buffer,\n"
         "      const $Method$_Replier& replier);\n"
-        " protected:\n"
-        "  virtual void $Method$(\n"
-        "      const $Request$& request,\n"
-        "      $Method$_Replier replier);\n\n");
+        "\n");
   } else if (ClientOnlyStreaming(method)) {
     printer->Print(*vars,
-        " private:\n"
-        "  void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
         " public:\n"
         "  using $Method$_Replier = ::grpc_cb::ServerReplier<\n"
         "      $Response$>;\n"
@@ -242,23 +241,25 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
         " protected:\n"
         "  virtual $Method$_ReaderSptr $Method$(\n"
-        "      $Method$_Replier replier);\n\n");
+        "      $Method$_Replier replier);\n"
+        " private:\n"
+        "  void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
+        "\n");
   } else if (ServerOnlyStreaming(method)) {
     printer->Print(*vars,
         " public:\n"
         "  using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
         "      $Response$>;\n"
-        " private:\n"
-        "  void $Method$(grpc_byte_buffer& request_buffer,\n"
-        "      const $Method$_Writer& writer);\n"
         " protected:\n"
         "  virtual void $Method$(\n"
         "      const $Request$& request,\n"
-        "      $Method$_Writer writer);\n\n");
+        "      $Method$_Writer writer);\n"
+        " private:\n"
+        "  void $Method$(grpc_byte_buffer& request_buffer,\n"
+        "      const $Method$_Writer& writer);\n"
+        "\n");
   } else if (BidiStreaming(method)) {
     printer->Print(*vars,
-        " private:\n"
-        "  void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
         " public:\n"
         "  using $Method$_Writer = ::grpc_cb::ServerWriter<\n"
         "      $Response$>;\n"
@@ -267,7 +268,10 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "  using $Method$_ReaderSptr = std::shared_ptr<$Method$_Reader>;\n"
         " protected:\n"
         "  virtual $Method$_ReaderSptr $Method$(\n"
-        "      $Method$_Writer writer);\n\n");
+        "      $Method$_Writer writer);\n"
+        " private:\n"
+        "  void $Method$(const ::grpc_cb::CallSptr& call_sptr);\n"
+        "\n");
   }
 }
 
