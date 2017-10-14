@@ -50,7 +50,6 @@ class Service : public ::grpc_cb::Service {
       grpc_byte_buffer& request_buffer,
       const SayHello_Replier& replier);
  protected:
-  // Todo: virtual void SayHello(const std::string& request_buffer, replier);
   virtual void SayHello(
       const ::helloworld::HelloRequest& request,
       SayHello_Replier replier);

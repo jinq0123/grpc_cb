@@ -227,7 +227,6 @@ void PrintHeaderServiceMethod(grpc::protobuf::io::Printer *printer,
         "      grpc_byte_buffer& request_buffer,\n"
         "      const $Method$_Replier& replier);\n"
         " protected:\n"
-        "  // Todo: virtual void $Method$(const std::string& request_buffer, replier);\n"
         "  virtual void $Method$(\n"
         "      const $Request$& request,\n"
         "      $Method$_Replier replier);\n\n");

@@ -90,7 +90,6 @@ class Service : public ::grpc_cb::Service {
       grpc_byte_buffer& request_buffer,
       const GetFeature_Replier& replier);
  protected:
-  // Todo: virtual void GetFeature(const std::string& request_buffer, replier);
   virtual void GetFeature(
       const ::routeguide::Point& request,
       GetFeature_Replier replier);
