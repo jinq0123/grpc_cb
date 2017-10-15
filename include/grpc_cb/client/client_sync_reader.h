@@ -17,7 +17,6 @@ namespace grpc_cb {
 template <class Request, class Response>
 class ClientSyncReader GRPC_FINAL {
  public:
-  // Todo: Also need to template request?
   ClientSyncReader(const ChannelSptr& channel, const std::string& method,
                    const Request& request, int64_t timeout_ms)
       : core_sptr_(new grpc_cb_core::ClientSyncReader(
