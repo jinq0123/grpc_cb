@@ -158,8 +158,8 @@ void PrintHeaderClientMethodPublic(
           "using $Method$_RespCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
           "void Async_$Method$(\n"
           "    const $Request$& request,\n"
-          "    const $Method$_RespCb& cb = $Method$_RespCb(),\n"
-          "    const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());\n\n");
+          "    const $Method$_RespCb& cb = nullptr,\n"
+          "    const ::grpc_cb::ErrorCb& ecb = nullptr);\n\n");
   } else if (ClientOnlyStreaming(method)) {
       printer->Print(
           *vars,
@@ -188,8 +188,8 @@ void PrintHeaderClientMethodPublic(
           "\n"
           "using $Method$_MsgCb = ::grpc_cb::MsgCbTmpl<$Response$>;\n"
           "void Async_$Method$(const $Request$& request,\n"
-          "    const $Method$_MsgCb& msg_cb = $Method$_MsgCb(),\n"
-          "    const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());\n\n");
+          "    const $Method$_MsgCb& msg_cb = nullptr,\n"
+          "    const ::grpc_cb::StatusCb& status_cb = nullptr);\n\n");
   } else if (BidiStreaming(method)) {
       printer->Print(
           *vars,

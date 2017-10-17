@@ -43,7 +43,7 @@ class ClientAsyncWriter GRPC_FINAL {
   }
 
   using CloseCb = std::function<void (const Status&, const Response&)>;
-  void Close(const CloseCb& close_cb = CloseCb()) {
+  void Close(const CloseCb& close_cb = nullptr) {
     core_sptr_->Close(WrapCloseCb(close_cb));
   }  // Close()
 

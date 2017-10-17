@@ -27,8 +27,8 @@ class Stub : public ::grpc_cb::ServiceStub {
   using GetFeature_RespCb = ::grpc_cb::MsgCbTmpl<::routeguide::Feature>;
   void Async_GetFeature(
       const ::routeguide::Point& request,
-      const GetFeature_RespCb& cb = GetFeature_RespCb(),
-      const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
+      const GetFeature_RespCb& cb = nullptr,
+      const ::grpc_cb::ErrorCb& ecb = nullptr);
 
   using ListFeatures_SyncReader =
       ::grpc_cb::ClientSyncReader<
@@ -39,8 +39,8 @@ class Stub : public ::grpc_cb::ServiceStub {
 
   using ListFeatures_MsgCb = ::grpc_cb::MsgCbTmpl<::routeguide::Feature>;
   void Async_ListFeatures(const ::routeguide::Rectangle& request,
-      const ListFeatures_MsgCb& msg_cb = ListFeatures_MsgCb(),
-      const ::grpc_cb::StatusCb& status_cb = ::grpc_cb::StatusCb());
+      const ListFeatures_MsgCb& msg_cb = nullptr,
+      const ::grpc_cb::StatusCb& status_cb = nullptr);
 
   using RecordRoute_SyncWriter =
       ::grpc_cb::ClientSyncWriter<

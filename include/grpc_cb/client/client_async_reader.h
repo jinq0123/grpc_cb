@@ -34,7 +34,7 @@ class ClientAsyncReader GRPC_FINAL {
  public:
   using MsgCb = MsgCbTmpl<Response>;
   void ReadEach(const MsgCb& msg_cb,
-      const StatusCb& status_cb = StatusCb()) const {
+      const StatusCb& status_cb = nullptr) const {
     grpc_cb_core::MsgStrCb msg_str_cb = WrapMsgCb(msg_cb);
     core_sptr_->ReadEach(msg_str_cb, status_cb);
   }

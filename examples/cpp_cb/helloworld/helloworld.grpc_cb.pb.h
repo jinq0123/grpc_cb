@@ -27,8 +27,8 @@ class Stub : public ::grpc_cb::ServiceStub {
   using SayHello_RespCb = ::grpc_cb::MsgCbTmpl<::helloworld::HelloReply>;
   void Async_SayHello(
       const ::helloworld::HelloRequest& request,
-      const SayHello_RespCb& cb = SayHello_RespCb(),
-      const ::grpc_cb::ErrorCb& ecb = ::grpc_cb::ErrorCb());
+      const SayHello_RespCb& cb = nullptr,
+      const ::grpc_cb::ErrorCb& ecb = nullptr);
 
 };  // class Stub
 
