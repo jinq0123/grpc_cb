@@ -349,7 +349,7 @@ void AsyncWriteRouteNotes(Stub::RouteChat_AsyncReaderWriter async_reader_writer)
     async_reader_writer.Write(note);
     RandomSleep();
   }
-  async_reader_writer.CloseWriting();  // Optional.
+  async_reader_writer.CloseWriting();  // Tell server.
 }
 
 void RouteChatAsync(const ChannelSptr& channel) {
