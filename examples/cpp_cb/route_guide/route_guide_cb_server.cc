@@ -203,7 +203,8 @@ class RouteGuideImpl final : public routeguide::RouteGuide::Service {
         RouteChat_Writer writer = GetWriter();
         std::thread t([writer]() {
           std::this_thread::sleep_for(std::chrono::seconds(1));
-          writer.Write(RouteNote());
+          // writer can be kept and used later
+          // writer.Write(RouteNote());
         });
         t.detach();
       }  // OnEnd()
