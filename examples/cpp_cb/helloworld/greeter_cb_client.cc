@@ -53,9 +53,10 @@ int main(int argc, char** argv) {
   helloworld::Greeter::Stub stub(channel);
   HelloRequest request;
   request.set_name("async_world");
-  stub.Async_SayHello(request, [](const helloworld::HelloReply& resp) {
+  stub.Async_SayHello(request, [&stub](const helloworld::HelloReply& resp) {
       std::cout << "Async greeter received: " << resp.message() << std::endl;
+      stub.Shutdown();  // to break stub.Run()
     });
-  stub.Run();
+  stub.Run();  // untill stub.Shutdown()
   return 0;
 }

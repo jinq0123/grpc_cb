@@ -19,7 +19,7 @@ bool Service::IsMethodClientStreaming(size_t method_index) const {
   assert(method_index < GetMethodCount());
   const ::google::protobuf::ServiceDescriptor& svc_desc = GetDescriptor();
   const ::google::protobuf::MethodDescriptor* method_desc =
-    svc_desc.method(method_index);
+    svc_desc.method(static_cast<int>(method_index));
   assert(method_desc);
   return method_desc->client_streaming();
 }
