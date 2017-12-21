@@ -7,6 +7,11 @@ conan_basic_setup()
 if(MSVC)
     add_definitions(-D_WIN32_WINNT=0x600) # This is a GRPC requirement!!
 endif()
+
+if(NOT MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+endif()
+
 include_directories(${CONAN_INCLUDE_DIRS})
 
 add_executable(example example.cpp)
