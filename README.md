@@ -8,7 +8,7 @@ Depend on [grpc_cb_core](https://github.com/jinq0123/grpc_cb_core).
 ### Build with conan
 1. Install [conan](http://docs.conan.io/en/latest/installation.html).
 1. `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test`
-1. `conan create user/channel --build missing`
+1. `conan create . user/channel --build missing`
     * The result `grpc_cb.lib` is in `~/.conan/data/grpc_cb/0.1/user/channel/package/`...
 
 ### VS solution
