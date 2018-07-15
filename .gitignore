@@ -51,3 +51,4 @@ test_package/build
 
 /premake/conan_install_x64.bat
 /premake/conan_install_debug_x64.bat
+/premake/conanbuildinfo.txt

@@ -2,7 +2,7 @@ REM Please install conan first:
 REM http://docs.conan.io/en/latest/installation.html
 
 REM Ignore if ERROR: Remote 'jinq0123' already exists with same URL
-conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test
+conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/conan
 
 set arg=--build missing --build outdated --update
 
