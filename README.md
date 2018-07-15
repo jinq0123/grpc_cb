@@ -1,17 +1,17 @@
 # gRPC_cb
 C++ [gRPC](http://www.grpc.io/) library with protobuf and callback interface. 
 It is easier to use than grpc++.
-Depend on [grpc_cb_core](https://github.com/jinq0123/grpc_cb_core). 
+It depends on [grpc_cb_core](https://github.com/jinq0123/grpc_cb_core). 
 
-## Build
-
-### Build with conan
+## Install with conan
 1. Install [conan](http://docs.conan.io/en/latest/installation.html).
-1. `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/test`
-1. `conan create . user/channel --build missing`
-    * The result `grpc_cb.lib` is in `~/.conan/data/grpc_cb/0.1/user/channel/package/`...
+1. Add conan repository: `conan remote add remote_bintray_jinq0123 https://api.bintray.com/conan/jinq0123/conan`
+1. Install: `conan install grpc_cb/0.2@jinq0123/testing`
+    * The result `grpc_cb.lib` is in `~/.conan/data/grpc_cb/0.2/jinq0123/testing/package/`...
+1. Or create: `conan create . user/channel --build missing`
+    * The result `grpc_cb.lib` is in `~/.conan/data/grpc_cb/0.2/user/channel/package/`...
 
-### VS solution
+## VS solution
 See [premake/README.md](premake/README.md) to use premake5 to generate VS solution.
 
 ## Done
