@@ -25,7 +25,7 @@ class GrpccbConan(ConanFile):
         self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
-        self.copy("*.h")
+        self.copy("include/*")
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.dylib*", dst="lib", keep_path=False)
