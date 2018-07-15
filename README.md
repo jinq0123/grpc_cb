@@ -11,6 +11,8 @@ It depends on [grpc_cb_core](https://github.com/jinq0123/grpc_cb_core).
 1. Or create: `conan create . user/channel --build missing`
     * The result `grpc_cb.lib` is in `~/.conan/data/grpc_cb/0.2/user/channel/package/`...
 
+(package: https://bintray.com/jinq0123/conan/grpc_cb%3Ajinq0123 )
+
 ## VS solution
 See [premake/README.md](premake/README.md) to use premake5 to generate VS solution.
 
